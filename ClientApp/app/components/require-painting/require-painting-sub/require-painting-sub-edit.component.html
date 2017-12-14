@@ -1,0 +1,63 @@
+﻿<div class="edit-container mx-3">
+    <form>
+        <div class="my-form">
+            <label for="PaintingArea" class="my-label">TypeArea:</label>
+            <div class="col-sm-4">
+                <p-dropdown class="my-input-combobox" [options]="paintingAreas" filter="filter" [style]="{'width':'100%'}"
+                            id="PaintingArea" appendTo="body" required>
+                </p-dropdown>
+            </div>
+
+            <label for="Area" class="my-label">Area:</label>
+            <div class="col-sm-4">
+                <input type="number" min="1" class="my-input" placeholder="Insert area here."
+                       id="Area">
+            </div>
+        </div>
+
+        <div class="my-form">
+            <label for="PaintingType" class="my-label">Type:</label>
+            <div class="col-sm-4">
+                <p-dropdown class="my-input-combobox" [options]="paintingTypes" filter="filter" [style]="{'width':'100%'}"
+                            id="PaintingType" appendTo="body" required>
+                </p-dropdown>
+            </div>
+        </div>
+
+        <div class="my-form">
+            <label for="DFTMin" class="my-label">DFTMin:</label>
+            <div class="col-sm-4">
+                <input type="number" min="1" class="my-input" placeholder="Insert dft-min here."
+                       id="DFTMin">
+            </div>
+
+            <label for="DFTMax" class="my-label">DFTMax:</label>
+            <div class="col-sm-4">
+                <input type="number" min="1" class="my-input" placeholder="Insert dft-max here."
+                       id="DFTMax">
+            </div>
+        </div>
+
+        <div class="my-form">
+            <label for="Surface" class="my-label">Surface :</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-click" placeholder="Choose surface here"
+                       id="Surface" readonly>
+            </div>
+
+            <label for="Color" class="my-label">Color:</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-click" placeholder="Choose color here"
+                       id="Color" readonly>
+            </div>
+        </div>
+
+        <div class="my-form">
+            <label for="StandradTime" class="my-label">StandradTime:</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-click" placeholder="Choose standrad-time here"
+                       id="StandradTime" readonly>
+            </div>
+        </div>
+    </form>
+</div>

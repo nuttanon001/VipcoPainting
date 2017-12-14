@@ -1,0 +1,129 @@
+﻿<div *ngIf="listItem; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Plate Informate</b>
+            </ng-template>
+            <div class="edit-container mx-3">
+                <form [formGroup]="listItemForm">
+                    <div class="my-form">
+                        <label for="Description" class="my-label">Description:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert description of plate here."
+                                   required
+                                   id="Description" formControlName="Description">
+                            <validation-messages [control]="listItemForm.controls.Description"></validation-messages>
+                        </div>
+
+                        <label for="PartNo" class="my-label">PartNo:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert part-no of plate here."
+                                   id="PartNo" formControlName="PartNo">
+                            <validation-messages [control]="listItemForm.controls.PartNo"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="MarkNo" class="my-label">MarkNo:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert mark-no of plate here."
+                                   id="MarkNo" formControlName="MarkNo">
+                            <validation-messages [control]="listItemForm.controls.MarkNo"></validation-messages>
+                        </div>
+
+                        <label for="DrawingNo" class="my-label">DrawingNo:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert drawing-no of plate here."
+                                   id="DrawingNo" formControlName="DrawingNo">
+                            <validation-messages [control]="listItemForm.controls.DrawingNo"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="UnitNo" class="my-label">UnitNo:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert unit-no of plate here."
+                                   id="UnitNo" formControlName="UnitNo">
+                            <validation-messages [control]="listItemForm.controls.UnitNo"></validation-messages>
+                        </div>
+
+                        <label for="Quantity" class="my-label">Quantity:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert quantity of plate here."
+                                   id="Quantity" formControlName="Quantity">
+                            <validation-messages [control]="listItemForm.controls.Quantity"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label class="my-label">Dimension L x W x H:</label>
+                        <div class="edit-form-content col-sm-10">
+                            <input type="number" min="1" class="my-input" placeholder="Insert length of plate."
+                                   id="SizeL" formControlName="SizeL">
+                            <span class="mx-1">X</span>
+                            <input type="number" min="1" class="my-input" placeholder="Insert width of plate."
+                                   id="SizeW" formControlName="SizeW">
+                            <span class="mx-1">X</span>
+                            <input type="number" min="1" class="my-input" placeholder="Insert height of plate."
+                                   id="SizeH" formControlName="SizeH">
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="Weight" class="my-label">Weight:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert weight of plate here."
+                                   id="Weight" formControlName="Weight">
+                            <validation-messages [control]="listItemForm.controls.Weight"></validation-messages>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="my-form">
+                        <label class="my-label">Option:</label>
+                        <div class="edit-form-content col-sm-10">
+                            <div class="form-check mx-1 mt-1">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="FieldWeld" formControlName="FieldWeld"> FieldWeld
+                                </label>
+                            </div>
+                            <div class="form-check mx-1 mt-1">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="Insulation" formControlName="Insulation"> Insulation
+                                </label>
+                            </div>
+                            <div class="form-check mx-1 mt-1">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="ITP" formControlName="ITP"> ITP
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Plate Painting Option</b>
+            </ng-template>
+            <div class="edit-container">
+               <require-painting-sub-edit></require-painting-sub-edit>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+    <div style="border-top:1px solid #32a8cc;">
+        <button type="button" mat-icon-button color="primary" (click)="onNewOrUpdateClick()"
+                [disabled]="!listItemForm.valid" matTooltip="New/Update">
+            <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
+        </button>
+        <button type="button" mat-icon-button color="warn" (click)="onCancelClick()" 
+                matTooltip="Cancel">
+            <i class="fa fa-2x fa-close" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

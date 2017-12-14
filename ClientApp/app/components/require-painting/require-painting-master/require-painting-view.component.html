@@ -1,0 +1,59 @@
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Require Painting Master</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        Message 1 :
+                    </div>
+                    <div class="my-value">
+                        <!--{{displayValue.ProjectCode || "-"}}-->
+                    </div>
+
+                    <div class="my-label">
+                        Message 2 :
+                    </div>
+                    <div class="my-value">
+                        <!--{{displayValue.ProjectName || "-"}}-->
+                    </div>
+
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Message 3 :
+                    </div>
+                    <div class="my-value">
+                        <!--{{(displayValue.StartDate | date:'dd/MM/yyyy') || "-"}}-->
+                    </div>
+
+                    <div class="my-label">
+                        Message 4 :
+                    </div>
+                    <div class="my-value">
+                        <!--{{(displayValue.EndDate | date:'dd/MM/yyyy') || "-"}}-->
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Require Painting List</b>
+            </ng-template>
+            <div class="view-container">
+                <!--
+                    <reuse-table [rows]="details" [columns]="columns">
+                    </reuse-table>
+                -->
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>
