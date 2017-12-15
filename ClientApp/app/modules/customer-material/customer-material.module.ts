@@ -27,8 +27,9 @@ import {
     TreeTableModule,
     AccordionModule,
     AutoCompleteModule,
+    RadioButtonModule,
 } from "primeng/primeng";
-
+// chart
 import { ChartsModule } from "ng2-charts/ng2-charts";
 
 import { AngularSplitModule } from "angular-split";
@@ -81,6 +82,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         TreeTableModule,
         AccordionModule,
         AutoCompleteModule,
+        RadioButtonModule,
         // chart
         ChartsModule
     ],
@@ -113,6 +115,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         TreeTableModule,
         AccordionModule,
         AutoCompleteModule,
+        RadioButtonModule,
         // component
         SearchBoxComponent,
         DataTableComponent,

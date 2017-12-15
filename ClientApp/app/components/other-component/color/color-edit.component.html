@@ -1,0 +1,42 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Color-Edit</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="ColorCode" class="my-label">Color Code:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Code will automatically generated."
+                                   id="ColorCode" formControlName="ColorCode" readonly>
+                            <validation-messages [control]="editValueForm.controls.ColorCode"></validation-messages>
+                        </div>
+
+                        <label for="ColorName" class="my-label">Color Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert color name here"
+                                   id="ColorName" formControlName="ColorName" required>
+                            <validation-messages [control]="editValueForm.controls.ColorName"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="VolumeSolids" class="my-label">Volume Solid(%):</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" max="100" class="my-input" placeholder="Insert percent of volume solid here"
+                                   id="VolumeSolids" formControlName="VolumeSolids" required>
+                            <validation-messages [control]="editValueForm.controls.VolumeSolids"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

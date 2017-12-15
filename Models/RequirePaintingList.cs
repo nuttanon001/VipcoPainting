@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
-    public class RequirePaintingList
+    public class RequirePaintingList:BaseModel
     {
         [Key]
         public int RequirePaintingListId { get; set; }
@@ -30,13 +30,8 @@ namespace VipcoPainting.Models
         public double? SizeW { get; set; }
         public double? SizeH { get; set; }
         public double? Weight { get; set; }
-
-        [StringLength(50)]
-        public string Creator { get; set; }
-        public DateTime? CreateDate { get; set; }
-        [StringLength(50)]
-        public string Modifyer { get; set; }
-        public DateTime? ModifyDate { get; set; }
+        public DateTime? PlanStart { get; set; }
+        public DateTime? PlanEnd { get; set; }
 
         //FK
         // RequirePaintingMaster

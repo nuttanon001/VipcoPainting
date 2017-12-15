@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
-    public class RequirePaintingMaster
+    public class RequirePaintingMaster:BaseModel
     {
         [Key]
         public int RequirePaintingMasterId { get; set; }
@@ -18,13 +18,6 @@ namespace VipcoPainting.Models
         public string PaintingSchedule { get; set; }
         [StringLength(200)]
         public string RequireNo { get; set; }
-
-        [StringLength(50)]
-        public string Creator { get; set; }
-        public DateTime? CreateDate { get; set; }
-        [StringLength(50)]
-        public string Modifyer { get; set; }
-        public DateTime? ModifyDate { get; set; }
 
         //FK
         // RequireEmployee

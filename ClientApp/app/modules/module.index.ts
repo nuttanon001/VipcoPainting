@@ -2,3 +2,4 @@
 export { DialogsModule } from "./dialog/dialogs.module";
 export { ValidationModule } from "./validation/validation.module";
 export { RequirePaintingModule } from "./require-painting/require-painting.module";
+export { OtherModule } from "./other-module/other.module";

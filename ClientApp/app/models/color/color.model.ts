@@ -7,4 +7,6 @@
     CreateDate?: Date;
     Modifyer?: string;
     ModifyDate?: Date;
+    // view model
+    VolumeSolidsString?: string;
 }

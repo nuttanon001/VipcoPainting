@@ -21,9 +21,10 @@ namespace VipcoPainting.Helpers
                            (s.TypeEmployee.Value == 4 ? "พนักงานประจำรายเดือน" : "พนักงานพม่า"))))));
             CreateMap<EmployeeViewModel, Employee>();
 
-            #endregion
+            #endregion Employee
 
             #region User
+
             //User
             CreateMap<User, UserViewModel>()
                 // CuttingPlanNo
@@ -31,7 +32,33 @@ namespace VipcoPainting.Helpers
                            o => o.MapFrom(s => s.EmpCodeNavigation == null ? "-" : $"คุณ{s.EmpCodeNavigation.NameThai}"))
                 .ForMember(x => x.EmpCodeNavigation, o => o.Ignore());
 
-            #endregion
+            #endregion User
+
+            #region ColorItem
+
+            //Color
+            CreateMap<ColorItem, ColorItemViewModel>()
+                // Color Percent
+                .ForMember(x => x.VolumeSolidsString,
+                            o => o.MapFrom(s => s.VolumeSolids == null ? "0.0%" : $"{s.VolumeSolids.Value.ToString("00.0")}%"));
+
+            #endregion ColorItem
+
+            #region StandardTime
+
+            // StandardTime
+            CreateMap<StandradTime, StandardTimeViewModel>()
+                // TypeStandardTimeString
+                .ForMember(x => x.TypeStandardTimeString,
+                            o => o.MapFrom(s => s.TypeStandardTime == null ? "-" : $"{(s.TypeStandardTime == TypeStandardTime.Paint ? "Paint" : "Blast")}")   )
+                // PercentLossString
+                .ForMember(x => x.PercentLossString,
+                            o => o.MapFrom(s => s.PercentLoss == null ? "0.0%" : $"{s.PercentLoss.Value.ToString("00.0")}%"))
+                // StandardTime
+                .ForMember(x => x.RateWithUnit,
+                            o => o.MapFrom(s => s.Rate == null || s.RateUnit == null ? "-" : $"{s.Rate.Value.ToString("0.00")} {s.RateUnit}"));
+
+            #endregion StandardTime
         }
     }
 }

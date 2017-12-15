@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="my-form">
-                        <label for="RequireDate" class="my-label">RequireDate:</label>
+                        <label for="RequireDate" class="my-label">RequestDate:</label>
                         <div class="col-sm-4">
                             <p-calendar formControlName="RequireDate" [showIcon]="true"
                                         id="RequireDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
@@ -34,33 +34,33 @@
                             <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>
                         </div>
 
-                        <label for="FinishDate" class="my-label">FinishDate:</label>
-                        <div class="col-sm-4">
-                            <p-calendar formControlName="FinishDate" [showIcon]="true"
-                                        id="FinishDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
-                                        appendTo="body"
-                                        [minDate]="editValueForm.controls.RequireDate.value">
-                            </p-calendar>
-                            <span class="is-request-date">**</span>
-                            <validation-messages [control]="editValueForm.controls.FinishDate"></validation-messages>
-                        </div>
-                    </div>
-
-                    <div class="my-form">
-                        <label for="RequireString" class="my-label">RequireBy:</label>
+                        <label for="RequireString" class="my-label">RequesterBy:</label>
                         <div class="col-sm-4">
                             <input type="text" class="my-input-click" placeholder="Choose employee here"
                                    id="RequireString" formControlName="RequireString" required readonly>
                             <validation-messages [control]="editValueForm.controls.RequireString"></validation-messages>
                         </div>
+                        
+                    </div>
 
-                        <label for="ReceiveString" class="my-label">ReceiveBy:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input-click" placeholder="Choose employee here"
-                                   (click)="openDialog('Employee')"
-                                   id="ReceiveString" formControlName="ReceiveString" required readonly>
-                            <validation-messages [control]="editValueForm.controls.ReceiveString"></validation-messages>
-                        </div>
+                    <div class="my-form">
+                        <!--<label for="FinishDate" class="my-label">FinishDate:</label>
+                            <div class="col-sm-4">
+                                <p-calendar formControlName="FinishDate" [showIcon]="true"
+                                            id="FinishDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
+                                            appendTo="body"
+                                            [minDate]="editValueForm.controls.RequireDate.value">
+                                </p-calendar>
+                                <span class="is-request-date">**</span>
+                                <validation-messages [control]="editValueForm.controls.FinishDate"></validation-messages>
+                            </div>
+                            <label for="ReceiveString" class="my-label">ReceiveBy:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input-click" placeholder="Choose employee here"
+                                       (click)="openDialog('Employee')"
+                                       id="ReceiveString" formControlName="ReceiveString" required readonly>
+                                <validation-messages [control]="editValueForm.controls.ReceiveString"></validation-messages>
+                            </div>-->
                     </div>
 
                     <div class="my-form">

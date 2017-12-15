@@ -2,16 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using VipcoPainting.Helpers;
 using VipcoPainting.Models;
-using VipcoPainting.ViewModels;
 using VipcoPainting.Services.Interfaces;
+using VipcoPainting.ViewModels;
 
 namespace VipcoPainting.Controllers
 {
@@ -51,8 +48,8 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get()
         {
             // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
+            // var Includes = new List<string> { "" };
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<ColorItemViewModel,ColorItem>(await this.repository.GetAllAsync()),
                                         this.DefaultJsonSettings);
         }
 
@@ -61,8 +58,8 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "ColorItemId", Includes),
+            // var Includes = new List<string> { "" };
+            return new JsonResult(this.mapper.Map<ColorItem, ColorItemViewModel>(await this.repository.GetAsynvWithIncludes(key, "ColorItemId")),
                                         this.DefaultJsonSettings);
         }
 
@@ -116,7 +113,9 @@ namespace VipcoPainting.Controllers
 
             QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
 
-            return new JsonResult(new ScrollDataViewModel<ColorItem>(Scroll, await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
+            return new JsonResult(new ScrollDataViewModel<ColorItem>(Scroll,
+                this.ConvertTable.ConverterTableToViewModel<ColorItemViewModel, ColorItem>( await QueryData.AsNoTracking().ToListAsync())),
+                this.DefaultJsonSettings);
         }
 
         // POST: api/ColorItem
@@ -129,6 +128,9 @@ namespace VipcoPainting.Controllers
 
                 nColorItem.CreateDate = DateTime.Now;
                 nColorItem.Creator = nColorItem.Creator ?? "Someone";
+
+                var Runing = await this.repository.GetAllAsQueryable().CountAsync(x => x.CreateDate.Value.Year == nColorItem.CreateDate.Value.Year) + 1;
+                nColorItem.ColorCode = $"{nColorItem.CreateDate.Value.ToString("yy")}/{Runing.ToString("0000")}";
 
                 return new JsonResult(await this.repository.AddAsync(nColorItem), this.DefaultJsonSettings);
             }
@@ -156,7 +158,7 @@ namespace VipcoPainting.Controllers
 
                     var UpdateData = await this.repository.UpdateAsync(uColorItem, key);
                     if (UpdateData != null)
-                        return new JsonResult(UpdateData,this.DefaultJsonSettings);
+                        return new JsonResult(UpdateData, this.DefaultJsonSettings);
                 }
             }
             catch (Exception ex)

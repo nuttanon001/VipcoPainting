@@ -1,0 +1,33 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Surface-Type Edit</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="SurfaceCode" class="my-label">Surface Code:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert surface-type code here."
+                                   id="SurfaceCode" formControlName="SurfaceCode" required>
+                            <validation-messages [control]="editValueForm.controls.SurfaceCode"></validation-messages>
+                        </div>
+
+                        <label for="SurfaceName" class="my-label">Surface Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert surface-type name here."
+                                   id="SurfaceName" formControlName="SurfaceName" required>
+                            <validation-messages [control]="editValueForm.controls.SurfaceName"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

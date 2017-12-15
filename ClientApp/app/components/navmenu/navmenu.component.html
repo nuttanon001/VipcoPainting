@@ -14,14 +14,14 @@
             <li class="nav-item" *ngIf="GetLevel1">
                 <a #mainMenu="matMenuTrigger" [matMenuTriggerFor]="menu1"
                    (onMenuOpen)="menuOnCloseMenu1()" (mouseover)="menuOnOpenMenu1()"
-                   class="nav-link" [routerLink]="['/require-Painting']" routerLinkActive="active">
+                   class="nav-link" [routerLink]="['/require-painting']" routerLinkActive="active">
                     <i class="fa fa-flag" aria-hidden="true"></i>
-                    RequirePainting
+                    RequestPainting
                 </a>
                 <mat-menu #menu1="matMenu" [overlapTrigger]="false">
-                    <button mat-menu-item [routerLink]="['/require-Painting']" routerLinkActive="active">
+                    <button mat-menu-item [routerLink]="['/require-painting']" routerLinkActive="active">
                         <i class="fa fa-flag" aria-hidden="true"></i>
-                        <span>RequirePainting</span>
+                        <span>RequestPainting</span>
                     </button>
                 </mat-menu>
             </li>
@@ -30,13 +30,23 @@
                    (onMenuOpen)="menuOnCloseMenu2()" (mouseover)="menuOnOpenMenu2()"
                    class="nav-link">
                     <i class="fa fa-comments-o" aria-hidden="true"></i>
-                    Sub-Menu
+                    Paint Department
                 </a>
                 <mat-menu #menu2="matMenu" [overlapTrigger]="false">
                     <div>
-                        <button mat-menu-item [routerLink]="['/']" routerLinkActive="active">
-                            <i class="fa fa-history" aria-hidden="true"></i>
-                            <span>Item-1</span>
+                        <button mat-menu-item [routerLink]="['/color-item']" routerLinkActive="active">
+                            <i class="fa fa-tint" aria-hidden="true"></i>
+                            <span>ColorItem</span>
+                        </button>
+
+                        <button mat-menu-item [routerLink]="['/standard-time']" routerLinkActive="active">
+                            <i class="fa fa-hourglass-2" aria-hidden="true"></i>
+                            <span>Standard-Time</span>
+                        </button>
+
+                        <button mat-menu-item [routerLink]="['/surface-type']" routerLinkActive="active">
+                            <i class="fa fa-leaf" aria-hidden="true"></i>
+                            <span>Surface-Type</span>
                         </button>
                     </div>
                 </mat-menu>

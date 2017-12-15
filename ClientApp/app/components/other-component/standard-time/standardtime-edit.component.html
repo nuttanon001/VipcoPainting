@@ -1,0 +1,80 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>StandardTime-Edit</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="TypeStandardTime" class="my-label">Type StandardTime:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="typeStdTimes" filter="filter" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="TypeStandardTime" formControlName="TypeStandardTime" required>
+                            </p-dropdown>
+                        </div>
+
+                        <!--
+                        <label for="TypeStandardTime" class="my-label">Type StandardTime:</label>
+                        <div class="col-sm-2">
+                            <p-radioButton name="group2" class="my-input-combobox" value="1" label="Paint" formControlName="TypeStandardTime"></p-radioButton>
+                        </div>
+                        <div class="col-sm-2">
+                            <p-radioButton name="group2" class="my-input-combobox" value="2" label="Blast" formControlName="TypeStandardTime"></p-radioButton>
+                        </div>
+                        -->
+                    </div>
+
+                    <div class="my-form">
+                        <label for="Code" class="my-label">StandardTime Code:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert standard-time code here."
+                                   id="Code" formControlName="Code" required>
+                            <validation-messages [control]="editValueForm.controls.Code"></validation-messages>
+                        </div>
+
+                        <label for="Description" class="my-label">StandardTime Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert standard-time name here."
+                                   id="Description" formControlName="Description" required>
+                            <validation-messages [control]="editValueForm.controls.Description"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="Rate" class="my-label">StandardTime Value:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert standard-time value here."
+                                   id="Rate" formControlName="Rate" required>
+                            <validation-messages [control]="editValueForm.controls.Rate"></validation-messages>
+                        </div>
+
+                        <label for="RateUnit" class="my-label">Rate Unit:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="unitRates" filter="filter" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="RateUnit" formControlName="RateUnit" required>
+                            </p-dropdown>
+                            <!--<validation-messages [control]="editValueForm.controls.RateUnit"></validation-messages>-->
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="PercentLoss" class="my-label">Loss(%):</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" max="100" class="my-input" placeholder="Insert percent loss for standard-time."
+                                   id="PercentLoss" formControlName="PercentLoss">
+                            <validation-messages [control]="editValueForm.controls.PercentLoss"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

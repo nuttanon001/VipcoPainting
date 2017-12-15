@@ -51,7 +51,7 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get()
         {
             // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
+            var Includes = new List<string> { "ProjectCodeMaster" };
             return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
                                         this.DefaultJsonSettings);
         }
@@ -61,9 +61,20 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
+            var Includes = new List<string> { "ProjectCodeMaster" };
             return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "ProjectCodeSubId", Includes),
                                         this.DefaultJsonSettings);
+        }
+
+        // GET: api/ProjectCodeSub/GetByMaster/5
+        [HttpGet("GetByMaster/{MasterId}")]
+        public async Task<IActionResult> GetByMaster(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Where(x => x.ProjectCodeMasterId == MasterId)
+                                .Include(x => x.ProjectCodeMaster);
+
+            return new JsonResult(await QueryData.AsNoTracking().ToListAsync(), this.DefaultJsonSettings);
         }
 
         #endregion GET

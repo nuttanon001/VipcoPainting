@@ -11,7 +11,7 @@ const requirePaintingRoutes: Routes = [
     {
         path: "require-painting",
         component: RequirePaintingCenterComponent,
-        // canActivate: [AuthGuard],
+        canActivate: [AuthGuard],
         children: [
             {
                 path: "",

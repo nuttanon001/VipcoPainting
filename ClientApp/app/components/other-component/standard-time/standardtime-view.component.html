@@ -1,0 +1,66 @@
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Surface-Type View</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        StandardTime Type :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.TypeStandardTimeString || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        StandardTime Code :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.Code || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        StandardTime Name :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.Description || "-"}}
+                    </div>
+
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        StandardTime Value :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.RateWithUnit || "-"}}
+                    </div>  
+
+                    <div class="my-label">
+                        PercentLoss Value :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.PercentLossString || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        CreateDate :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue.CreateDate | date:'dd/MM/yyyy') || "-"}}
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

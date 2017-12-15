@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace VipcoPainting.Models
 {
-    public class RequirePaintingSub
+    public class RequirePaintingSub:BaseModel
     {
         [Key]
         public int RequirePaintingSubId { get; set; }
@@ -15,13 +15,6 @@ namespace VipcoPainting.Models
         public double? Area { get; set; }
         public double? DFTMin { get; set; }
         public double? DFTMax { get; set; }
-
-        [StringLength(50)]
-        public string Creator { get; set; }
-        public DateTime? CreateDate { get; set; }
-        [StringLength(50)]
-        public string Modifyer { get; set; }
-        public DateTime? ModifyDate { get; set; }
 
         //FK
         // ColorItem

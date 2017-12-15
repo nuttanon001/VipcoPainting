@@ -40,12 +40,12 @@ export class NavMenuComponent implements OnInit {
     }
 
     get GetLevel1(): boolean {
-        // if (this.authService.getAuth) {
-        //    return (this.authService.getAuth.LevelUser || 0) > 0;
-        // } else {
-        //    return false;
-        // }
-        return true;
+         if (this.authService.getAuth) {
+            return (this.authService.getAuth.LevelUser || 0) > 0;
+         } else {
+            return false;
+         }
+        // return true;
     }
 
     ngOnInit(): void {

@@ -50,10 +50,10 @@ namespace VipcoPainting.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<StandardTimeViewModel,StandradTime>( await this.repository.GetAllAsync()), this.DefaultJsonSettings);
+            // var Includes = new List<string> { "" };
+            // return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/StandradTime/5
@@ -62,8 +62,9 @@ namespace VipcoPainting.Controllers
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
             var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "StandradTimeId", Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(this.mapper.Map<StandradTime,StandardTimeViewModel>(
+                                await this.repository.GetAsynvWithIncludes(key, "StandradTimeId")),
+                                this.DefaultJsonSettings);
         }
 
         #endregion GET
@@ -109,7 +110,9 @@ namespace VipcoPainting.Controllers
 
             QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
 
-            return new JsonResult(new ScrollDataViewModel<StandradTime>(Scroll, await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
+            return new JsonResult(new ScrollDataViewModel<StandradTime>(Scroll, 
+                                    this.ConvertTable.ConverterTableToViewModel<StandardTimeViewModel,StandradTime>(
+                                        await QueryData.AsNoTracking().ToListAsync())), this.DefaultJsonSettings);
         }
 
         // POST: api/StandradTime

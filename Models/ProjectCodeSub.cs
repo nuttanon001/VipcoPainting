@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
-    public class ProjectCodeSub
+    public class ProjectCodeSub:BaseModel
     {
         [Key]
         public int ProjectCodeSubId { get; set; }
@@ -16,13 +16,6 @@ namespace VipcoPainting.Models
         public string Code { get; set; }
         [StringLength(200)]
         public string Name { get; set; }
-
-        [StringLength(50)]
-        public string Creator { get; set; }
-        public DateTime? CreateDate { get; set; }
-        [StringLength(50)]
-        public string Modifyer { get; set; }
-        public DateTime? ModifyDate { get; set; }
         // FK
         //ProjectCodeSub
         public int? ProjectSubParentId { get; set; }

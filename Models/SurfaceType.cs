@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
-    public class SurfaceType
+    public class SurfaceType:BaseModel
     {
         [Key]
         public int SurfaceTypeId { get; set; }
@@ -16,13 +16,6 @@ namespace VipcoPainting.Models
         public string SurfaceCode { get; set; }
         [StringLength(200)]
         public string SurfaceName { get; set; }
-
-        [StringLength(50)]
-        public string Creator { get; set; }
-        public DateTime? CreateDate { get; set; }
-        [StringLength(50)]
-        public string Modifyer { get; set; }
-        public DateTime? ModifyDate { get; set; }
 
         // FK
         // RequirePaintingSub
