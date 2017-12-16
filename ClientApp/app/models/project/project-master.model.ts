@@ -1,4 +1,6 @@
-﻿export interface ProjectMaster {
+﻿import { ProjectSub } from "./project-sub.model";
+
+export interface ProjectMaster {
     ProjectCodeMasterId: number;
     CreateDate?: Date;
     Creator?: string;
@@ -8,4 +10,6 @@
     ProjectCode?: string;
     ProjectName?: string;
     StartDate?: Date;
+    // ViewModel
+    ProjectSubs?: Array<ProjectSub>;
 }

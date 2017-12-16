@@ -59,6 +59,13 @@ namespace VipcoPainting.Helpers
                             o => o.MapFrom(s => s.Rate == null || s.RateUnit == null ? "-" : $"{s.Rate.Value.ToString("0.00")} {s.RateUnit}"));
 
             #endregion StandardTime
+
+            #region ProjectCodeMaster
+
+            CreateMap<ProjectCodeMaster, ProjectMasterViewModel>();
+            CreateMap<ProjectMasterViewModel, ProjectCodeMaster>();
+
+            #endregion
         }
     }
 }

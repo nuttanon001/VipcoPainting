@@ -4,7 +4,8 @@ import { Routes, RouterModule } from "@angular/router";
 import {
     ColorCenterComponent, ColorMasterComponent,
     StandardtimeCenterComponent, StandardtimeMasterComponent,
-    SurfaceCenterComponent, SurfaceMasterComponent
+    SurfaceCenterComponent, SurfaceMasterComponent,
+    ProjectCenterComponent,ProjectMasterComponent
 } from "../../components/other-component/orther.index";
     // service
 import { AuthGuard } from "../../services/auth/auth-guard.service";
@@ -40,6 +41,17 @@ const otherRoutes: Routes = [
             {
                 path: "",
                 component: SurfaceMasterComponent,
+            }
+        ],
+    },
+    {
+        path: "project",
+        component: ProjectCenterComponent,
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: "",
+                component: ProjectMasterComponent,
             }
         ],
     }

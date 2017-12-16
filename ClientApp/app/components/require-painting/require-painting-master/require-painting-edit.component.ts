@@ -146,7 +146,7 @@ export class RequirePaintingEditComponent
                         if (project) {
                             this.editValueForm.patchValue({
                                 ProjectCodeSubId: project.ProjectCodeSubId,
-                                ProjectCodeSubString: `${project.Code} ${project.Name}`,
+                                ProjectCodeSubString: `${project.ProjectMasterString}/${project.Code}`,
                             });
                         }
                     });

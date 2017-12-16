@@ -1,8 +1,18 @@
 ﻿<div *ngIf="listItem; else elseBlock">
+    <div class="mt-1">
+        <button type="button" mat-icon-button color="primary" (click)="onNewOrUpdateClick()"
+                [disabled]="!listItemForm.valid" matTooltip="New/Update">
+            <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
+        </button>
+        <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
+                matTooltip="Cancel">
+            <i class="fa fa-2x fa-close" aria-hidden="true"></i>
+        </button>
+    </div>
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
-                <b>Plate Informate</b>
+                <b>WorkItem Information</b>
             </ng-template>
             <div class="edit-container mx-3">
                 <form [formGroup]="listItemForm">
@@ -56,6 +66,15 @@
                     </div>
 
                     <div class="my-form">
+                        <label for="Weight" class="my-label">Weight:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert weight of plate here."
+                                   id="Weight" formControlName="Weight">
+                            <validation-messages [control]="listItemForm.controls.Weight"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
                         <label class="my-label">Dimension L x W x H:</label>
                         <div class="edit-form-content col-sm-10">
                             <input type="number" min="1" class="my-input" placeholder="Insert length of plate."
@@ -69,17 +88,8 @@
                         </div>
                     </div>
 
-                    <div class="my-form">
-                        <label for="Weight" class="my-label">Weight:</label>
-                        <div class="col-sm-4">
-                            <input type="number" min="1" class="my-input" placeholder="Insert weight of plate here."
-                                   id="Weight" formControlName="Weight">
-                            <validation-messages [control]="listItemForm.controls.Weight"></validation-messages>
-                        </div>
-                    </div>
-
                     <hr />
-                    <div class="my-form">
+                    <!--<div class="my-form">
                         <label class="my-label">Option:</label>
                         <div class="edit-form-content col-sm-10">
                             <div class="form-check mx-1 mt-1">
@@ -98,29 +108,32 @@
                                 </label>
                             </div>
                         </div>
+                    </div>-->
+
+                    <div class="my-form">
+                        <label class="my-label">Option-2:</label>
+                        <div class="col-sm-2">
+                            <p-checkbox name="group2" formControlName="FieldWeld" binary="true" label="FieldWeld" inputId="fieldWeld"></p-checkbox>
+                        </div>
+                        <div class="col-sm-2">
+                            <p-checkbox name="group2" formControlName="Insulation" binary="true" label="Insulation" inputId="insulation"></p-checkbox>
+                        </div>
+                        <div class="col-sm-2">
+                            <p-checkbox name="group2" formControlName="ITP" binary="true" label="ITP" inputId="iTP"></p-checkbox>
+                        </div>
                     </div>
                 </form>
             </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
-                <b>Plate Painting Option</b>
+                <b>WorkItem Paint&Blast</b>
             </ng-template>
             <div class="edit-container">
-               <require-painting-sub-edit></require-painting-sub-edit>
+                <require-painting-sub-edit></require-painting-sub-edit>
             </div>
         </mat-tab>
     </mat-tab-group>
-    <div style="border-top:1px solid #32a8cc;">
-        <button type="button" mat-icon-button color="primary" (click)="onNewOrUpdateClick()"
-                [disabled]="!listItemForm.valid" matTooltip="New/Update">
-            <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
-        </button>
-        <button type="button" mat-icon-button color="warn" (click)="onCancelClick()" 
-                matTooltip="Cancel">
-            <i class="fa fa-2x fa-close" aria-hidden="true"></i>
-        </button>
-    </div>
 </div>
 
 <ng-template #elseBlock>

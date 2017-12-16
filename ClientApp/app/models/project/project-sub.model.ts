@@ -9,4 +9,6 @@
     // FK
     ProjectSubParentId?: number;
     ProjectCodeMasterId?: number;
+    // ViewModel
+    ProjectMasterString?: string;
 }

@@ -50,20 +50,20 @@ namespace VipcoPainting.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "ProjectCodeMaster" };
-            return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
+            //var Includes = new List<string> { "ProjectCodeMaster" };
+            //return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/ProjectCodeSub/5
         [HttpGet("{key}")]
         public async Task<IActionResult> Get(int key)
         {
-            // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "ProjectCodeMaster" };
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "ProjectCodeSubId", Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            //var Includes = new List<string> { "ProjectCodeMaster" };
+            //return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "ProjectCodeSubId", Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/ProjectCodeSub/GetByMaster/5
@@ -71,12 +71,38 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> GetByMaster(int MasterId)
         {
             var QueryData = this.repository.GetAllAsQueryable()
-                                .Where(x => x.ProjectCodeMasterId == MasterId)
-                                .Include(x => x.ProjectCodeMaster);
+                                .Where(x => x.ProjectCodeMasterId == MasterId);
 
             return new JsonResult(await QueryData.AsNoTracking().ToListAsync(), this.DefaultJsonSettings);
         }
 
+        // GET: api/ProjectCodeSub/GetAutoComplate/
+        [HttpGet("GetAutoComplate")]
+        public async Task<IActionResult> GetAutoComplate()
+        {
+            var Message = "";
+            try
+            {
+                var autoComplate = new List<string>();
+                var projectSubs = await this.repository.GetAllAsync();
+                if (projectSubs != null)
+                {
+                    foreach (var item in projectSubs.Select(x => x.Code)
+                                                    .Distinct())
+                    {
+                        autoComplate.Add(item);
+                    }
+                }
+
+                if (autoComplate.Any())
+                    return new JsonResult(autoComplate, this.DefaultJsonSettings);
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+        }
         #endregion GET
 
         #region POST
@@ -134,8 +160,8 @@ namespace VipcoPainting.Controllers
                 nProjectCodeSub.CreateDate = DateTime.Now;
                 nProjectCodeSub.Creator = nProjectCodeSub.Creator ?? "Someone";
 
-                if (nProjectCodeSub.ProjectCodeMaster != null)
-                    nProjectCodeSub.ProjectCodeMaster = null;
+                //if (nProjectCodeSub.ProjectCodeMaster != null)
+                //    nProjectCodeSub.ProjectCodeMaster = null;
 
                 if (nProjectCodeSub.ProjectSubParent != null)
                     nProjectCodeSub.ProjectSubParent = null;
@@ -164,8 +190,8 @@ namespace VipcoPainting.Controllers
                     uProjectCodeSub.ModifyDate = DateTime.Now;
                     uProjectCodeSub.Modifyer = uProjectCodeSub.Modifyer ?? "Someone";
 
-                    if (uProjectCodeSub.ProjectCodeMaster != null)
-                        uProjectCodeSub.ProjectCodeMaster = null;
+                    //if (uProjectCodeSub.ProjectCodeMaster != null)
+                    //    uProjectCodeSub.ProjectCodeMaster = null;
 
                     if (uProjectCodeSub.ProjectSubParent != null)
                         uProjectCodeSub.ProjectSubParent = null;

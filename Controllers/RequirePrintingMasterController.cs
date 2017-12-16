@@ -86,8 +86,7 @@ namespace VipcoPainting.Controllers
                 {
                     QueryData = QueryData.Where(x => x.RequireNo.ToLower().Contains(keyword) ||
                                                      x.PaintingSchedule.ToLower().Contains(keyword) ||
-                                                     x.ProjectCodeSub.Code.ToLower().Contains(keyword) ||
-                                                     x.ProjectCodeSub.ProjectCodeMaster.ProjectCode.ToLower().Contains(keyword));
+                                                     x.ProjectCodeSub.Code.ToLower().Contains(keyword));
                 }
 
                 // Order

@@ -10,7 +10,10 @@ import {
     StandardtimeCenterComponent, StandardtimeEditComponent,
     StandardtimeMasterComponent, StandardtimeViewComponent,
     SurfaceCenterComponent, SurfaceEditComponent,
-    SurfaceMasterComponent, SurfaceViewComponent
+    SurfaceMasterComponent, SurfaceViewComponent,
+    ProjectCenterComponent, ProjectEditComponent,
+    ProjectMasterComponent, ProjectsubEditComponent,
+    ProjectViewComponent
 } from "../../components/other-component/orther.index";
 
 // modules
@@ -22,6 +25,8 @@ import {
 import { ColorService, ColorServiceCommunicate } from "../../services/color/color.service";
 import { StandradTimeService, StandradTimeServiceCommunicate } from "../../services/standrad-time/standrad-time.service";
 import { SurfaceTypeService, SurfaceTypeServiceCommunicate } from "../../services/surface-type/surface-type.service";
+import { ProjectMasterService,ProjectMasterServiceCommunicate } from "../../services/project/project-master.service";
+import { ProjectSubService } from "../../services/project/project-sub.service";
 @NgModule({
     declarations: [
         ColorCenterComponent,
@@ -35,7 +40,12 @@ import { SurfaceTypeService, SurfaceTypeServiceCommunicate } from "../../service
         SurfaceCenterComponent,
         SurfaceEditComponent,
         SurfaceMasterComponent,
-        SurfaceViewComponent
+        SurfaceViewComponent,
+        ProjectCenterComponent,
+        ProjectEditComponent,
+        ProjectMasterComponent,
+        ProjectsubEditComponent,
+        ProjectViewComponent
     ],
     imports: [
         // angular
@@ -53,7 +63,10 @@ import { SurfaceTypeService, SurfaceTypeServiceCommunicate } from "../../service
         StandradTimeService,
         StandradTimeServiceCommunicate,
         SurfaceTypeService,
-        SurfaceTypeServiceCommunicate
+        SurfaceTypeServiceCommunicate,
+        ProjectMasterService,
+        ProjectMasterServiceCommunicate,
+        ProjectSubService
         // dataTableServiceCommunicate
     ]
 })

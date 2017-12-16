@@ -23,6 +23,6 @@ namespace VipcoPainting.Models
         public ProjectCodeSub ProjectSubParent { get; set; }
         //ProjectMasterCode
         public int? ProjectCodeMasterId { get; set; }
-        public ProjectCodeMaster ProjectCodeMaster { get; set; }
+        // public ProjectCodeMaster ProjectCodeMaster { get; set; }
     }
 }

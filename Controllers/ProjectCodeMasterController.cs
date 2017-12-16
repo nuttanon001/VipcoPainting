@@ -12,6 +12,7 @@ using VipcoPainting.Helpers;
 using VipcoPainting.Models;
 using VipcoPainting.ViewModels;
 using VipcoPainting.Services.Interfaces;
+using System.Linq.Expressions;
 
 namespace VipcoPainting.Controllers
 {
@@ -22,6 +23,7 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
 
         private IRepositoryMachine<ProjectCodeMaster> repository;
+        private IRepositoryPainting<ProjectCodeSub> repositorySub;
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
@@ -31,9 +33,12 @@ namespace VipcoPainting.Controllers
 
         #region Constructor
 
-        public ProjectCodeMasterController(IRepositoryMachine<ProjectCodeMaster> repo, IMapper map)
+        public ProjectCodeMasterController(
+            IRepositoryMachine<ProjectCodeMaster> repo,
+            IRepositoryPainting<ProjectCodeSub> repoSub, IMapper map)
         {
             this.repository = repo;
+            this.repositorySub = repoSub;
             this.mapper = map;
             this.helpers = new HelpersClass<ProjectCodeMaster>();
             // Json
@@ -50,20 +55,20 @@ namespace VipcoPainting.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
+            // var Includes = new List<string> { "" };
+            // return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/ProjectCodeMaster/5
         [HttpGet("{key}")]
         public async Task<IActionResult> Get(int key)
         {
-            // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "ProjectCodeMasterId", Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            // var Includes = new List<string> { "" };
+            // return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "ProjectCodeMasterId", Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         #endregion GET
@@ -122,17 +127,34 @@ namespace VipcoPainting.Controllers
 
         // POST: api/ProjectCodeMaster
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]ProjectCodeMaster nProjectCodeMaster)
+        public async Task<IActionResult> Post([FromBody]ProjectMasterViewModel nProjectCodeMasterVM)
         {
-            if (nProjectCodeMaster != null)
+            if (nProjectCodeMasterVM != null)
             {
+                var nProjectCodeMaster = this.mapper.Map<ProjectMasterViewModel, ProjectCodeMaster>(nProjectCodeMasterVM);
+
                 // add hour to DateTime to set Asia/Bangkok
                 nProjectCodeMaster = helpers.AddHourMethod(nProjectCodeMaster);
 
                 nProjectCodeMaster.CreateDate = DateTime.Now;
                 nProjectCodeMaster.Creator = nProjectCodeMaster.Creator ?? "Someone";
 
-                return new JsonResult(await this.repository.AddAsync(nProjectCodeMaster), this.DefaultJsonSettings);
+                var insertComplate = await this.repository.AddAsync(nProjectCodeMaster);
+                if (insertComplate != null)
+                {
+                    if (nProjectCodeMasterVM.ProjectSubs != null)
+                    {
+                        foreach (var nDetail in nProjectCodeMasterVM.ProjectSubs)
+                        {
+                            nDetail.CreateDate = nProjectCodeMaster.CreateDate;
+                            nDetail.Creator = nProjectCodeMaster.Creator;
+                            nDetail.ProjectCodeMasterId = insertComplate.ProjectCodeMasterId;
+
+                            await this.repositorySub.AddAsync(nDetail);
+                        }
+                    }
+                }
+                return new JsonResult(insertComplate, this.DefaultJsonSettings);
             }
 
             return NotFound(new { Error = "ProjectMaster not found. " });
@@ -144,22 +166,74 @@ namespace VipcoPainting.Controllers
 
         // PUT: api/ProjectCodeMaster/5
         [HttpPut("{key}")]
-        public async Task<IActionResult> PutByNumber(int key, [FromBody]ProjectCodeMaster uProjectCodeMaster)
+        public async Task<IActionResult> PutByNumber(int key, [FromBody]ProjectMasterViewModel uProjectCodeMasterVm)
         {
-            if (uProjectCodeMaster != null)
+            var Message = "Job can't update";
+            try
             {
-                // add hour to DateTime to set Asia/Bangkok
-                uProjectCodeMaster = helpers.AddHourMethod(uProjectCodeMaster);
-                // set modified
-                uProjectCodeMaster.ModifyDate = DateTime.Now;
-                uProjectCodeMaster.Modifyer = uProjectCodeMaster.Modifyer ?? "Someone";
+                if (uProjectCodeMasterVm != null)
+                {
+                    var uProjectCodeMaster = this.mapper.Map<ProjectMasterViewModel, ProjectCodeMaster>(uProjectCodeMasterVm);
 
-                // update Master not update Detail it need to update Detail directly
-                var updateComplate = await this.repository.UpdateAsync(uProjectCodeMaster, key);
-                return new JsonResult(updateComplate, this.DefaultJsonSettings);
+                    // add hour to DateTime to set Asia/Bangkok
+                    uProjectCodeMaster = helpers.AddHourMethod(uProjectCodeMaster);
+                    // set modified
+                    uProjectCodeMaster.ModifyDate = DateTime.Now;
+                    uProjectCodeMaster.Modifyer = uProjectCodeMaster.Modifyer ?? "Someone";
+
+                    // update Master not update Detail it need to update Detail directly
+                    var updateComplate = await this.repository.UpdateAsync(uProjectCodeMaster, key);
+
+                    if (updateComplate != null)
+                    {
+                        // filter
+                        Expression<Func<ProjectCodeSub, bool>> condition = m => m.ProjectCodeMasterId == key;
+                        var dbProjectSubs = this.repositorySub.FindAll(condition);
+
+                        //Remove ProjectCodeDetails if edit remove it
+                        foreach (var dbDetail in dbProjectSubs)
+                        {
+                            try
+                            {
+                                if (!uProjectCodeMasterVm.ProjectSubs.Any(x => x.ProjectCodeSubId == dbDetail.ProjectCodeSubId))
+                                    await this.repositorySub.DeleteAsync(dbDetail.ProjectCodeSubId);
+                            }
+                            catch (Exception ex)
+                            {
+                                Message = ex.ToString();
+                            }
+
+                        }
+                        //Update ProjectCodeDetails
+                        foreach (var uProjectSub in uProjectCodeMasterVm.ProjectSubs)
+                        {
+                            if (uProjectSub.ProjectCodeSubId > 0)
+                            {
+                                uProjectSub.ModifyDate = uProjectCodeMaster.ModifyDate;
+                                uProjectSub.Modifyer = uProjectCodeMaster.Modifyer;
+                                await this.repositorySub.UpdateAsync(uProjectSub, uProjectSub.ProjectCodeSubId);
+                            }
+                            else
+                            {
+                                if (uProjectSub.ProjectCodeMasterId < 1 || uProjectSub.ProjectCodeMasterId == null)
+                                    uProjectSub.ProjectCodeMasterId = updateComplate.ProjectCodeMasterId;
+
+                                uProjectSub.CreateDate = uProjectCodeMaster.ModifyDate;
+                                uProjectSub.Creator = uProjectCodeMaster.Modifyer;
+
+                                await this.repositorySub.AddAsync(uProjectSub);
+                            }
+                        }
+                    }
+
+                    return new JsonResult(updateComplate, this.DefaultJsonSettings);
+                }
             }
-
-            return NotFound(new { Error = "ProjectMaster not found. " });
+            catch(Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
         }
 
         #endregion PUT

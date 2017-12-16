@@ -31,6 +31,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
 // project-dialog component*/
 export class ProjectDialogComponent
     implements OnInit, OnDestroy {
+    master: ProjectMaster;
     details: Array<ProjectSub>;
     templates: Array<ProjectSub>;
     // detail
@@ -93,6 +94,7 @@ export class ProjectDialogComponent
     // selected Project Master
     onSelectedMaster(master?: ProjectMaster): void {
         if (master) {
+            this.master = master;
             if (this.mode === 1) {
                 this.dialogRef.close(master);
             } else {
@@ -135,6 +137,9 @@ export class ProjectDialogComponent
 
     // update Click
     onSelectedClick(): void {
+        if (this.master && this.selectedDetails) {
+            this.selectedDetails.ProjectMasterString = this.master.ProjectCode;
+        }
         this.dialogRef.close(this.selectedDetails);
     }
 }

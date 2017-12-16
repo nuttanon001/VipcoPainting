@@ -6,9 +6,11 @@
     DFTMin?: number;
     DFTMax?: number;
     Creator?: string;
-    CreateDate?: number;
+    CreateDate?: Date;
     Modifyer?: string;
-    ModifyDate?: number;
+    ModifyDate?: Date;
+    CalcColorUsage?: number;
+    CalcStdUsage?: number;
     //FK
     // ColorItem
     ColorItemId?: number;

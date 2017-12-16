@@ -14,6 +14,7 @@ import {
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatStepperModule
 } from "@angular/material";
 
 import {
@@ -28,6 +29,7 @@ import {
     AccordionModule,
     AutoCompleteModule,
     RadioButtonModule,
+    CheckboxModule,
 } from "primeng/primeng";
 // chart
 import { ChartsModule } from "ng2-charts/ng2-charts";
@@ -67,6 +69,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         MatTabsModule,
         MatCardModule,
         MatProgressSpinnerModule,
+        MatStepperModule,
         // angularSplit
         AngularSplitModule,
         // ngxDataTable
@@ -83,6 +86,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         AccordionModule,
         AutoCompleteModule,
         RadioButtonModule,
+        CheckboxModule,
         // chart
         ChartsModule
     ],
@@ -100,6 +104,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         MatTabsModule,
         MatCardModule,
         MatProgressSpinnerModule,
+        MatStepperModule,
         // angularSplit
         AngularSplitModule,
         // ngxDataTable
@@ -116,6 +121,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         AccordionModule,
         AutoCompleteModule,
         RadioButtonModule,
+        CheckboxModule,
         // component
         SearchBoxComponent,
         DataTableComponent,

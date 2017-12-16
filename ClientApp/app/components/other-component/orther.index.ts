@@ -13,3 +13,9 @@ export { SurfaceCenterComponent } from "./surface/surface-center.component";
 export { SurfaceEditComponent } from "./surface/surface-edit.component";
 export { SurfaceMasterComponent } from "./surface/surface-master.component";
 export { SurfaceViewComponent } from "./surface/surface-view.component";
+// Project
+export { ProjectCenterComponent } from "./project/project-center.component";
+export { ProjectEditComponent } from "./project/project-edit.component";
+export { ProjectMasterComponent } from "./project/project-master.component";
+export { ProjectsubEditComponent } from "./project/projectsub-edit.component";
+export { ProjectViewComponent } from "./project/project-view.component";

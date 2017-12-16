@@ -143,3 +143,8 @@
 :host /deep/ .ngx-datatable.material.multi-click-selection .datatable-body-row.active:hover .datatable-row-group {
     background-color: blue !important;
 }
+
+:host /deep/ .ui-chkbox-label {
+    margin-top: auto;
+    margin-bottom: auto;
+}

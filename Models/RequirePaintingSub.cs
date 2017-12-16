@@ -15,6 +15,8 @@ namespace VipcoPainting.Models
         public double? Area { get; set; }
         public double? DFTMin { get; set; }
         public double? DFTMax { get; set; }
+        public double? CalcColorUsage { get; set; }
+        public double? CalcStdUsage { get; set; }
 
         //FK
         // ColorItem

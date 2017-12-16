@@ -40,8 +40,7 @@ export class StandradTimeDialogComponent
         this.columns = [
             { prop: "Code", name: "Code", flexGrow: 1 },
             { prop: "Description", name: "Description", flexGrow: 1 },
-            { prop: "Rate", name: "Rate", flexGrow: 1 },
-            { prop: "RateUnit", name: "Unit", flexGrow: 1 },
+            { prop: "RateWithUnit", name: "StandardTime", flexGrow: 1 },
             { prop: "PercentLoss", name: "Loss", flexGrow: 1 },
         ];
     }
