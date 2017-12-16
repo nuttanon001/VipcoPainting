@@ -1,50 +1,51 @@
 ﻿<div *ngIf="editValue; else elseBlock">
-    <mat-tab-group *ngIf="!listItem; else elseDetail">
-        <mat-tab>
-            <ng-template mat-tab-label>
-                <b>Require-Prining</b>
-            </ng-template>
-            <div class="edit-container">
-                <form [formGroup]="editValueForm">
-                    <div class="my-form">
-                        <label for="RequireNo" class="my-label">RequireNo:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Code will automatically generated."
-                                   id="RequireNo" formControlName="RequireNo" readonly>
-                            <validation-messages [control]="editValueForm.controls.RequireNo"></validation-messages>
+    <div *ngIf="!listItem; else elseDetail">
+        <mat-tab-group>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>Require-Prining</b>
+                </ng-template>
+                <div class="edit-container">
+                    <form [formGroup]="editValueForm">
+                        <div class="my-form">
+                            <label for="RequireNo" class="my-label">RequireNo:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input" placeholder="Code will automatically generated."
+                                       id="RequireNo" formControlName="RequireNo" readonly>
+                                <validation-messages [control]="editValueForm.controls.RequireNo"></validation-messages>
+                            </div>
+
+                            <label for="PaintingSchedule" class="my-label">PaintingSchedule:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input" placeholder="Insert painting-schedule here"
+                                       id="PaintingSchedule" formControlName="PaintingSchedule">
+                                <validation-messages [control]="editValueForm.controls.PaintingSchedule"></validation-messages>
+                            </div>
                         </div>
 
-                        <label for="PaintingSchedule" class="my-label">PaintingSchedule:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert painting-schedule here"
-                                   id="PaintingSchedule" formControlName="PaintingSchedule">
-                            <validation-messages [control]="editValueForm.controls.PaintingSchedule"></validation-messages>
-                        </div>
-                    </div>
+                        <div class="my-form">
+                            <label for="RequireDate" class="my-label">RequestDate:</label>
+                            <div class="col-sm-4">
+                                <p-calendar formControlName="RequireDate" [showIcon]="true"
+                                            id="RequireDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
+                                            appendTo="body"
+                                            [maxDate]="editValueForm.controls.FinishDate.value">
+                                </p-calendar>
+                                <span class="is-request-date">**</span>
+                                <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>
+                            </div>
 
-                    <div class="my-form">
-                        <label for="RequireDate" class="my-label">RequestDate:</label>
-                        <div class="col-sm-4">
-                            <p-calendar formControlName="RequireDate" [showIcon]="true"
-                                        id="RequireDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
-                                        appendTo="body"
-                                        [maxDate]="editValueForm.controls.FinishDate.value">
-                            </p-calendar>
-                            <span class="is-request-date">**</span>
-                            <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>
-                        </div>
+                            <label for="RequireString" class="my-label">RequesterBy:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input-click" placeholder="Choose employee here"
+                                       id="RequireString" formControlName="RequireString" required readonly>
+                                <validation-messages [control]="editValueForm.controls.RequireString"></validation-messages>
+                            </div>
 
-                        <label for="RequireString" class="my-label">RequesterBy:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input-click" placeholder="Choose employee here"
-                                   id="RequireString" formControlName="RequireString" required readonly>
-                            <validation-messages [control]="editValueForm.controls.RequireString"></validation-messages>
                         </div>
 
-                    </div>
-
-                    <div class="my-form">
-                        <!--<label for="FinishDate" class="my-label">FinishDate:</label>
+                        <div class="my-form">
+                            <!--<label for="FinishDate" class="my-label">FinishDate:</label>
                             <div class="col-sm-4">
                                 <p-calendar formControlName="FinishDate" [showIcon]="true"
                                             id="FinishDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
@@ -61,59 +62,62 @@
                                        id="ReceiveString" formControlName="ReceiveString" required readonly>
                                 <validation-messages [control]="editValueForm.controls.ReceiveString"></validation-messages>
                             </div>-->
-                    </div>
-
-                    <div class="my-form">
-                        <label for="ProjectCodeSubString" class="my-label">JobNumber:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input-click" placeholder="Choose job-no here"
-                                   (click)="openDialog('Project')"
-                                   id="ProjectCodeSubString" formControlName="ProjectCodeSubString" required readonly>
-                            <validation-messages [control]="editValueForm.controls.ProjectCodeSubString"></validation-messages>
                         </div>
-                    </div>
-                </form>
-            </div>
-        </mat-tab>
-        <mat-tab>
-            <ng-template mat-tab-label>
-                <b>List of Plate</b>
-            </ng-template>
-            <div class="edit-container">
-                <div style="margin-bottom:5px;">
-                    <button type="button" mat-icon-button color="accent" (click)="addListItem()"
-                            matTooltip="Add Plate Painting">
-                        <i class="fa fa-2x fa-paint-brush" aria-hidden="true"></i>
-                    </button>
+
+                        <div class="my-form">
+                            <label for="ProjectCodeSubString" class="my-label">JobNumber:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input-click" placeholder="Choose job-no here"
+                                       (click)="openDialog('Project')"
+                                       id="ProjectCodeSubString" formControlName="ProjectCodeSubString" required readonly>
+                                <validation-messages [control]="editValueForm.controls.ProjectCodeSubString"></validation-messages>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <ngx-datatable class="material"
-                               [columnMode]="'flex'"
-                               [headerHeight]="50"
-                               [footerHeight]="0"
-                               [rowHeight]="50"
-                               [scrollbarV]="true"
-                               [style.height]="'calc(100vh - 230px)'">
-                    <ngx-datatable-column name="Item" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Description" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Partno." [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Markno." [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Drawingno." [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Unit." [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Q'ty" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="FieldWeld" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Insulation" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="ITP" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Dimension" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Weight" [flexGrow]="1"></ngx-datatable-column>
-                </ngx-datatable>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>List of Plate</b>
+                </ng-template>
+                <div class="edit-container">
+                    <div style="margin-bottom:5px;">
+                        <button type="button" mat-icon-button color="accent" (click)="addListItem()"
+                                matTooltip="Add Plate Painting">
+                            <i class="fa fa-2x fa-paint-brush" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <ngx-datatable class="material"
+                                   [columnMode]="'flex'"
+                                   [headerHeight]="50"
+                                   [footerHeight]="0"
+                                   [rowHeight]="50"
+                                   [scrollbarV]="true"
+                                   [style.height]="'calc(100vh - 230px)'">
+                        <ngx-datatable-column name="Item" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Description" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Partno." [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Markno." [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Drawingno." [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Unit." [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Q'ty" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="FieldWeld" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Insulation" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="ITP" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Dimension" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column name="Weight" [flexGrow]="1"></ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
 </div>
 
 <ng-template #elseDetail>
-    <require-painting-list-edit (ComplateOrCancel)="onComplateOrCancel($event)" [listItem]="listItem">
-    </require-painting-list-edit>
+    <div [@flyInOut]="'in'">
+        <require-painting-list-edit (ComplateOrCancel)="onComplateOrCancel($event)" [listItem]="listItem">
+        </require-painting-list-edit>
+    </div>
 </ng-template>
 
 <ng-template #elseBlock>

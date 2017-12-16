@@ -22,9 +22,6 @@ namespace VipcoPainting.Models
         public string RateUnit { get; set; }
         public double? PercentLoss { get; set; }
 
-        // FK
-        // RequirePaintingSub
-        public ICollection<RequirePaintingSub> RequirePaintingSubs { get; set; }
     }
 
     public enum TypeStandardTime

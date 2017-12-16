@@ -26,10 +26,14 @@
 
   <ItemGroup>
     <None Remove="ClientApp\app\components\other-component\orther.index.ts" />
+    <None Remove="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
+    <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\other-component\orther.index.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

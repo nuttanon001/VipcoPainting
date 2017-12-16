@@ -23,7 +23,6 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
         // Repository
         private IRepositoryPainting<RequirePaintingList> repository;
-        private IRepositoryPainting<RequirePaintingSub> repositoryRequireSub;
         private IRepositoryPainting<ColorItem> repositoryColor;
         private IRepositoryPainting<StandradTime> repositoryStandrad;
         private IRepositoryPainting<SurfaceType> repositorySurface;
@@ -39,12 +38,11 @@ namespace VipcoPainting.Controllers
 
         public RequirePaintingListController(
             IRepositoryPainting<RequirePaintingList> repo, IRepositoryPainting<ColorItem> repoCol ,
-            IRepositoryPainting<StandradTime> repoStand, IRepositoryPainting<SurfaceType> repoSurf,
-            IRepositoryPainting<RequirePaintingSub> repoSub ,IMapper map)
+            IRepositoryPainting<StandradTime> repoStand, IRepositoryPainting<SurfaceType> repoSurf ,
+            IMapper map)
         {
             // Repository
             this.repository = repo;
-            this.repositoryRequireSub = repoSub;
             this.repositoryColor = repoCol;
             this.repositoryStandrad = repoStand;
             this.repositorySurface = repoSurf;
@@ -65,22 +63,22 @@ namespace VipcoPainting.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> {"RequirePaintingSubs" };
+            return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
+            //var Includes = new List<string> {"BlastWorkItem" };
 
-            return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
-                                        this.DefaultJsonSettings);
+            //return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/RequirePaintingList/5
         [HttpGet("{key}")]
         public async Task<IActionResult> Get(int key)
         {
-            // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "RequirePaintingSubs" };
+            return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            //var Includes = new List<string> { "RequirePaintingSubs" };
 
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "RequirePaintingListId", Includes),
-                                        this.DefaultJsonSettings);
+            //return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "RequirePaintingListId", Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/RequirePaintingList/GetByMaster/5
@@ -88,8 +86,7 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> GetByMaster(int MasterId)
         {
             var QueryData = this.repository.GetAllAsQueryable()
-                                .Where(x => x.RequirePaintingMasterId == MasterId)
-                                .Include(x => x.RequirePaintingSubs);
+                                .Where(x => x.RequirePaintingMasterId == MasterId);
 
             return new JsonResult(await QueryData.AsNoTracking().ToListAsync(),this.DefaultJsonSettings);
         }
@@ -111,41 +108,41 @@ namespace VipcoPainting.Controllers
                 if (nRequirePaintingList.RequirePaintingMaster != null)
                     nRequirePaintingList.RequirePaintingMaster = null;
 
-                if (nRequirePaintingList.RequirePaintingSubs != null)
-                {
-                    foreach (var nRequireSub in nRequirePaintingList.RequirePaintingSubs)
-                    {
-                        nRequireSub.CreateDate = nRequirePaintingList.CreateDate;
-                        nRequireSub.Creator = nRequirePaintingList.Creator;
+                //if (nRequirePaintingList.RequirePaintingSubs != null)
+                //{
+                //    foreach (var nRequireSub in nRequirePaintingList.RequirePaintingSubs)
+                //    {
+                //        nRequireSub.CreateDate = nRequirePaintingList.CreateDate;
+                //        nRequireSub.Creator = nRequirePaintingList.Creator;
 
-                        // Insert ColorItem
-                        if (nRequireSub.ColorItemId < 1 && nRequireSub.ColorItem != null)
-                        {
-                            nRequireSub.ColorItem.CreateDate = nRequireSub.CreateDate;
-                            nRequireSub.ColorItem.Creator = nRequireSub.Creator;
-                        }
-                        else
-                            nRequireSub.ColorItem = null;
+                //        // Insert ColorItem
+                //        if (nRequireSub.ColorItemId < 1 && nRequireSub.ColorItem != null)
+                //        {
+                //            nRequireSub.ColorItem.CreateDate = nRequireSub.CreateDate;
+                //            nRequireSub.ColorItem.Creator = nRequireSub.Creator;
+                //        }
+                //        else
+                //            nRequireSub.ColorItem = null;
 
-                        // Insert StandradTime
-                        if (nRequireSub.StandradTimeId < 1 && nRequireSub.StandradTime != null)
-                        {
-                            nRequireSub.StandradTime.CreateDate = nRequireSub.CreateDate;
-                            nRequireSub.StandradTime.Creator = nRequireSub.Creator;
-                        }
-                        else
-                            nRequireSub.StandradTime = null;
+                //        // Insert StandradTime
+                //        if (nRequireSub.StandradTimeId < 1 && nRequireSub.StandradTime != null)
+                //        {
+                //            nRequireSub.StandradTime.CreateDate = nRequireSub.CreateDate;
+                //            nRequireSub.StandradTime.Creator = nRequireSub.Creator;
+                //        }
+                //        else
+                //            nRequireSub.StandradTime = null;
 
-                        // Insert SurfaceType
-                        if (nRequireSub.SurfaceTypeId < 1 && nRequireSub.SurfaceType != null)
-                        {
-                            nRequireSub.SurfaceType.CreateDate = nRequireSub.CreateDate;
-                            nRequireSub.SurfaceType.Creator = nRequireSub.Creator;
-                        }
-                        else
-                            nRequireSub.SurfaceType = null;
-                    }
-                }
+                //        // Insert SurfaceType
+                //        if (nRequireSub.SurfaceTypeId < 1 && nRequireSub.SurfaceType != null)
+                //        {
+                //            nRequireSub.SurfaceType.CreateDate = nRequireSub.CreateDate;
+                //            nRequireSub.SurfaceType.Creator = nRequireSub.Creator;
+                //        }
+                //        else
+                //            nRequireSub.SurfaceType = null;
+                //    }
+                //}
 
                 return new JsonResult(await this.repository.AddAsync(nRequirePaintingList), this.DefaultJsonSettings);
             }
@@ -173,98 +170,98 @@ namespace VipcoPainting.Controllers
                 if (uRequirePaintingList.RequirePaintingMaster != null)
                     uRequirePaintingList.RequirePaintingMaster = null;
 
-                if (uRequirePaintingList.RequirePaintingSubs != null)
-                {
-                    foreach (var uRequireSub in uRequirePaintingList.RequirePaintingSubs)
-                    {
-                        if (uRequireSub.RequirePaintingSubId > 0)
-                        {
-                            uRequireSub.ModifyDate = uRequirePaintingList.ModifyDate;
-                            uRequireSub.Modifyer = uRequirePaintingList.Modifyer;
-                        }
-                        else
-                        {
-                            uRequireSub.CreateDate = uRequirePaintingList.ModifyDate;
-                            uRequireSub.Creator = uRequirePaintingList.Modifyer;
-                        }
+                //if (uRequirePaintingList.RequirePaintingSubs != null)
+                //{
+                //    foreach (var uRequireSub in uRequirePaintingList.RequirePaintingSubs)
+                //    {
+                //        if (uRequireSub.RequirePaintingSubId > 0)
+                //        {
+                //            uRequireSub.ModifyDate = uRequirePaintingList.ModifyDate;
+                //            uRequireSub.Modifyer = uRequirePaintingList.Modifyer;
+                //        }
+                //        else
+                //        {
+                //            uRequireSub.CreateDate = uRequirePaintingList.ModifyDate;
+                //            uRequireSub.Creator = uRequirePaintingList.Modifyer;
+                //        }
 
-                        // Insert ColorItem
-                        if (uRequireSub.ColorItemId < 1 && uRequireSub.ColorItem != null)
-                        {
-                            var nColorItem = VipcoPainting.Helpers.CloneObject.Clone<ColorItem>(uRequireSub.ColorItem);
-                            if (nColorItem != null)
-                            {
-                                nColorItem.CreateDate = uRequireSub.ModifyDate;
-                                nColorItem.Creator = uRequireSub.Modifyer;
+                //        // Insert ColorItem
+                //        if (uRequireSub.ColorItemId < 1 && uRequireSub.ColorItem != null)
+                //        {
+                //            var nColorItem = VipcoPainting.Helpers.CloneObject.Clone<ColorItem>(uRequireSub.ColorItem);
+                //            if (nColorItem != null)
+                //            {
+                //                nColorItem.CreateDate = uRequireSub.ModifyDate;
+                //                nColorItem.Creator = uRequireSub.Modifyer;
 
-                                nColorItem = await this.repositoryColor.AddAsync(nColorItem);
-                                uRequireSub.ColorItemId = nColorItem.ColorItemId;
-                            }
-                        }
+                //                nColorItem = await this.repositoryColor.AddAsync(nColorItem);
+                //                uRequireSub.ColorItemId = nColorItem.ColorItemId;
+                //            }
+                //        }
 
-                        // Insert StandradTime
-                        if (uRequireSub.StandradTimeId < 1 && uRequireSub.StandradTime != null)
-                        {
-                            var nStandradTime = VipcoPainting.Helpers.CloneObject.Clone<StandradTime>(uRequireSub.StandradTime);
-                            if (nStandradTime != null)
-                            {
-                                nStandradTime.CreateDate = uRequireSub.ModifyDate;
-                                nStandradTime.Creator = uRequireSub.Modifyer;
+                //        // Insert StandradTime
+                //        if (uRequireSub.StandradTimeId < 1 && uRequireSub.StandradTime != null)
+                //        {
+                //            var nStandradTime = VipcoPainting.Helpers.CloneObject.Clone<StandradTime>(uRequireSub.StandradTime);
+                //            if (nStandradTime != null)
+                //            {
+                //                nStandradTime.CreateDate = uRequireSub.ModifyDate;
+                //                nStandradTime.Creator = uRequireSub.Modifyer;
 
-                                nStandradTime = await this.repositoryStandrad.AddAsync(nStandradTime);
-                                uRequireSub.StandradTimeId = nStandradTime.StandradTimeId;
-                            }
-                        }
+                //                nStandradTime = await this.repositoryStandrad.AddAsync(nStandradTime);
+                //                uRequireSub.StandradTimeId = nStandradTime.StandradTimeId;
+                //            }
+                //        }
 
-                        // Insert SurfaceType 
-                        if (uRequireSub.SurfaceTypeId < 1 && uRequireSub.SurfaceType != null)
-                        {
-                            var nSurfaceType = VipcoPainting.Helpers.CloneObject.Clone<SurfaceType>(uRequireSub.SurfaceType);
-                            if (nSurfaceType != null)
-                            {
-                                nSurfaceType.CreateDate = uRequireSub.ModifyDate;
-                                nSurfaceType.Creator = uRequireSub.Modifyer;
+                //        // Insert SurfaceType 
+                //        if (uRequireSub.SurfaceTypeId < 1 && uRequireSub.SurfaceType != null)
+                //        {
+                //            var nSurfaceType = VipcoPainting.Helpers.CloneObject.Clone<SurfaceType>(uRequireSub.SurfaceType);
+                //            if (nSurfaceType != null)
+                //            {
+                //                nSurfaceType.CreateDate = uRequireSub.ModifyDate;
+                //                nSurfaceType.Creator = uRequireSub.Modifyer;
 
-                                nSurfaceType = await this.repositorySurface.AddAsync(nSurfaceType);
-                                uRequireSub.SurfaceTypeId = nSurfaceType.SurfaceTypeId;
-                            }
-                        }
+                //                nSurfaceType = await this.repositorySurface.AddAsync(nSurfaceType);
+                //                uRequireSub.SurfaceTypeId = nSurfaceType.SurfaceTypeId;
+                //            }
+                //        }
 
-                        uRequireSub.ColorItem = null;
-                        uRequireSub.StandradTime = null;
-                        uRequireSub.SurfaceType = null;
-                    }
-                }
+                //        uRequireSub.ColorItem = null;
+                //        uRequireSub.StandradTime = null;
+                //        uRequireSub.SurfaceType = null;
+                //    }
+                //}
 
                 // update Master not update Detail it need to update Detail directly
-                var updateComplate = await this.repository.UpdateAsync(uRequirePaintingList, key);
-                if (updateComplate != null)
-                {
-                    // filter
-                    Expression<Func<RequirePaintingSub, bool>> condition = m => m.RequirePaintingSubId == key;
-                    var dbRequireSubs = this.repositoryRequireSub.FindAll(condition);
+                //var updateComplate = await this.repository.UpdateAsync(uRequirePaintingList, key);
+                //if (updateComplate != null)
+                //{
+                //    // filter
+                //    Expression<Func<RequirePaintingSub, bool>> condition = m => m.RequirePaintingSubId == key;
+                //    var dbRequireSubs = this.repositoryRequireSub.FindAll(condition);
 
-                    //Remove Require if edit remove it
-                    foreach (var dbRequire in dbRequireSubs)
-                    {
-                        if (!uRequirePaintingList.RequirePaintingSubs.Any(x => x.RequirePaintingSubId == dbRequire.RequirePaintingSubId))
-                            await this.repositoryRequireSub.DeleteAsync(dbRequire.RequirePaintingSubId);
-                    }
+                //    //Remove Require if edit remove it
+                //    foreach (var dbRequire in dbRequireSubs)
+                //    {
+                //        if (!uRequirePaintingList.RequirePaintingSubs.Any(x => x.RequirePaintingSubId == dbRequire.RequirePaintingSubId))
+                //            await this.repositoryRequireSub.DeleteAsync(dbRequire.RequirePaintingSubId);
+                //    }
 
-                    //Update RequireSub or New RequireSub
-                    foreach (var uRequireSub in uRequirePaintingList.RequirePaintingSubs)
-                    {
-                        if (uRequireSub.RequirePaintingSubId > 0)
-                            await this.repositoryRequireSub.UpdateAsync(uRequireSub, uRequireSub.RequirePaintingSubId);
-                        else
-                        {
-                            if (uRequireSub.RequirePaintingSubId < 1)
-                                uRequireSub.RequirePaintingListId = uRequirePaintingList.RequirePaintingListId;
+                //    //Update RequireSub or New RequireSub
+                //    foreach (var uRequireSub in uRequirePaintingList.RequirePaintingSubs)
+                //    {
+                //        if (uRequireSub.RequirePaintingSubId > 0)
+                //            await this.repositoryRequireSub.UpdateAsync(uRequireSub, uRequireSub.RequirePaintingSubId);
+                //        else
+                //        {
+                //            if (uRequireSub.RequirePaintingSubId < 1)
+                //                uRequireSub.RequirePaintingListId = uRequirePaintingList.RequirePaintingListId;
 
-                            await this.repositoryRequireSub.AddAsync(uRequireSub);
-                        }
-                    }
-                }
+                //            await this.repositoryRequireSub.AddAsync(uRequireSub);
+                //        }
+                //    }
+                //}
 
                 return new JsonResult(await this.repository.UpdateAsync(uRequirePaintingList, key), this.DefaultJsonSettings);
             }

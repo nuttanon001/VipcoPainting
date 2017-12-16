@@ -76,6 +76,12 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> GetScroll([FromBody] ScrollViewModel Scroll)
         {
             var QueryData = this.repository.GetAllAsQueryable().AsQueryable();
+            // Where
+            if (!string.IsNullOrEmpty(Scroll.Where))
+            {
+                QueryData = QueryData.Where(x => x.TypeStandardTime == (Scroll.Where == "1" ? TypeStandardTime.Paint : TypeStandardTime.Blast));
+            }
+
             // Filter
             var filters = string.IsNullOrEmpty(Scroll.Filter) ? new string[] { "" }
                                 : Scroll.Filter.ToLower().Split(null);

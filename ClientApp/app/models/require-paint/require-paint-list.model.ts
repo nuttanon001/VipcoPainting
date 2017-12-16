@@ -1,6 +1,4 @@
-﻿import { RequirePaintSub } from "./require-paint-sub.model";
-
-export interface RequirePaintList {
+﻿export interface RequirePaintList {
     RequirePaintingListId: number;
     Description?: string;
     PartNo?: string;
@@ -15,11 +13,12 @@ export interface RequirePaintList {
     SizeW?: number;
     SizeH?: number;
     Weight?: number;
+    PlanStart?: Date;
+    PlanEnd?: Date;
     Creator?: string;
     CreateDate?: Date;
     Modifyer?: string;
     ModifyDate?: Date;
     // FK
     RequirePaintingMasterId?: number;
-    RequirePaintingSubs?: Array<RequirePaintSub>;
 }

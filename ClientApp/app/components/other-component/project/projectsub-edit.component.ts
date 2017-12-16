@@ -27,10 +27,6 @@ export class ProjectsubEditComponent implements OnInit  {
     AutoComplates: Array<string>;
     // on Init
     ngOnInit(): void {
-        console.log("Test");
-        if (!this.complateValue) {
-            this.complateValue = new EventEmitter<ProjectSub|undefined>();
-        }
         // Get AutoComplate
         if (!this.tempAutoComplates) {
             this.tempAutoComplates = new Array;

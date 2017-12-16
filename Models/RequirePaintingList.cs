@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
-    public class RequirePaintingList:BaseModel
+    public class RequirePaintingList : BaseModel
     {
         [Key]
         public int RequirePaintingListId { get; set; }
@@ -37,7 +37,10 @@ namespace VipcoPainting.Models
         // RequirePaintingMaster
         public int? RequirePaintingMasterId { get; set; }
         public RequirePaintingMaster RequirePaintingMaster { get; set; }
-        // RequirePaintingSub
-        public ICollection<RequirePaintingSub> RequirePaintingSubs { get; set; }
+
+        // BlastWorkItem
+        public ICollection<BlastWorkItem> BlastWorkItems { get; set; }
+        // PaintWorkItem
+        public ICollection<PaintWorkItem> PaintWorkItems { get; set; }
     }
 }

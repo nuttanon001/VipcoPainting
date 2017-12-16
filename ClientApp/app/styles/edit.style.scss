@@ -97,6 +97,12 @@ label {
     box-shadow: none; /* You may want to include this as bootstrap applies these styles too */
 }
 
+.my-label-col-1 {
+    @extend .col-form-label;
+    @extend .col-form-label-sm;
+    @extend .col-sm-1;
+}
+
 .my-label {
     @extend .col-form-label;
     @extend .col-form-label-sm;
@@ -116,8 +122,8 @@ label {
 
 .my-input-click {
     @extend .my-input;
-
-    cursor:pointer;
+    background-color: lightgoldenrodyellow !important;
+    cursor: pointer;
 }
 
 .my-input-combobox {

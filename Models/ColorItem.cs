@@ -19,7 +19,5 @@ namespace VipcoPainting.Models
         public double? VolumeSolids { get; set; }
 
         //FK
-        //RequirePaintingSub
-        public ICollection<RequirePaintingSub> RequirePaintingSubs { get; set; }
     }
 }

@@ -80,9 +80,11 @@
                     </ngx-datatable-column>
                 </ngx-datatable>
             </div>
-            <ng-template #projectSubBlock>
-                <projectsub-edit [editValue]="projectSub" (complateValue)="onProjectSubComplate($event)">
-                </projectsub-edit>
+            <ng-template #projectSubBlock >
+                <div [@flyInOut]="'in'">
+                    <projectsub-edit [editValue]="projectSub" (complateValue)="onProjectSubComplate($event)">
+                    </projectsub-edit>
+                </div>
             </ng-template>
         </mat-tab>
     </mat-tab-group>

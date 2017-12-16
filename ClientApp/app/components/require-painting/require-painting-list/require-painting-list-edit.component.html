@@ -1,8 +1,8 @@
 ﻿<div *ngIf="listItem; else elseBlock">
-    <div class="mt-1">
+    <div>
         <button type="button" mat-icon-button color="primary" (click)="onNewOrUpdateClick()"
                 [disabled]="!listItemForm.valid" matTooltip="New/Update">
-            <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
+            <i class="fa fa-2x fa-plus-square-o" aria-hidden="true"></i>
         </button>
         <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
                 matTooltip="Cancel">
@@ -25,65 +25,63 @@
                             <validation-messages [control]="listItemForm.controls.Description"></validation-messages>
                         </div>
 
-                        <label for="PartNo" class="my-label">PartNo:</label>
+                        <label for="MarkNo" class="my-label">MarkNo:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert part-no of plate here."
-                                   id="PartNo" formControlName="PartNo">
-                            <validation-messages [control]="listItemForm.controls.PartNo"></validation-messages>
+                            <input type="text" class="my-input" placeholder="Insert mark-no of plate here."
+                                   required
+                                   id="MarkNo" formControlName="MarkNo">
+                            <validation-messages [control]="listItemForm.controls.MarkNo"></validation-messages>
                         </div>
                     </div>
 
                     <div class="my-form">
-                        <label for="MarkNo" class="my-label">MarkNo:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert mark-no of plate here."
-                                   id="MarkNo" formControlName="MarkNo">
-                            <validation-messages [control]="listItemForm.controls.MarkNo"></validation-messages>
-                        </div>
-
                         <label for="DrawingNo" class="my-label">DrawingNo:</label>
                         <div class="col-sm-4">
                             <input type="text" class="my-input" placeholder="Insert drawing-no of plate here."
                                    id="DrawingNo" formControlName="DrawingNo">
                             <validation-messages [control]="listItemForm.controls.DrawingNo"></validation-messages>
                         </div>
-                    </div>
 
-                    <div class="my-form">
                         <label for="UnitNo" class="my-label">UnitNo:</label>
                         <div class="col-sm-4">
                             <input type="number" min="1" class="my-input" placeholder="Insert unit-no of plate here."
+                                   required
                                    id="UnitNo" formControlName="UnitNo">
                             <validation-messages [control]="listItemForm.controls.UnitNo"></validation-messages>
-                        </div>
-
-                        <label for="Quantity" class="my-label">Quantity:</label>
-                        <div class="col-sm-4">
-                            <input type="number" min="1" class="my-input" placeholder="Insert quantity of plate here."
-                                   id="Quantity" formControlName="Quantity">
-                            <validation-messages [control]="listItemForm.controls.Quantity"></validation-messages>
                         </div>
                     </div>
 
                     <div class="my-form">
-                        <label for="Weight" class="my-label">Weight:</label>
+                        <label for="Quantity" class="my-label">Quantity:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert quantity of plate here."
+                                   required
+                                   id="Quantity" formControlName="Quantity">
+                            <validation-messages [control]="listItemForm.controls.Quantity"></validation-messages>
+                        </div>
+
+                        <label for="Weight" class="my-label">Weight (kg):</label>
                         <div class="col-sm-4">
                             <input type="number" min="1" class="my-input" placeholder="Insert weight of plate here."
+                                   required
                                    id="Weight" formControlName="Weight">
                             <validation-messages [control]="listItemForm.controls.Weight"></validation-messages>
                         </div>
                     </div>
 
                     <div class="my-form">
-                        <label class="my-label">Dimension L x W x H:</label>
+                        <label class="my-label">Dimension L x W x H (mm):</label>
                         <div class="edit-form-content col-sm-10">
                             <input type="number" min="1" class="my-input" placeholder="Insert length of plate."
+                                   required
                                    id="SizeL" formControlName="SizeL">
                             <span class="mx-1">X</span>
                             <input type="number" min="1" class="my-input" placeholder="Insert width of plate."
+                                   required
                                    id="SizeW" formControlName="SizeW">
                             <span class="mx-1">X</span>
                             <input type="number" min="1" class="my-input" placeholder="Insert height of plate."
+                                   required
                                    id="SizeH" formControlName="SizeH">
                         </div>
                     </div>
@@ -111,7 +109,7 @@
                     </div>-->
 
                     <div class="my-form">
-                        <label class="my-label">Option-2:</label>
+                        <label class="my-label">Option-1:</label>
                         <div class="col-sm-2">
                             <p-checkbox name="group2" formControlName="FieldWeld" binary="true" label="FieldWeld" inputId="fieldWeld"></p-checkbox>
                         </div>
@@ -127,10 +125,53 @@
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
-                <b>WorkItem Paint&Blast</b>
+                <b>WorkItem Blast</b>
             </ng-template>
             <div class="edit-container">
-                <require-painting-sub-edit></require-painting-sub-edit>
+                <!--<require-painting-sub-edit></require-painting-sub-edit>-->
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>WorkItem Paint</b>
+            </ng-template>
+            <div class="edit-container">
+                <div class="my-form">
+                    <div class="col-sm-2">
+                        <p-checkbox name="level1" value="PrimerCoat" label="PrimerCoat"
+                                    [(ngModel)]="levelPaints" inputId="pc" (onChange)="checkBoxChage($event,'PrimerCoat')">
+                        </p-checkbox>
+                    </div>
+                    <div class="col-sm-2">
+                        <p-checkbox name="level1" value="MidCoat" label="MidCoat"
+                                    [(ngModel)]="levelPaints" inputId="mc" (onChange)="checkBoxChage($event,'MidCoat')">
+                        </p-checkbox>
+                    </div>
+                    <div class="col-sm-3">
+                        <p-checkbox name="level1" value="IntermediateCoat" label="IntermediateCoat"
+                                    [(ngModel)]="levelPaints" inputId="ic" (onChange)="checkBoxChage($event,'IntermediateCoat')">
+                        </p-checkbox>
+                    </div>
+                    <div class="col-sm-2">
+                        <p-checkbox name="level1" value="TopCoat" label="TopCoat"
+                                    [(ngModel)]="levelPaints" inputId="tc" (onChange)="checkBoxChage($event,'TopCoat')">
+                        </p-checkbox>
+                    </div>
+                </div>
+                <!--(intAreaChange)="onIntAreaChange($event)"-->
+                <div *ngIf="primerCoat">
+                    <paint-workitem-edit #pc1 [(paintWorkItem)]="paintPrimerCoat"></paint-workitem-edit>
+                </div>
+                <div *ngIf="midCoat">
+                    <paint-workitem-edit #mc1 [(paintWorkItem)]="paintMidCoat"></paint-workitem-edit>
+                </div>
+                <div *ngIf="intermediateCoat">
+                    <paint-workitem-edit #ic1 [(paintWorkItem)]="paintIntermediateCoat"></paint-workitem-edit>
+                </div>
+                <div *ngIf="topCoat">
+                    <paint-workitem-edit #tc1 [(paintWorkItem)]="paintTopCoat"></paint-workitem-edit>
+                </div>
+                <!--<require-painting-sub-edit></require-painting-sub-edit>-->
             </div>
         </mat-tab>
     </mat-tab-group>

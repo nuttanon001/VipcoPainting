@@ -1,12 +1,11 @@
 ﻿// angular
 import { Component, Output, EventEmitter, Input } from "@angular/core";
 // models
-import { RequirePaintMaster, RequirePaintList,RequirePaintSub } from "../../../models/model.index";
+import { RequirePaintMaster, RequirePaintList } from "../../../models/model.index";
 // components
 import { BaseViewComponent } from "../../base-component/base-view.component";
 // services
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
-import { RequirePaintSubService } from "../../../services/require-paint/require-paint-sub.service";
 
 @Component({
     selector: "require-painting-view",
@@ -20,7 +19,6 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
     /** require-painting-view ctor */
     constructor(
         private service: RequirePaintListService,
-        private serviceSub: RequirePaintSubService,
     ) {
         super();
     }

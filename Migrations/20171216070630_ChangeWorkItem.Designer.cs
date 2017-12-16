@@ -11,9 +11,10 @@ using VipcoPainting.Models;
 namespace VipcoPainting.Migrations
 {
     [DbContext(typeof(PaintingContext))]
-    partial class PaintingContextModelSnapshot : ModelSnapshot
+    [Migration("20171216070630_ChangeWorkItem")]
+    partial class ChangeWorkItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

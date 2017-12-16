@@ -16,9 +16,5 @@ namespace VipcoPainting.Models
         public string SurfaceCode { get; set; }
         [StringLength(200)]
         public string SurfaceName { get; set; }
-
-        // FK
-        // RequirePaintingSub
-        public ICollection<RequirePaintingSub> RequirePaintingSubs { get; set; }
     }
 }

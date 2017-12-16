@@ -1,8 +1,12 @@
 ﻿// angular
 import { Component, ViewContainerRef } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import {
+    trigger, state, style,
+    animate, transition
+} from "@angular/animations";
 // models
-import { RequirePaintMaster, RequirePaintList,RequirePaintSub } from "../../../models/model.index";
+import { RequirePaintMaster, RequirePaintList } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // services
@@ -10,12 +14,23 @@ import { AuthService } from "../../../services/auth/auth.service";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
-import { RequirePaintSubService } from "../../../services/require-paint/require-paint-sub.service";
 
 @Component({
     selector: "require-painting-edit",
     templateUrl: "./require-painting-edit.component.html",
     styleUrls: ["../../../styles/edit.style.scss"],
+    animations: [
+        trigger("flyInOut", [
+            state("in", style({ transform: "translateX(0)" })),
+            transition("void => *", [
+                style({ transform: "translateX(100%)" }),
+                animate(250)
+            ]),
+            transition("* => void", [
+                animate("0.2s 0.1s ease-out", style({ opacity: 0, transform: "translateX(100%)" }))
+            ])
+        ])
+    ]
 })
 // require-painting-edit component*/
 export class RequirePaintingEditComponent 
@@ -27,7 +42,6 @@ export class RequirePaintingEditComponent
         private serviceAuth: AuthService,
         private viewContainerRef: ViewContainerRef,
         private serviceList: RequirePaintListService,
-        private serviceSub: RequirePaintSubService,
         private serviceDialogs: DialogsService,
         private fb: FormBuilder
     ) {
@@ -37,6 +51,7 @@ export class RequirePaintingEditComponent
         );
     }
     // Parameter
+    levelPaints: Array<string>;
     requireLists: Array<RequirePaintList>;
     listItem: RequirePaintList | undefined;
     indexListItem: number;
@@ -89,6 +104,10 @@ export class RequirePaintingEditComponent
 
     // define data for edit form
     defineData(): void {
+        if (!this.levelPaints) {
+            this.levelPaints = new Array;
+        }
+
         this.buildForm();
     }
 

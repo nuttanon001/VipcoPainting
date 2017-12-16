@@ -11,7 +11,7 @@ import { RequirePaintingMasterComponent } from "../../components/require-paintin
 import { RequirePaintingViewComponent } from "../../components/require-painting/require-painting-master/require-painting-view.component";
 import { RequirePaintingListEditComponent } from "../../components/require-painting/require-painting-list/require-painting-list-edit.component";
 import { RequirePaintingListViewComponent } from "../../components/require-painting/require-painting-list/require-painting-list-view.component";
-import { RequirePaintingSubEditComponent } from "../../components/require-painting/require-painting-sub/require-painting-sub-edit.component";
+import { PaintWorkItemEditComponent } from "../../components/require-painting/workitem/paint-workitem-edit.component";
 // modules
 import { RequirePaintingRoutingModule } from "./require-painting-routing.module";
 import {
@@ -20,7 +20,6 @@ import {
 // services
 import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
 import { RequirePaintMasterService,RequirePaintMasterServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
-import { RequirePaintSubService } from "../../services/require-paint/require-paint-sub.service";
 
 
 @NgModule({
@@ -31,7 +30,7 @@ import { RequirePaintSubService } from "../../services/require-paint/require-pai
         RequirePaintingViewComponent,
         RequirePaintingListEditComponent,
         RequirePaintingListViewComponent,
-        RequirePaintingSubEditComponent,
+        PaintWorkItemEditComponent,
     ],
     imports: [
         // angular
@@ -47,7 +46,6 @@ import { RequirePaintSubService } from "../../services/require-paint/require-pai
         RequirePaintListService,
         RequirePaintMasterService,
         RequirePaintMasterServiceCommunicate,
-        RequirePaintSubService
         // dataTableServiceCommunicate
     ]
 })
