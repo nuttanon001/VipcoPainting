@@ -2,7 +2,7 @@
 import { Component, ViewContainerRef,OnInit,Input,Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormControl, Validators, FormGroup } from "@angular/forms";
 // models
-import { RequirePaintMaster, RequirePaintList, PaintWorkItem } from "../../../models/model.index";
+import { RequirePaintMaster, RequirePaintList, PaintWorkItem, BlastWorkItem } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // services
@@ -15,7 +15,7 @@ import { RequirePaintListService } from "../../../services/require-paint/require
     templateUrl: "./require-painting-list-edit.component.html",
     styleUrls: ["../../../styles/edit.style.scss"],
 })
-/** require-painting-list-edit component*/
+// require-painting-list-edit component*/
 export class RequirePaintingListEditComponent implements OnInit {
 
     /** require-painting-list-edit ctor */
@@ -25,6 +25,9 @@ export class RequirePaintingListEditComponent implements OnInit {
     ) { }
 
     // Parameter
+    // Blast
+    blastWork: boolean;
+    blastWorkItem: BlastWorkItem;
     // PrimerCoat
     primerCoat: boolean;
     paintPrimerCoat: PaintWorkItem;
@@ -41,6 +44,8 @@ export class RequirePaintingListEditComponent implements OnInit {
     LinkArea: boolean;
     listItemForm: FormGroup;
     _listItem: RequirePaintList;
+    // levelPaints
+    levelPaints: Array<string>;
 
     @Output("ComplateOrCancel") ComplateOrCancel = new EventEmitter<RequirePaintList>();
     @Input("listItem")
@@ -58,11 +63,14 @@ export class RequirePaintingListEditComponent implements OnInit {
     ngOnInit(): void {
         this.LinkArea = true;
         // Auto Complate
+        if (!this.levelPaints) {
+            this.levelPaints = new Array;
+        }
     }
 
     // build form
     buildForm(): void {
-        console.log("buildForm");
+        // console.log("buildForm");
         this.listItemForm = this.fb.group({
             RequirePaintingListId: [this.listItem.RequirePaintingListId],
             Description: [this.listItem.Description,
@@ -145,8 +153,8 @@ export class RequirePaintingListEditComponent implements OnInit {
     }
 
     // on Change
-    checkBoxChage(isChang?: any, levelPaint?: string): void {
-        if (isChang !== undefined && levelPaint) {
+    checkBoxChage(isChange?: any, levelPaint?: string): void {
+        if (isChange !== undefined && levelPaint) {
             if (levelPaint.indexOf("PrimerCoat") !== -1) {
                 if (!this.paintPrimerCoat) {
                     this.paintPrimerCoat = {
@@ -155,7 +163,7 @@ export class RequirePaintingListEditComponent implements OnInit {
                         PaintLevelString: "PrimerCoat"
                     };
                 }
-                this.primerCoat = isChang;
+                this.primerCoat = isChange;
 
             } else if (levelPaint.indexOf("MidCoat") !== -1) {
                 if (!this.paintMidCoat) {
@@ -165,7 +173,7 @@ export class RequirePaintingListEditComponent implements OnInit {
                         PaintLevelString: "MidCoat"
                     };
                 }
-                this.midCoat = isChang;
+                this.midCoat = isChange;
 
             } else if (levelPaint.indexOf("IntermediateCoat") !== -1) {
                 if (!this.paintIntermediateCoat) {
@@ -175,7 +183,7 @@ export class RequirePaintingListEditComponent implements OnInit {
                         PaintLevelString: "IntermediateCoat"
                     };
                 }
-                this.intermediateCoat = isChang;
+                this.intermediateCoat = isChange;
 
             } else if (levelPaint.indexOf("TopCoat") !== -1) {
                 if (!this.paintTopCoat) {
@@ -185,21 +193,28 @@ export class RequirePaintingListEditComponent implements OnInit {
                         PaintLevelString: "TopCoat"
                     };
                 }
-                this.topCoat = isChang;
+                this.topCoat = isChange;
+            } else if (levelPaint.indexOf("BlastWork") !== -1) {
+                if (!this.blastWorkItem) {
+                    this.blastWorkItem = {
+                        BlastWorkItemId: 0,
+                    };
+                }
+                this.blastWork = isChange;
             }
         }
     }
 
+    // on IntArea
     onIntAreaChange(areaChange?: number): void {
-
         if (areaChange && this.LinkArea) {
             if (this.paintPrimerCoat) {
                 this.paintPrimerCoat.IntArea = areaChange;
-                console.log("paintPrimerCoat", this.paintPrimerCoat.IntArea);
+                // console.log("paintPrimerCoat", this.paintPrimerCoat.IntArea);
             }
             if (this.paintMidCoat) {
                 this.paintMidCoat.IntArea = areaChange;
-                console.log("paintMidCoat", this.paintMidCoat.IntArea);
+                // console.log("paintMidCoat", this.paintMidCoat.IntArea);
             }
             if (this.paintIntermediateCoat) {
                 this.paintIntermediateCoat.IntArea = areaChange;

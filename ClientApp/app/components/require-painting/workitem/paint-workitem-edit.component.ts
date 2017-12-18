@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, Validators, FormGroup, AbstractControl } from
 import { PaintWorkItem } from "../../../models/model.index";
 // services
 import { DialogsService } from "../../../services/dialog/dialogs.service";
+
 @Component({
     selector: "paint-workitem-edit",
     templateUrl: "./paint-workitem-edit.component.html",
@@ -31,6 +32,7 @@ export class PaintWorkItemEditComponent implements OnInit {
         this._paintWorkItem = data;
         this.paintWorkItemChange.emit(this._paintWorkItem);
     }
+    @Output() valueComplate = new EventEmitter<boolean>();
     // Output
     //@Output() intAreaChange = new EventEmitter<number | undefined>();
     //@Output() ExtAreaChange = new EventEmitter<number | undefined>();
@@ -41,6 +43,7 @@ export class PaintWorkItemEditComponent implements OnInit {
     ngOnInit(): void {
         this.buildForm();
     }
+
     // build Form
     buildForm(): void {
         this.paintWorkForm = this.fb.group({
@@ -163,6 +166,7 @@ export class PaintWorkItemEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.paintWorkForm) { return; }
         const form = this.paintWorkForm;
+        this.valueComplate.emit(form.valid);
         if (form.valid) {
             this.paintWorkItem = form.value;
         }
@@ -178,12 +182,12 @@ export class PaintWorkItemEditComponent implements OnInit {
                             if (mode.indexOf("Int") !== -1) {
                                 this.paintWorkForm.patchValue({
                                     StandradTimeIntId: standardTime.StandradTimeId,
-                                    IntStandradTimeString: "Code " + standardTime.Code
+                                    IntStandradTimeString: standardTime.Description
                                 });
                             } else {
                                 this.paintWorkForm.patchValue({
                                     StandradTimeExtId: standardTime.StandradTimeId,
-                                    ExtStandradTimeString: "Code " + standardTime.Code
+                                    ExtStandradTimeString: standardTime.Description
                                 });
                             }
                         }

@@ -24,10 +24,10 @@ import { RequirePaintListService } from "../../../services/require-paint/require
             state("in", style({ transform: "translateX(0)" })),
             transition("void => *", [
                 style({ transform: "translateX(100%)" }),
-                animate(250)
+                animate(400)
             ]),
             transition("* => void", [
-                animate("0.2s 0.1s ease-out", style({ opacity: 0, transform: "translateX(100%)" }))
+                animate("0.5s 0.4s ease-out", style({ opacity: 0, transform: "translateX(100%)" }))
             ])
         ])
     ]
@@ -55,7 +55,9 @@ export class RequirePaintingEditComponent
     requireLists: Array<RequirePaintList>;
     listItem: RequirePaintList | undefined;
     indexListItem: number;
-
+    selectedIndex: number;
+    maxDate:Date = new Date;
+    
     // on get data by key
     onGetDataByKey(value?: RequirePaintMaster): void {
         if (value) {
@@ -89,8 +91,6 @@ export class RequirePaintingEditComponent
         } else {
             this.editValue = {
                 RequirePaintingMasterId: 0,
-                FinishDate: new Date,
-                ReceiveDate: new Date,
                 RequireDate: new Date
             };
 
@@ -155,7 +155,7 @@ export class RequirePaintingEditComponent
                         if (emp) {
                             this.editValueForm.patchValue({
                                 RequireEmp: emp.EmpCode,
-                                ReceiveString: `คุณ${emp.NameThai}`,
+                                RequireString: `คุณ${emp.NameThai}`,
                             });
                         }
                     });
@@ -205,5 +205,6 @@ export class RequirePaintingEditComponent
             this.requireLists.push(Object.assign({}, listItem));
         }
         this.listItem = undefined;
+        this.selectedIndex = 2;
     }
 }

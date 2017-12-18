@@ -12,6 +12,7 @@ import { RequirePaintingViewComponent } from "../../components/require-painting/
 import { RequirePaintingListEditComponent } from "../../components/require-painting/require-painting-list/require-painting-list-edit.component";
 import { RequirePaintingListViewComponent } from "../../components/require-painting/require-painting-list/require-painting-list-view.component";
 import { PaintWorkItemEditComponent } from "../../components/require-painting/workitem/paint-workitem-edit.component";
+import { BlastWorkitemEditComponent } from "../../components/require-painting/workitem/blast-workitem-edit.component";
 // modules
 import { RequirePaintingRoutingModule } from "./require-painting-routing.module";
 import {
@@ -31,6 +32,7 @@ import { RequirePaintMasterService,RequirePaintMasterServiceCommunicate } from "
         RequirePaintingListEditComponent,
         RequirePaintingListViewComponent,
         PaintWorkItemEditComponent,
+        BlastWorkitemEditComponent,
     ],
     imports: [
         // angular

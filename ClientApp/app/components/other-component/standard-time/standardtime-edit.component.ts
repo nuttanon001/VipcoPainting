@@ -52,7 +52,6 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
                 StandradTimeId: 0,
                 TypeStandardTime: 1
             };
-
             this.defineData();
         }
     }
@@ -66,7 +65,6 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
             this.unitRates.push({ label: "m\xB2/HR", value: "m\xB2/HR" });
             this.unitRates.push({ label: "m\xB2/MH", value: "m\xB2/MH" });
         }
-
         if (!this.typeStdTimes) {
             this.typeStdTimes = new Array;
             this.typeStdTimes.push({ label: "Paint", value: 1 });

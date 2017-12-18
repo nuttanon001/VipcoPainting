@@ -1,0 +1,43 @@
+﻿<div class="edit-container border border-info" *ngIf="blastWorkItem">
+    <form [formGroup]="blastWorkForm" class="m-1">
+        <h5 class="alert-info mx-1">&nbsp;&nbsp;BlastWork</h5>
+        <div class="my-form">
+            <label for="IntArea" class="my-label-col-1">Internal :</label>
+            <div class="edit-form-content col-sm-3">
+                <input type="number" min="1" class="my-input" placeholder="Area m²"
+                       id="IntArea" formControlName="IntArea">
+            </div>
+
+            <label for="IntSurfaceTypeString" class="my-label">Surface/Standard :</label>
+            <div class="edit-form-content col-sm-5">
+                <input type="text" class="my-input-click" placeholder="Internal Surface"
+                       (click)="onOpenDialogBox('SurfaceTypeInt')" readonly
+                       id="IntSurfaceTypeString" formControlName="IntSurfaceTypeString">
+                <span class="mx-1">|</span>
+                <input type="text" class="my-input-click" placeholder="Internal StandardTime"
+                       (click)="onOpenDialogBox('StandardTimeInt')" readonly
+                       id="IntStandradTimeString" formControlName="IntStandradTimeString">
+            </div>
+        </div>
+        <hr class="w-100 my-0 py-0 bg-primary" />
+        <div class="my-form">
+            <label for="ExtArea" class="my-label-col-1">External :</label>
+            <div class="edit-form-content col-sm-3">
+                <input type="number" min="1" class="my-input" placeholder="Area m²"
+                       id="ExtArea" formControlName="ExtArea">
+            </div>
+
+            <label for="ExtSurfaceTypeString" class="my-label">Surface/Standard :</label>
+            <div class="edit-form-content col-sm-5">
+                <input type="text" class="my-input-click" placeholder="External Surface"
+                       (click)="onOpenDialogBox('SurfaceTypeExt')" readonly
+                       id="ExtSurfaceTypeString" formControlName="ExtSurfaceTypeString">
+                <span class="mx-1">|</span>
+                <input type="text" class="my-input-click" placeholder="External StandardTime"
+                       (click)="onOpenDialogBox('StandardTimeExt')" readonly
+                       id="ExtStandradTimeString" formControlName="ExtStandradTimeString">
+            </div>
+        </div>
+    </form>
+</div>
+

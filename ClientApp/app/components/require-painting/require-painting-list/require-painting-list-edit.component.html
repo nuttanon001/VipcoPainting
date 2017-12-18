@@ -19,7 +19,7 @@
                     <div class="my-form">
                         <label for="Description" class="my-label">Description:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert description of plate here."
+                            <input type="text" class="my-input" placeholder="Insert description of work item."
                                    required
                                    id="Description" formControlName="Description">
                             <validation-messages [control]="listItemForm.controls.Description"></validation-messages>
@@ -27,7 +27,7 @@
 
                         <label for="MarkNo" class="my-label">MarkNo:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert mark-no of plate here."
+                            <input type="text" class="my-input" placeholder="Insert mark-no of work item."
                                    required
                                    id="MarkNo" formControlName="MarkNo">
                             <validation-messages [control]="listItemForm.controls.MarkNo"></validation-messages>
@@ -37,14 +37,14 @@
                     <div class="my-form">
                         <label for="DrawingNo" class="my-label">DrawingNo:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert drawing-no of plate here."
+                            <input type="text" class="my-input" placeholder="Insert drawing-no of work item."
                                    id="DrawingNo" formControlName="DrawingNo">
                             <validation-messages [control]="listItemForm.controls.DrawingNo"></validation-messages>
                         </div>
 
                         <label for="UnitNo" class="my-label">UnitNo:</label>
                         <div class="col-sm-4">
-                            <input type="number" min="1" class="my-input" placeholder="Insert unit-no of plate here."
+                            <input type="number" min="1" class="my-input" placeholder="Insert unit-no of work item."
                                    required
                                    id="UnitNo" formControlName="UnitNo">
                             <validation-messages [control]="listItemForm.controls.UnitNo"></validation-messages>
@@ -54,7 +54,7 @@
                     <div class="my-form">
                         <label for="Quantity" class="my-label">Quantity:</label>
                         <div class="col-sm-4">
-                            <input type="number" min="1" class="my-input" placeholder="Insert quantity of plate here."
+                            <input type="number" min="1" class="my-input" placeholder="Insert quantity of work item."
                                    required
                                    id="Quantity" formControlName="Quantity">
                             <validation-messages [control]="listItemForm.controls.Quantity"></validation-messages>
@@ -62,7 +62,7 @@
 
                         <label for="Weight" class="my-label">Weight (kg):</label>
                         <div class="col-sm-4">
-                            <input type="number" min="1" class="my-input" placeholder="Insert weight of plate here."
+                            <input type="number" min="1" class="my-input" placeholder="Insert weight of work item."
                                    required
                                    id="Weight" formControlName="Weight">
                             <validation-messages [control]="listItemForm.controls.Weight"></validation-messages>
@@ -72,15 +72,15 @@
                     <div class="my-form">
                         <label class="my-label">Dimension L x W x H (mm):</label>
                         <div class="edit-form-content col-sm-10">
-                            <input type="number" min="1" class="my-input" placeholder="Insert length of plate."
+                            <input type="number" min="1" class="my-input" placeholder="Insert length work item."
                                    required
                                    id="SizeL" formControlName="SizeL">
                             <span class="mx-1">X</span>
-                            <input type="number" min="1" class="my-input" placeholder="Insert width of plate."
+                            <input type="number" min="1" class="my-input" placeholder="Insert width work iitem."
                                    required
                                    id="SizeW" formControlName="SizeW">
                             <span class="mx-1">X</span>
-                            <input type="number" min="1" class="my-input" placeholder="Insert height of plate."
+                            <input type="number" min="1" class="my-input" placeholder="Insert height work item."
                                    required
                                    id="SizeH" formControlName="SizeH">
                         </div>
@@ -128,6 +128,16 @@
                 <b>WorkItem Blast</b>
             </ng-template>
             <div class="edit-container">
+                <div class="my-form">
+                    <div class="col-sm-2">
+                        <p-checkbox name="level1" value="BlastWork" label="BlastWork"
+                                    inputId="bw" (onChange)="checkBoxChage($event,'BlastWork')">
+                        </p-checkbox>
+                    </div>
+                </div>
+                <div *ngIf="blastWork">
+                    <blast-workitem-edit [(blastWorkItem)]="blastWorkItem"></blast-workitem-edit>
+                </div>
                 <!--<require-painting-sub-edit></require-painting-sub-edit>-->
             </div>
         </mat-tab>

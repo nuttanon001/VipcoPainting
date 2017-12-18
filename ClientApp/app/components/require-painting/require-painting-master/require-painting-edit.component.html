@@ -1,6 +1,6 @@
 ﻿<div *ngIf="editValue; else elseBlock">
     <div *ngIf="!listItem; else elseDetail">
-        <mat-tab-group>
+        <mat-tab-group [(selectedIndex)]="selectedIndex">
             <mat-tab>
                 <ng-template mat-tab-label>
                     <b>Require-Prining</b>
@@ -29,7 +29,7 @@
                                 <p-calendar formControlName="RequireDate" [showIcon]="true"
                                             id="RequireDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
                                             appendTo="body"
-                                            [maxDate]="editValueForm.controls.FinishDate.value">
+                                            [maxDate]="maxDate">
                                 </p-calendar>
                                 <span class="is-request-date">**</span>
                                 <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>
@@ -38,6 +38,7 @@
                             <label for="RequireString" class="my-label">RequesterBy:</label>
                             <div class="col-sm-4">
                                 <input type="text" class="my-input-click" placeholder="Choose employee here"
+                                       (click)="openDialog('Employee')"
                                        id="RequireString" formControlName="RequireString" required readonly>
                                 <validation-messages [control]="editValueForm.controls.RequireString"></validation-messages>
                             </div>
@@ -84,7 +85,7 @@
                     <div style="margin-bottom:5px;">
                         <button type="button" mat-icon-button color="accent" (click)="addListItem()"
                                 matTooltip="Add Plate Painting">
-                            <i class="fa fa-2x fa-paint-brush" aria-hidden="true"></i>
+                            <i class="fa fa-2x fa-modx" aria-hidden="true"></i>
                         </button>
                     </div>
                     <ngx-datatable class="material"

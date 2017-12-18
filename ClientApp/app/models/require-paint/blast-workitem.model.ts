@@ -19,4 +19,10 @@
     SurfaceTypeExtId?: number;
     // RequirePaintingList
     RequirePaintingListId?: number;
+    // ViewModel
+    IntStandradTimeString?: string;
+    ExtStandradTimeString?: string;
+    IntSurfaceTypeString?: string;
+    ExtSurfaceTypeString?: string;
+
 }

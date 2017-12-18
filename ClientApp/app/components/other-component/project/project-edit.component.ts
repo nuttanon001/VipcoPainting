@@ -67,12 +67,12 @@ export class ProjectEditComponent
                         this.editValue.StartDate = this.editValue.StartDate != null ?
                             new Date(this.editValue.StartDate) : new Date();
                     }
-
+                    // set Date
                     if (this.editValue.EndDate) {
                         this.editValue.EndDate = this.editValue.EndDate != null ?
                             new Date(this.editValue.EndDate) : new Date();
                     }
-
+                    // set ProjectSub
                     if (this.editValue.ProjectCodeMasterId) {
                         this.serviceSub.getByMasterId(this.editValue.ProjectCodeMasterId)
                             .subscribe(dbDetail => {
