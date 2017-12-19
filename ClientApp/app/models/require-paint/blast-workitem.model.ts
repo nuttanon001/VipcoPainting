@@ -24,5 +24,5 @@
     ExtStandradTimeString?: string;
     IntSurfaceTypeString?: string;
     ExtSurfaceTypeString?: string;
-
+    IsValid?: boolean;
 }

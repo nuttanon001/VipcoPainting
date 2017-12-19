@@ -6,7 +6,7 @@ import {
     animate, transition
 } from "@angular/animations";
 // models
-import { RequirePaintMaster, RequirePaintList } from "../../../models/model.index";
+import { RequirePaintMaster, RequirePaintList, RequirePaintMasterHasList } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // services
@@ -52,8 +52,8 @@ export class RequirePaintingEditComponent
     }
     // Parameter
     levelPaints: Array<string>;
-    requireLists: Array<RequirePaintList>;
-    listItem: RequirePaintList | undefined;
+    requirePaintLists: Array<RequirePaintList>;
+    newRequirePaintList: RequirePaintList | undefined;
     indexListItem: number;
     selectedIndex: number;
     maxDate:Date = new Date;
@@ -83,7 +83,7 @@ export class RequirePaintingEditComponent
                     if (this.editValue.RequirePaintingMasterId) {
                         this.serviceList.getByMasterId(this.editValue.RequirePaintingMasterId)
                             .subscribe(dbLists => {
-                                this.requireLists = dbLists.slice();
+                                this.requirePaintLists = dbLists.slice();
                             });
                     }
 
@@ -174,10 +174,10 @@ export class RequirePaintingEditComponent
     }
 
     // add list item
-    addListItem(listItem?:RequirePaintList): void {
+    addOrEditListItem(listItem?:RequirePaintList): void {
         if (listItem) {
-            if (this.requireLists) {
-                this.indexListItem = this.requireLists.indexOf(listItem);
+            if (this.requirePaintLists) {
+                this.indexListItem = this.requirePaintLists.indexOf(listItem);
             } else {
                 this.indexListItem = -1;
             }
@@ -187,24 +187,41 @@ export class RequirePaintingEditComponent
             };
             this.indexListItem = -1;
         }
-        this.listItem = listItem;
+        this.newRequirePaintList = listItem;
     }
 
     // edit list item
-    onComplateOrCancel(listItem?: RequirePaintList): void {
-        if (!this.requireLists) {
-            this.requireLists = new Array;
+    onComplateOrCancel(requirePaintList?: RequirePaintList): void {
+        if (!this.requirePaintLists) {
+            this.requirePaintLists = new Array;
         }
 
-        if (listItem) {
+        if (requirePaintList) {
             if (this.indexListItem > -1) {
                 // remove item
-                this.requireLists.splice(this.indexListItem, 1);
+                this.requirePaintLists.splice(this.indexListItem, 1);
             }
             // cloning an object
-            this.requireLists.push(Object.assign({}, listItem));
+            this.requirePaintLists.push(Object.assign({}, requirePaintList));
+            this.onValueChanged();
         }
-        this.listItem = undefined;
+        this.newRequirePaintList = undefined;
         this.selectedIndex = 2;
+    }
+
+    // on valid data
+    onFormValid(isValid: boolean): void {
+        if (!this.requirePaintLists) {
+            isValid = false;
+        } else if (this.requirePaintLists.length < 1) {
+            isValid = false;
+        }
+
+        this.editValue = this.editValueForm.value;
+        let editComplate: RequirePaintMasterHasList = {
+            RequirePaintLists : this.requirePaintLists,
+            RequirePaintMaster : this.editValue
+        };
+        this.communicateService.toParent([editComplate, isValid]);
     }
 }

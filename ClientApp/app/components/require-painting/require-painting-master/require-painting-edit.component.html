@@ -1,5 +1,5 @@
 ﻿<div *ngIf="editValue; else elseBlock">
-    <div *ngIf="!listItem; else elseDetail">
+    <div *ngIf="!newRequirePaintList; else elseDetail">
         <mat-tab-group [(selectedIndex)]="selectedIndex">
             <mat-tab>
                 <ng-template mat-tab-label>
@@ -83,30 +83,39 @@
                 </ng-template>
                 <div class="edit-container">
                     <div style="margin-bottom:5px;">
-                        <button type="button" mat-icon-button color="accent" (click)="addListItem()"
+                        <button type="button" mat-icon-button color="accent" (click)="addOrEditListItem()"
                                 matTooltip="Add Plate Painting">
                             <i class="fa fa-2x fa-modx" aria-hidden="true"></i>
                         </button>
                     </div>
                     <ngx-datatable class="material"
-                                   [columnMode]="'flex'"
+                                   [rows]="requirePaintLists"
+                                   [columnMode]="force"
                                    [headerHeight]="50"
                                    [footerHeight]="0"
                                    [rowHeight]="50"
                                    [scrollbarV]="true"
+                                   [scrollbarH]="true"
                                    [style.height]="'calc(100vh - 230px)'">
-                        <ngx-datatable-column name="Item" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Description" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Partno." [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Markno." [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Drawingno." [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Unit." [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Q'ty" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="FieldWeld" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Insulation" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="ITP" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Dimension" [flexGrow]="1"></ngx-datatable-column>
-                        <ngx-datatable-column name="Weight" [flexGrow]="1"></ngx-datatable-column>
+                        <ngx-datatable-column [width]="100" [sortable]="false">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <button mat-button (click)="addOrEditListItem(row)" color="warn">
+                                    Edit
+                                </button>
+                                <!--
+                                <button mat-button (click)="onRemoveOverTimeDetailOrCancelOverTimeDetail(row,1)"
+                                        color="accent" *ngIf="row?.OverTimeDetailId">
+                                    Cancel
+                                </button>
+                                -->
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Description" prop="Description" [width]="200"></ngx-datatable-column>
+                        <ngx-datatable-column name="MarkNo" prop="MarkNo" [width]="200"></ngx-datatable-column>
+                        <ngx-datatable-column name="DrawingNo" prop="DrawingNo" [width]="150"></ngx-datatable-column>
+                        <ngx-datatable-column name="UnitNo" prop="UnitNo" [width]="100"></ngx-datatable-column>
+                        <ngx-datatable-column name="Q'ty" prop="Quantity" [width]="100"></ngx-datatable-column>
+                        <ngx-datatable-column name="Weight" prop="Weight" [width]="100"></ngx-datatable-column>
                     </ngx-datatable>
                 </div>
             </mat-tab>
@@ -116,8 +125,8 @@
 
 <ng-template #elseDetail>
     <div [@flyInOut]="'in'">
-        <require-painting-list-edit (ComplateOrCancel)="onComplateOrCancel($event)" [listItem]="listItem">
-        </require-painting-list-edit>
+        <require-list-edit (ComplateOrCancel)="onComplateOrCancel($event)" [RequirePaintList]="newRequirePaintList">
+        </require-list-edit>
     </div>
 </ng-template>
 

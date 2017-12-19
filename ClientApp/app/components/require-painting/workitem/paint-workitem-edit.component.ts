@@ -32,7 +32,6 @@ export class PaintWorkItemEditComponent implements OnInit {
         this._paintWorkItem = data;
         this.paintWorkItemChange.emit(this._paintWorkItem);
     }
-    @Output() valueComplate = new EventEmitter<boolean>();
     // Output
     //@Output() intAreaChange = new EventEmitter<number | undefined>();
     //@Output() ExtAreaChange = new EventEmitter<number | undefined>();
@@ -76,7 +75,7 @@ export class PaintWorkItemEditComponent implements OnInit {
             IntStandradTimeString: [this.paintWorkItem.IntStandradTimeString],
             ExtStandradTimeString: [this.paintWorkItem.ExtStandradTimeString],
             PaintLevelString: [this.paintWorkItem.PaintLevelString],
-            Use: [this.paintWorkItem.Use],
+            IsValid: [this.paintWorkItem.IsValid],
         });
         this.paintWorkForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
 
@@ -166,10 +165,10 @@ export class PaintWorkItemEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.paintWorkForm) { return; }
         const form = this.paintWorkForm;
-        this.valueComplate.emit(form.valid);
         if (form.valid) {
             this.paintWorkItem = form.value;
         }
+        this.paintWorkItem.IsValid = form.valid;
     }
 
     // on OpenDialogBox
@@ -178,35 +177,31 @@ export class PaintWorkItemEditComponent implements OnInit {
             if (mode.indexOf("StandardTime") !== -1 ) {
                 this.dialogService.dialogSelectStandradTime(this.viewContainerRef,1)
                     .subscribe(standardTime => {
-                        if (standardTime) {
-                            if (mode.indexOf("Int") !== -1) {
-                                this.paintWorkForm.patchValue({
-                                    StandradTimeIntId: standardTime.StandradTimeId,
-                                    IntStandradTimeString: standardTime.Description
-                                });
-                            } else {
-                                this.paintWorkForm.patchValue({
-                                    StandradTimeExtId: standardTime.StandradTimeId,
-                                    ExtStandradTimeString: standardTime.Description
-                                });
-                            }
+                        if (mode.indexOf("Int") !== -1) {
+                            this.paintWorkForm.patchValue({
+                                StandradTimeIntId: standardTime ? standardTime.StandradTimeId : undefined,
+                                IntStandradTimeString: standardTime ? standardTime.Description : undefined
+                            });
+                        } else {
+                            this.paintWorkForm.patchValue({
+                                StandradTimeExtId: standardTime ? standardTime.StandradTimeId : undefined,
+                                ExtStandradTimeString: standardTime ? standardTime.Description : undefined
+                            });
                         }
                     });
             } else if (mode.indexOf("Color") !== -1) {
                 this.dialogService.dialogSelectColorItem(this.viewContainerRef)
                     .subscribe(color => {
-                        if (color) {
-                            if (mode.indexOf("Int") !== -1) {
-                                this.paintWorkForm.patchValue({
-                                    IntColorItemId: color.ColorItemId,
-                                    IntColorString: color.ColorName
-                                });
-                            } else {
-                                this.paintWorkForm.patchValue({
-                                    ExtColorItemId: color.ColorItemId,
-                                    ExtColorString: color.ColorName
-                                });
-                            }
+                        if (mode.indexOf("Int") !== -1) {
+                            this.paintWorkForm.patchValue({
+                                IntColorItemId: color ? color.ColorItemId : undefined,
+                                IntColorString: color ? color.ColorName : undefined
+                            });
+                        } else {
+                            this.paintWorkForm.patchValue({
+                                ExtColorItemId: color ? color.ColorItemId : undefined,
+                                ExtColorString: color ? color.ColorName : undefined
+                            });
                         }
                     });
             }

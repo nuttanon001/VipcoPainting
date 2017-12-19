@@ -1,4 +1,6 @@
-﻿export interface RequirePaintMaster {
+﻿import { RequirePaintList } from "./require-paint-list.model";
+
+export interface RequirePaintMaster {
     RequirePaintingMasterId: number;
     ReceiveDate?: Date;
     RequireDate?: Date;
@@ -18,4 +20,9 @@
 
     ProjectCodeSubId?: number;
     ProjectCodeSubString?: string;
+}
+
+export interface RequirePaintMasterHasList {
+    RequirePaintMaster?: RequirePaintMaster;
+    RequirePaintLists?: Array<RequirePaintList>;
 }

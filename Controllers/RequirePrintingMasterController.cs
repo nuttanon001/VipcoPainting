@@ -12,6 +12,7 @@ using VipcoPainting.Helpers;
 using VipcoPainting.Models;
 using VipcoPainting.ViewModels;
 using VipcoPainting.Services.Interfaces;
+using System.Linq.Expressions;
 
 namespace VipcoPainting.Controllers
 {
@@ -22,18 +23,61 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
 
         private IRepositoryPainting<RequirePaintingMaster> repository;
+        private IRepositoryPainting<ProjectCodeSub> repositoryProSub;
+        private IRepositoryMachine<ProjectCodeMaster> repositoryProMas;
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
         private HelpersClass<RequirePaintingMaster> helpers;
 
+        private async Task<string> GeneratedCode(int ProjectSubId)
+        {
+            if (ProjectSubId > 0 )
+            {
+                var ProjectSub = await this.repositoryProSub.GetAsync(ProjectSubId);
+                if (ProjectSub != null)
+                {
+                    var ProjectMaster = await this.repositoryProMas.GetAsync(ProjectSub?.ProjectCodeMasterId ?? 0);
+                    if (ProjectMaster != null)
+                    {
+                        var ListSubId = await this.repositoryProSub.GetAllAsQueryable()
+                            .Where(x => x.ProjectCodeMasterId == ProjectMaster.ProjectCodeMasterId)
+                            .Select(x => x.ProjectCodeSubId).ToListAsync();
+
+                        var Runing = await this.repository.GetAllAsQueryable()
+                                               .CountAsync(x => ListSubId.Contains(x.ProjectCodeSubId ?? 0)) + 1;
+
+                        var Code = ProjectMaster.ProjectCode;
+                        if (Code.Trim().IndexOf("misc") != -1)
+                        {
+                            Code = Code.ToLower().Replace("misc", "").Trim();
+                            Code = "M" + Code;
+                        }
+                        else
+                            Code = "J" + Code;
+
+                        return $"{Code}/{Runing.ToString("000")}";
+                    }
+                }
+
+                // return $"{proDetail.ProjectCodeMaster.ProjectCode}/{typeMachine.TypeMachineCode}/{Runing.ToString("0000")}";
+            }
+
+            return "xxxx/xx/xx";
+        }
         #endregion PrivateMenbers
 
         #region Constructor
 
-        public RequirePaintingMasterController(IRepositoryPainting<RequirePaintingMaster> repo, IMapper map)
+        public RequirePaintingMasterController(
+            IRepositoryPainting<RequirePaintingMaster> repo, 
+            IRepositoryPainting<ProjectCodeSub> repoProSub,
+            IRepositoryMachine<ProjectCodeMaster> repoProMas,
+            IMapper map)
         {
             this.repository = repo;
+            this.repositoryProSub = repoProSub;
+            this.repositoryProMas = repoProMas;
             this.mapper = map;
             this.helpers = new HelpersClass<RequirePaintingMaster>();
             // Json
@@ -140,6 +184,8 @@ namespace VipcoPainting.Controllers
 
                 nRequirePaintingMaster.CreateDate = DateTime.Now;
                 nRequirePaintingMaster.Creator = nRequirePaintingMaster.Creator ?? "Someone";
+
+                nRequirePaintingMaster.RequireNo = await this.GeneratedCode(nRequirePaintingMaster.ProjectCodeSubId ?? -1);
 
                 if (nRequirePaintingMaster.RequirePaintingLists != null)
                     nRequirePaintingMaster.RequirePaintingLists = null;

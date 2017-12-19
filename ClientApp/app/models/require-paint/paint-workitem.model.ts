@@ -33,5 +33,5 @@
     IntStandradTimeString?: string;
     ExtStandradTimeString?: string;
     PaintLevelString?: string;
-    Use?: boolean;
+    IsValid?: boolean;
 }

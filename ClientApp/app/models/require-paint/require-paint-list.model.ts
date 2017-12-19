@@ -1,4 +1,7 @@
-﻿export interface RequirePaintList {
+﻿import { BlastWorkItem } from "./blast-workitem.model";
+import { PaintWorkItem } from "./paint-workitem.model";
+
+export interface RequirePaintList {
     RequirePaintingListId: number;
     Description?: string;
     PartNo?: string;
@@ -21,4 +24,6 @@
     ModifyDate?: Date;
     // FK
     RequirePaintingMasterId?: number;
+    BlastWorkItems?: Array<BlastWorkItem>;
+    PaintWorkItems?: Array<PaintWorkItem>;
 }

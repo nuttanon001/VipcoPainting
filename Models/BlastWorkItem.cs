@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VipcoPainting.Models
 {
-    public class BlastWorkItem
+    public class BlastWorkItem:BaseModel
     {
         [Key]
         public int BlastWorkItemId { get; set; }

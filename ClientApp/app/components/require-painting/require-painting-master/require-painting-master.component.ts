@@ -2,12 +2,16 @@
 // components
 import { BaseMasterComponent } from "../../base-component/base-master.component";
 // models
-import { RequirePaintMaster, Scroll, ScrollData } from "../../../models/model.index";
+import {
+    RequirePaintMaster, RequirePaintMasterHasList,
+    Scroll, ScrollData, RequirePaintList
+} from "../../../models/model.index";
 // services
 import { AuthService } from "../../../services/auth/auth.service";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { DataTableServiceCommunicate } from "../../../services/data-table/data-table.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
+import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 // timezone
 import * as moment from "moment-timezone";
 // 3rd Party
@@ -32,6 +36,7 @@ export class RequirePaintingMasterComponent
 
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     onlyUser: boolean;
+    requirePaintLists: Array<RequirePaintList>|undefined;
     /** require-painting-master ctor */
     constructor(
         service: RequirePaintMasterService,
@@ -40,6 +45,7 @@ export class RequirePaintingMasterComponent
         dialogsService: DialogsService,
         viewContainerRef: ViewContainerRef,
         private serverAuth: AuthService,
+        private servicePaintList: RequirePaintListService
     ) {
         super(
             service,
@@ -49,6 +55,24 @@ export class RequirePaintingMasterComponent
             viewContainerRef
         );
     }
+
+    // on init override
+    ngOnInit(): void {
+
+        this.ShowEdit = false;
+        this.canSave = false;
+
+        this.subscription1 = this.serviceCom.ToParent$.subscribe(
+            (TypeValue: [RequirePaintMasterHasList, boolean]) => {
+                this.editValue = TypeValue[0].RequirePaintMaster;
+                this.requirePaintLists = TypeValue[0].RequirePaintLists;
+                this.canSave = TypeValue[1];
+            });
+
+        this.subscription2 = this.dataTableServiceCom.ToParent$
+            .subscribe((scroll: Scroll) => this.loadPagedData(scroll));
+    }
+
 
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
@@ -111,7 +135,24 @@ export class RequirePaintingMasterComponent
         this.service.post(value).subscribe(
             (complete: any) => {
                 this.displayValue = complete;
-                this.onSaveComplete();
+                if (this.requirePaintLists && complete) {
+                    this.requirePaintLists.forEach(item => {
+                        item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
+                        item.Creator = complete.Creator;
+                    });
+
+                    this.servicePaintList.postLists(this.requirePaintLists)
+                        .subscribe((complate: any) => {
+                            this.requirePaintLists = undefined;
+                            this.onSaveComplete();
+                        },
+                        (error: any) => {
+                            this.dialogsService.error("Failed !",
+                                "Save failed with the following error: WorkItem has error !!!", this.viewContainerRef);
+                        });
+                } else {
+                    this.onSaveComplete();
+                }
             },
             (error: any) => {
                 console.error(error);
@@ -134,7 +175,28 @@ export class RequirePaintingMasterComponent
         this.service.putKeyNumber(value, value.RequirePaintingMasterId).subscribe(
             (complete: any) => {
                 this.displayValue = complete;
-                this.onSaveComplete();
+                if (this.requirePaintLists && complete) {
+                    this.requirePaintLists.forEach(item => {
+                        if (!item.RequirePaintingListId) {
+                            item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
+                            item.Creator = complete.Creator;
+                        } else {
+                            item.Modifyer = complete.Modifyer;
+                        }
+                    });
+
+                    this.servicePaintList.putLists(this.requirePaintLists)
+                        .subscribe((complate: any) => {
+                            this.requirePaintLists = undefined;
+                            this.onSaveComplete();
+                        },
+                        (error: any) => {
+                            this.dialogsService.error("Failed !",
+                                "Save failed with the following error: WorkItem has error !!!", this.viewContainerRef);
+                        });
+                } else {
+                    this.onSaveComplete();
+                }
             },
             (error: any) => {
                 console.error(error);
@@ -146,7 +208,7 @@ export class RequirePaintingMasterComponent
     }
 
     // on detail view
-    onDetailView(value: RequirePaintMaster): void {
+    onDetailView(value?: RequirePaintMaster): void {
         if (this.ShowEdit) {
             return;
         }
@@ -158,5 +220,15 @@ export class RequirePaintingMasterComponent
         } else {
             this.displayValue = undefined;
         }
+    }
+
+    // on cancel edit override
+    onCancelEdit(): void {
+        this.editValue = undefined;
+        this.displayValue = undefined;
+        this.requirePaintLists = undefined;
+        this.canSave = false;
+        this.ShowEdit = false;
+        this.onDetailView(undefined);
     }
 }

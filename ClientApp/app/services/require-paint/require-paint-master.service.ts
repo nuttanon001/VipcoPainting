@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 // rxjs
 import { Observable } from "rxjs/Rx";
 // models
-import { RequirePaintMaster } from "../../models/model.index";
+import { RequirePaintMaster, RequirePaintMasterHasList } from "../../models/model.index";
 // base-service
 import { BaseRestService, BaseCommunicateService } from "../base-service/base.index";
 
@@ -13,6 +13,6 @@ export class RequirePaintMasterService extends BaseRestService<RequirePaintMaste
 }
 
 @Injectable()
-export class RequirePaintMasterServiceCommunicate extends BaseCommunicateService<RequirePaintMaster> {
+export class RequirePaintMasterServiceCommunicate extends BaseCommunicateService<RequirePaintMasterHasList> {
     constructor() { super(); }
 }

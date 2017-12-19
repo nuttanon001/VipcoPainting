@@ -33,7 +33,6 @@ export class BlastWorkitemEditComponent implements OnInit {
         this._blastWorkItem = data;
         this.blastWorkItemChange.emit(this._blastWorkItem);
     }
-    @Output() valueComplate = new EventEmitter<boolean>();
     // FormGroup
     blastWorkForm: FormGroup;
     
@@ -122,10 +121,10 @@ export class BlastWorkitemEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.blastWorkForm) { return; }
         const form = this.blastWorkForm;
-        this.valueComplate.emit(form.valid);
         if (form.valid) {
             this.blastWorkItem = form.value;
         }
+        this.blastWorkItem.IsValid = form.valid;
     }
 
     // on OpenDialogBox
@@ -134,35 +133,31 @@ export class BlastWorkitemEditComponent implements OnInit {
             if (mode.indexOf("StandardTime") !== -1) {
                 this.dialogService.dialogSelectStandradTime(this.viewContainerRef, 2)
                     .subscribe(standardTime => {
-                        if (standardTime) {
-                            if (mode.indexOf("Int") !== -1) {
-                                this.blastWorkForm.patchValue({
-                                    StandradTimeIntId: standardTime.StandradTimeId,
-                                    IntStandradTimeString: standardTime.Description
-                                });
-                            } else {
-                                this.blastWorkForm.patchValue({
-                                    StandradTimeExtId: standardTime.StandradTimeId,
-                                    ExtStandradTimeString: standardTime.Description
-                                });
-                            }
+                        if (mode.indexOf("Int") !== -1) {
+                            this.blastWorkForm.patchValue({
+                                StandradTimeIntId: standardTime ? standardTime.StandradTimeId : undefined,
+                                IntStandradTimeString: standardTime ? standardTime.Description : undefined
+                            });
+                        } else {
+                            this.blastWorkForm.patchValue({
+                                StandradTimeExtId: standardTime ? standardTime.StandradTimeId : undefined,
+                                ExtStandradTimeString: standardTime ? standardTime.Description : undefined
+                            });
                         }
                     });
             } else if (mode.indexOf("SurfaceType") !== -1) {
                 this.dialogService.dialogSelectSurfaceType(this.viewContainerRef)
                     .subscribe(surface => {
-                        if (surface) {
-                            if (mode.indexOf("Int") !== -1) {
-                                this.blastWorkForm.patchValue({
-                                    SurfaceTypeIntId: surface.SurfaceTypeId,
-                                    IntSurfaceTypeString: surface.SurfaceName
-                                });
-                            } else {
-                                this.blastWorkForm.patchValue({
-                                    SurfaceTypeExtId: surface.SurfaceTypeId,
-                                    ExtSurfaceTypeString: surface.SurfaceName
-                                });
-                            }
+                        if (mode.indexOf("Int") !== -1) {
+                            this.blastWorkForm.patchValue({
+                                SurfaceTypeIntId: surface ? surface.SurfaceTypeId : undefined,
+                                IntSurfaceTypeString: surface ? surface.SurfaceName : undefined
+                            });
+                        } else {
+                            this.blastWorkForm.patchValue({
+                                SurfaceTypeExtId: surface ? surface.SurfaceTypeId : undefined,
+                                ExtSurfaceTypeString: surface ? surface.SurfaceName : undefined
+                            });
                         }
                     });
             }
