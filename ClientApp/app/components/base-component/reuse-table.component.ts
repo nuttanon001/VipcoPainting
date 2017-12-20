@@ -19,6 +19,7 @@ import { Subscription } from "rxjs/Subscription";
             [footerHeight]="0"
             [rowHeight]="50"
             [scrollbarV]="true"
+            [scrollbarH]="true"
             [selectionType]="'single'"
             (select)="onSelect($event)"
             [style.height]="height">

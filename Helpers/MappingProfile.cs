@@ -50,7 +50,7 @@ namespace VipcoPainting.Helpers
             CreateMap<StandradTime, StandardTimeViewModel>()
                 // TypeStandardTimeString
                 .ForMember(x => x.TypeStandardTimeString,
-                            o => o.MapFrom(s => s.TypeStandardTime == null ? "-" : $"{(s.TypeStandardTime == TypeStandardTime.Paint ? "Paint" : "Blast")}")   )
+                            o => o.MapFrom(s => s.TypeStandardTime == null ? "-" : $"{(s.TypeStandardTime == TypeStandardTime.Paint ? "Paint" : "Blast")}"))
                 // PercentLossString
                 .ForMember(x => x.PercentLossString,
                             o => o.MapFrom(s => s.PercentLoss == null ? "0.0%" : $"{s.PercentLoss.Value.ToString("00.0")}%"))
@@ -65,7 +65,62 @@ namespace VipcoPainting.Helpers
             CreateMap<ProjectCodeMaster, ProjectMasterViewModel>();
             CreateMap<ProjectMasterViewModel, ProjectCodeMaster>();
 
-            #endregion
+            #endregion ProjectCodeMaster
+
+            #region RequirePaintingMaster
+
+            CreateMap<RequirePaintingMaster, RequirePaintingMasterViewModel>()
+                .ForMember(x => x.JobCode,
+                            o => o.MapFrom(s => s.ProjectCodeSub == null ? "-" : $"{s.ProjectCodeSub.Code}"))
+                // .ForMember(x => x.ProjectCodeSub, o => o.Ignore())
+                .ForMember(x => x.RequirePaintingLists, o => o.Ignore());
+
+            #endregion RequirePaintingMaster
+
+            #region BlastWorkItem
+
+            CreateMap<BlastWorkItem, BlastWorkItemViewModel>()
+                .ForMember(x => x.ExtStandradTimeString,
+                           o => o.MapFrom(s => s.StandradTimeExt == null ? "" : $"{ s.StandradTimeExt.Description }"))
+                .ForMember(x => x.IntStandradTimeString,
+                           o => o.MapFrom(s => s.StandradTimeInt == null ? "" : $"{ s.StandradTimeInt.Description }"))
+                .ForMember(x => x.ExtSurfaceTypeString,
+                           o => o.MapFrom(s => s.SurfaceTypeExt == null ? "" : $"{ s.SurfaceTypeExt.SurfaceName }"))
+                .ForMember(x => x.IntSurfaceTypeString,
+                           o => o.MapFrom(s => s.SurfaceTypeInt == null ? "" : $"{ s.SurfaceTypeInt.SurfaceName }"))
+                .ForMember(x => x.StandradTimeExt, o => o.Ignore())
+                .ForMember(x => x.StandradTimeInt, o => o.Ignore())
+                .ForMember(x => x.SurfaceTypeExt, o => o.Ignore())
+                .ForMember(x => x.SurfaceTypeInt, o => o.Ignore());
+
+            CreateMap<BlastWorkItemViewModel, BlastWorkItem>();
+
+            #endregion BlastWorkItem
+
+            #region PaintWorkItem
+
+            CreateMap<PaintWorkItem, PaintWorkItemViewModel>()
+                .ForMember(x => x.PaintLevelString,
+                            o => o.MapFrom(s => s.PaintLevel == null ? "-" :
+                            (s.PaintLevel == PaintLevel.PrimerCoat ? "PrimerCoat" :
+                            (s.PaintLevel == PaintLevel.MidCoat ? "MidCoat" :
+                            (s.PaintLevel == PaintLevel.IntermediateCoat ? "IntermediateCoat" : "TopCoat")))))
+                .ForMember(x => x.ExtStandradTimeString,
+                            o => o.MapFrom(s => s.StandradTimeExt == null ? null : $"{ s.StandradTimeExt.Description }"))
+                .ForMember(x => x.IntStandradTimeString,
+                            o => o.MapFrom(s => s.StandradTimeInt == null ? null : $"{ s.StandradTimeInt.Description }"))
+                .ForMember(x => x.ExtColorString,
+                            o => o.MapFrom(s => s.ExtColorItem == null ? null : $"{ s.ExtColorItem.ColorName }"))
+                .ForMember(x => x.IntColorString,
+                            o => o.MapFrom(s => s.IntColorItem == null ? null : $"{ s.IntColorItem.ColorName }"))
+                .ForMember(x => x.StandradTimeExt, o => o.Ignore())
+                .ForMember(x => x.StandradTimeInt, o => o.Ignore())
+                .ForMember(x => x.ExtColorItem, o => o.Ignore())
+                .ForMember(x => x.IntColorItem, o => o.Ignore());
+
+            CreateMap<PaintWorkItemViewModel, PaintWorkItem>();
+
+            #endregion PaintWorkItem
         }
     }
 }

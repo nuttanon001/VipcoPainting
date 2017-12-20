@@ -25,6 +25,7 @@ namespace VipcoPainting.Controllers
         private IRepositoryPainting<RequirePaintingMaster> repository;
         private IRepositoryPainting<ProjectCodeSub> repositoryProSub;
         private IRepositoryMachine<ProjectCodeMaster> repositoryProMas;
+        private IRepositoryMachine<Employee> repositoryEmp;
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
@@ -65,6 +66,7 @@ namespace VipcoPainting.Controllers
 
             return "xxxx/xx/xx";
         }
+
         #endregion PrivateMenbers
 
         #region Constructor
@@ -73,11 +75,13 @@ namespace VipcoPainting.Controllers
             IRepositoryPainting<RequirePaintingMaster> repo, 
             IRepositoryPainting<ProjectCodeSub> repoProSub,
             IRepositoryMachine<ProjectCodeMaster> repoProMas,
+            IRepositoryMachine<Employee> repoEmp,
             IMapper map)
         {
             this.repository = repo;
             this.repositoryProSub = repoProSub;
             this.repositoryProMas = repoProMas;
+            this.repositoryEmp = repoEmp;
             this.mapper = map;
             this.helpers = new HelpersClass<RequirePaintingMaster>();
             // Json
@@ -95,7 +99,7 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get()
         {
             // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "ProjectCodeSub.ProjectCodeMaster" };
+            var Includes = new List<string> { "ProjectCodeSub" };
             return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
                                         this.DefaultJsonSettings);
         }
@@ -105,9 +109,27 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "ProjectCodeSub.ProjectCodeMaster" };
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "RequirePaintingMasterId", Includes),
-                                        this.DefaultJsonSettings);
+            var Includes = new List<string> { "ProjectCodeSub" };
+            var requirePaintMaster = this.mapper.Map<RequirePaintingMaster, RequirePaintingMasterViewModel>
+                (await this.repository.GetAsynvWithIncludes(key, "RequirePaintingMasterId", Includes));
+
+            if (requirePaintMaster != null)
+            {
+                if (!string.IsNullOrEmpty(requirePaintMaster.RequireEmp))
+                {
+                    requirePaintMaster.RequireString = 
+                        (await this.repositoryEmp.GetAsync(requirePaintMaster.RequireEmp))?.NameThai ?? "";
+                }
+                if (requirePaintMaster.ProjectCodeSub != null)
+                {
+                    requirePaintMaster.ProjectCodeSubString = 
+                        (await this.repositoryProMas.GetAsync(requirePaintMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
+
+                    requirePaintMaster.ProjectCodeSubString += $"/{requirePaintMaster.ProjectCodeSub.Code}";
+                }
+            }
+
+            return new JsonResult(requirePaintMaster,this.DefaultJsonSettings);
         }
 
         #endregion GET
@@ -121,7 +143,9 @@ namespace VipcoPainting.Controllers
             var Message = "Data been not found.";
             try
             {
-                var QueryData = this.repository.GetAllAsQueryable().AsQueryable();
+                var QueryData = this.repository.GetAllAsQueryable()
+                                    .Include(x => x.ProjectCodeSub)
+                                    .AsQueryable();
                 // Filter
                 var filters = string.IsNullOrEmpty(Scroll.Filter) ? new string[] { "" }
                                     : Scroll.Filter.ToLower().Split(null);
@@ -150,22 +174,23 @@ namespace VipcoPainting.Controllers
                             QueryData = QueryData.OrderBy(e => e.ProjectCodeSub.Code);
                         break;
 
-                    case "ReciveDate":
+                    case "RequireDate":
                         if (Scroll.SortOrder == -1)
-                            QueryData = QueryData.OrderByDescending(e => e.ReceiveDate);
+                            QueryData = QueryData.OrderByDescending(e => e.RequireDate);
                         else
-                            QueryData = QueryData.OrderBy(e => e.ReceiveDate);
+                            QueryData = QueryData.OrderBy(e => e.RequireDate);
                         break;
 
                     default:
-                        QueryData = QueryData.OrderByDescending(e => e.ReceiveDate);
+                        QueryData = QueryData.OrderByDescending(e => e.RequireDate);
                         break;
                 }
-
                 QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
 
-                return new JsonResult(new ScrollDataViewModel<RequirePaintingMaster>(Scroll, await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
-
+                return new JsonResult(new ScrollDataViewModel<RequirePaintingMasterViewModel>
+                    (Scroll, 
+                    this.ConvertTable.ConverterTableToViewModel<RequirePaintingMasterViewModel,RequirePaintingMaster>(await QueryData.AsNoTracking().ToListAsync())), 
+                    this.DefaultJsonSettings);
             }
             catch (Exception ex)
             {

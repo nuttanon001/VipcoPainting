@@ -6,6 +6,7 @@ import { RequirePaintMaster, RequirePaintList } from "../../../models/model.inde
 import { BaseViewComponent } from "../../base-component/base-view.component";
 // services
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
+import { TableColumn } from "@swimlane/ngx-datatable";
 
 @Component({
     selector: "require-painting-view",
@@ -16,6 +17,16 @@ import { RequirePaintListService } from "../../../services/require-paint/require
 export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaintMaster>
 {
     requireLists: Array<RequirePaintList> = new Array;
+    @Input("height") height: string = "calc(100vh - 184px)";
+    columns: Array<TableColumn> = [
+        { prop: "Description", name: "Description", flexGrow: 1 },
+        { prop: "MarkNo", name: "MarkNo", flexGrow: 1 },
+        { prop: "DrawingNo", name: "DrawingNo", flexGrow: 1 },
+        { prop: "UnitNo", name: "UnitNo", flexGrow: 1 },
+        { prop: "Quantity", name: "Q'ty", flexGrow: 1 },
+        { prop: "Weight", name: "Weight", flexGrow: 1 },
+
+    ];
     /** require-painting-view ctor */
     constructor(
         private service: RequirePaintListService,

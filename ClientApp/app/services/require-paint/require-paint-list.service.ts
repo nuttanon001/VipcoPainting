@@ -12,8 +12,8 @@ export class RequirePaintListService extends BaseRestService<RequirePaintList> {
     constructor(http: Http) { super(http, "api/RequirePaintingList/"); }
 
     // post with list
-    postLists(nObject: Array<RequirePaintList>): Observable<any> {
-        return this.http.post(this.actionUrl +"Lists/", JSON.stringify(nObject), this.getRequestOption())
+    postLists2(nObject: Array<RequirePaintList>): Observable<any> {
+        return this.http.post(this.actionUrl +"Lists2/", JSON.stringify(nObject), this.getRequestOption())
             .map(this.extractData).catch(this.handleError);
     }
 

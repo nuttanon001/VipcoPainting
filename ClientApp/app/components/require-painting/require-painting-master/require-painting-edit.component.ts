@@ -14,6 +14,8 @@ import { AuthService } from "../../../services/auth/auth.service";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
+import { BlastWorkitemService } from "../../../services/require-paint/blast-workitem.service";
+import { PaintWorkitemService } from "../../../services/require-paint/paint-workitem.service";
 
 @Component({
     selector: "require-painting-edit",
@@ -39,6 +41,8 @@ export class RequirePaintingEditComponent
     constructor(
         service: RequirePaintMasterService,
         serviceCom: RequirePaintMasterServiceCommunicate,
+        private blastService: BlastWorkitemService,
+        private paintService: PaintWorkitemService,
         private serviceAuth: AuthService,
         private viewContainerRef: ViewContainerRef,
         private serviceList: RequirePaintListService,
@@ -84,6 +88,16 @@ export class RequirePaintingEditComponent
                         this.serviceList.getByMasterId(this.editValue.RequirePaintingMasterId)
                             .subscribe(dbLists => {
                                 this.requirePaintLists = dbLists.slice();
+                                if (this.requirePaintLists) {
+                                    this.requirePaintLists.forEach((item, index) => {
+                                        // get BlastWorkItem
+                                        this.blastService.getByMasterId(item.RequirePaintingListId)
+                                            .subscribe(dbData => item.BlastWorkItems = dbData.slice());
+                                        // get PaintWorkItem
+                                        this.paintService.getByMasterId(item.RequirePaintingListId)
+                                            .subscribe(dbData => item.PaintWorkItems = dbData.slice());
+                                    });
+                                }
                             });
                     }
 
@@ -148,7 +162,7 @@ export class RequirePaintingEditComponent
     // open dialog
     openDialog(type?: string): void {
         if (type) {
-            if (type === 'Employee') {
+            if (type === "Employee") {
                 this.serviceDialogs.dialogSelectEmployee(this.viewContainerRef)
                     .subscribe(emp => {
                         console.log(emp);
@@ -159,7 +173,7 @@ export class RequirePaintingEditComponent
                             });
                         }
                     });
-            } else if (type === 'Project') {
+            } else if (type === "Project") {
                 this.serviceDialogs.dialogSelectProject(this.viewContainerRef)
                     .subscribe(project => {
                         if (project) {
@@ -178,6 +192,15 @@ export class RequirePaintingEditComponent
         if (listItem) {
             if (this.requirePaintLists) {
                 this.indexListItem = this.requirePaintLists.indexOf(listItem);
+                // Set Date
+                if (listItem.PlanStart) {
+                    listItem.PlanStart = listItem.PlanStart != null ?
+                        new Date(listItem.PlanStart) : new Date();
+                }
+                if (listItem.PlanEnd) {
+                    listItem.PlanEnd = listItem.PlanEnd != null ?
+                        new Date(listItem.PlanEnd) : new Date();
+                }
             } else {
                 this.indexListItem = -1;
             }

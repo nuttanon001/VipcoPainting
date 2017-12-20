@@ -80,6 +80,7 @@ export class RequireListEditComponent implements OnInit {
                 if (this.RequirePaintList.BlastWorkItems[0]) {
                     this.blastWork = true;
                     this.blastWorkItem = this.RequirePaintList.BlastWorkItems[0];
+                    this.blastWorkItem.IsValid = true;
                 }
             }
 
@@ -87,6 +88,7 @@ export class RequireListEditComponent implements OnInit {
                 if (this.RequirePaintList.PaintWorkItems.length > 0) {
                     this.RequirePaintList.PaintWorkItems.forEach(item => {
                         if (item.PaintLevel) {
+                            item.IsValid = true;
                             this.listBoxs[item.PaintLevel - 1] = true;
                             this.paintWorks[item.PaintLevel - 1] = item;
 
@@ -191,12 +193,21 @@ export class RequireListEditComponent implements OnInit {
     onNewOrUpdateClick(): void {
         if (this.RequirePaintListForm) {
             this.RequirePaintList = this.RequirePaintListForm.value;
+
+            let tempPaint: Array<PaintWorkItem> = new Array;
+            // get only paint selected
+            this.listBoxs.forEach((item, index) => {
+                if (item === true) {
+                    tempPaint.push(this.paintWorks[index]);
+                }
+            });
+
             // set BlastWorks
             this.RequirePaintList.BlastWorkItems = new Array;
             this.RequirePaintList.BlastWorkItems.push(this.blastWorkItem);
             // set PaintWorks
             this.RequirePaintList.PaintWorkItems = new Array;
-            this.RequirePaintList.PaintWorkItems = this.paintWorks.slice();
+            this.RequirePaintList.PaintWorkItems = tempPaint.slice();
 
             this.ComplateOrCancel.emit(this.RequirePaintList);
         }
@@ -208,7 +219,7 @@ export class RequireListEditComponent implements OnInit {
     }
 
     // on Change
-    checkBoxChage(isChange?: any, levelPaint?: string): void {
+    checkBoxChage(isChange?: boolean, levelPaint?: string): void {
         if (isChange !== undefined && levelPaint) {
             if (levelPaint.indexOf("PrimerCoat") !== -1) {
                 if (!this.paintWorks[0]) {
@@ -219,7 +230,6 @@ export class RequireListEditComponent implements OnInit {
                     };
                 }
                 this.listBoxs[0] = isChange;
-
             } else if (levelPaint.indexOf("MidCoat") !== -1) {
                 if (!this.paintWorks[1]) {
                     this.paintWorks[1] = {
@@ -229,7 +239,6 @@ export class RequireListEditComponent implements OnInit {
                     };
                 }
                 this.listBoxs[1] = isChange;
-
             } else if (levelPaint.indexOf("IntermediateCoat") !== -1) {
                 if (!this.paintWorks[2]) {
                     this.paintWorks[2] = {

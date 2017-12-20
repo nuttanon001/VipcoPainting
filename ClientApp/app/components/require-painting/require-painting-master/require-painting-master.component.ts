@@ -4,7 +4,7 @@ import { BaseMasterComponent } from "../../base-component/base-master.component"
 // models
 import {
     RequirePaintMaster, RequirePaintMasterHasList,
-    Scroll, ScrollData, RequirePaintList
+    Scroll, ScrollData, RequirePaintList, PaintWorkItem
 } from "../../../models/model.index";
 // services
 import { AuthService } from "../../../services/auth/auth.service";
@@ -27,16 +27,7 @@ import { DateOnlyPipe } from "../../../pipes/date-only.pipe";
 // require-painting-master component*/
 export class RequirePaintingMasterComponent 
     extends BaseMasterComponent<RequirePaintMaster, RequirePaintMasterService> {
-
-    columns: Array<TableColumn> = [
-        { prop: "RequireNo", name: "Code", flexGrow: 1 },
-        { prop: "MachineName", name: "Name", flexGrow: 2 },
-        { prop: "TypeMachineString", name: "Group", flexGrow: 1 },
-    ];
-
-    datePipe: DateOnlyPipe = new DateOnlyPipe("it");
-    onlyUser: boolean;
-    requirePaintLists: Array<RequirePaintList>|undefined;
+     
     /** require-painting-master ctor */
     constructor(
         service: RequirePaintMasterService,
@@ -56,6 +47,17 @@ export class RequirePaintingMasterComponent
         );
     }
 
+    // Parameter
+    datePipe: DateOnlyPipe = new DateOnlyPipe("it");
+    onlyUser: boolean;
+    requirePaintLists: Array<RequirePaintList> | undefined;
+
+    columns: Array<TableColumn> = [
+        { prop: "RequireNo", name: "Code", flexGrow: 1 },
+        { prop: "JobCode", name: "Job", flexGrow: 2 },
+        { prop: "RequireDate", name: "Date", flexGrow: 1, pipe: this.datePipe },
+    ];
+
     // on init override
     ngOnInit(): void {
 
@@ -72,7 +74,6 @@ export class RequirePaintingMasterComponent
         this.subscription2 = this.dataTableServiceCom.ToParent$
             .subscribe((scroll: Scroll) => this.loadPagedData(scroll));
     }
-
 
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
@@ -124,6 +125,25 @@ export class RequirePaintingMasterComponent
         return value;
     }
 
+    changeTimezone2(value: RequirePaintList): RequirePaintList {
+        let zone: string = "Asia/Bangkok";
+        if (value !== null) {
+            if (value.CreateDate !== null) {
+                value.CreateDate = moment.tz(value.CreateDate, zone).toDate();
+            }
+            if (value.ModifyDate !== null) {
+                value.ModifyDate = moment.tz(value.ModifyDate, zone).toDate();
+            }
+            if (value.PlanEnd !== null) {
+                value.PlanEnd = moment.tz(value.PlanEnd, zone).toDate();
+            }
+            if (value.PlanStart !== null) {
+                value.PlanStart = moment.tz(value.PlanStart, zone).toDate();
+            }
+        }
+        return value;
+    }
+
     // on insert data
     onInsertToDataBase(value: RequirePaintMaster): void {
         if (this.serverAuth.getAuth) {
@@ -137,11 +157,17 @@ export class RequirePaintingMasterComponent
                 this.displayValue = complete;
                 if (this.requirePaintLists && complete) {
                     this.requirePaintLists.forEach(item => {
+                        // change timezone
+                        item = this.changeTimezone2(item);
+
                         item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
                         item.Creator = complete.Creator;
                     });
 
-                    this.servicePaintList.postLists(this.requirePaintLists)
+                    //debug here
+                    // console.log(JSON.stringify(this.requirePaintLists));
+
+                    this.servicePaintList.postLists2(this.requirePaintLists)
                         .subscribe((complate: any) => {
                             this.requirePaintLists = undefined;
                             this.onSaveComplete();
@@ -177,15 +203,58 @@ export class RequirePaintingMasterComponent
                 this.displayValue = complete;
                 if (this.requirePaintLists && complete) {
                     this.requirePaintLists.forEach(item => {
+                        // change timezone
+                        item = this.changeTimezone2(item);
+
                         if (!item.RequirePaintingListId) {
                             item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
                             item.Creator = complete.Creator;
                         } else {
                             item.Modifyer = complete.Modifyer;
                         }
+
+                        if (item.PaintWorkItems) {
+                            item.PaintWorkItems.forEach((paintWork, index) => {
+                                // can't update FromBody with same data from webapi try new object and send back update
+                                if (item.PaintWorkItems) {
+                                    let newData: PaintWorkItem = {
+                                        PaintWorkItemId: paintWork.PaintWorkItemId,
+                                        PaintLevel: paintWork.PaintLevel,
+                                        IntArea: paintWork.IntArea,
+                                        IntDFTMin: paintWork.IntDFTMin,
+                                        IntDFTMax: paintWork.IntDFTMax,
+                                        IntCalcColorUsage: paintWork.IntCalcColorUsage,
+                                        IntCalcStdUsage: paintWork.IntCalcStdUsage,
+                                        ExtArea: paintWork.ExtArea,
+                                        ExtDFTMin: paintWork.ExtDFTMin,
+                                        ExtDFTMax: paintWork.ExtDFTMax,
+                                        ExtCalcColorUsage: paintWork.ExtCalcColorUsage,
+                                        ExtCalcStdUsage: paintWork.ExtCalcStdUsage,
+                                        Creator: paintWork.Creator,
+                                        CreateDate: paintWork.CreateDate,
+                                        Modifyer: paintWork.Modifyer,
+                                        ModifyDate: paintWork.ModifyDate,
+                                        // ColorItemInt
+                                        IntColorItemId: paintWork.IntColorItemId,
+                                        // ColorItemExt
+                                        ExtColorItemId: paintWork.ExtColorItemId,
+                                        // StandradTimeInt
+                                        StandradTimeIntId: paintWork.StandradTimeIntId,
+                                        // StandradTimeExt
+                                        StandradTimeExtId: paintWork.StandradTimeExtId,
+                                        // RequirePaintingList
+                                        RequirePaintingListId: paintWork.RequirePaintingListId
+                                    };
+                                    item.PaintWorkItems[index] = newData;
+                                }
+                            });
+                        }
                     });
 
-                    this.servicePaintList.putLists(this.requirePaintLists)
+                    //debug here
+                    // console.log(JSON.stringify(this.requirePaintLists));
+
+                    this.servicePaintList.postLists2(this.requirePaintLists)
                         .subscribe((complate: any) => {
                             this.requirePaintLists = undefined;
                             this.onSaveComplete();

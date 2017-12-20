@@ -2,52 +2,59 @@
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
-                <b>Require Painting Master</b>
+                <b>Request Painting Master</b>
             </ng-template>
             <div class="view-container">
                 <div class="row my-1">
                     <div class="my-label">
-                        Message 1 :
+                        RequireNo :
                     </div>
                     <div class="my-value">
-                        <!--{{displayValue.ProjectCode || "-"}}-->
+                        {{displayValue.RequireNo || "-"}}
                     </div>
 
                     <div class="my-label">
-                        Message 2 :
+                        PaintSchedule :
                     </div>
                     <div class="my-value">
-                        <!--{{displayValue.ProjectName || "-"}}-->
+                        {{displayValue.PaintingSchedule || "-"}}
                     </div>
 
                 </div>
 
                 <div class="row my-1">
                     <div class="my-label">
-                        Message 3 :
+                        RequireDate :
                     </div>
                     <div class="my-value">
-                        <!--{{(displayValue.StartDate | date:'dd/MM/yyyy') || "-"}}-->
+                        {{(displayValue.RequireDate | date:'dd/MM/yyyy') || "-"}}
                     </div>
 
                     <div class="my-label">
-                        Message 4 :
+                        RequesterBy :
                     </div>
                     <div class="my-value">
-                        <!--{{(displayValue.EndDate | date:'dd/MM/yyyy') || "-"}}-->
+                        {{displayValue.RequireString || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        JobNumber :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.ProjectCodeSubString || "-"}}
                     </div>
                 </div>
             </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
-                <b>Require Painting List</b>
+                <b>Request Work Item</b>
             </ng-template>
             <div class="view-container">
-                <!--
-                    <reuse-table [rows]="details" [columns]="columns">
-                    </reuse-table>
-                -->
+                <reuse-table [rows]="requireLists" [columns]="columns" [height]="height">
+                </reuse-table>
             </div>
         </mat-tab>
     </mat-tab-group>

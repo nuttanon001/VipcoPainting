@@ -22,7 +22,8 @@ import {
 // services
 import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
 import { RequirePaintMasterService,RequirePaintMasterServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
-
+import { BlastWorkitemService } from "../../services/require-paint/blast-workitem.service";
+import { PaintWorkitemService } from "../../services/require-paint/paint-workitem.service";
 
 @NgModule({
     declarations: [
@@ -50,6 +51,8 @@ import { RequirePaintMasterService,RequirePaintMasterServiceCommunicate } from "
         RequirePaintListService,
         RequirePaintMasterService,
         RequirePaintMasterServiceCommunicate,
+        BlastWorkitemService,
+        PaintWorkitemService,
         // dataTableServiceCommunicate
     ]
 })

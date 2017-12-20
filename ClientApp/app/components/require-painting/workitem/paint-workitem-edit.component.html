@@ -2,52 +2,52 @@
     <form [formGroup]="paintWorkForm" class="m-1">
         <h5 class="alert-info mx-1">&nbsp;&nbsp;Level:{{paintWorkItem?.PaintLevelString || ""}}</h5>
         <div class="my-form">
-            <label for="IntArea" class="my-label-col-1">Internal :</label>
+            <label [for]="'IntArea' + paintWorkItem.PaintLevel" class="my-label-col-1">Internal :</label>
             <div class="edit-form-content col-sm-5">
                 <input type="number" min="1" class="my-input" placeholder="Area m²"
-                       id="IntArea" formControlName="IntArea">
+                       [id]="'IntArea' + paintWorkItem.PaintLevel" formControlName="IntArea">
                 <span class="mx-1">|</span>
                 <input type="number" min="1" class="my-input" placeholder="DFT-MIN"
-                       id="IntDFTMin" formControlName="IntDFTMin">
+                       [id]="'IntDFTMin' + paintWorkItem.PaintLevel" formControlName="IntDFTMin">
                 <span class="mx-1">|</span>
                 <input type="number" min="1" class="my-input" placeholder="DFT-MAX"
-                       id="IntDFTMax" formControlName="IntDFTMax">
+                       [id]="'IntDFTMax' + paintWorkItem.PaintLevel" formControlName="IntDFTMax">
             </div>
 
-            <label for="IntColorString" class="my-label-col-1">Color/Standard:</label>
+            <label [for]="'IntColorString' + paintWorkItem.PaintLevel" class="my-label-col-1">Color/Standard:</label>
             <div class="edit-form-content col-sm-5">
                 <input type="text" class="my-input-click" placeholder="Internal Color"
                        (click)="onOpenDialogBox('ColorInt')" readonly
-                       id="IntColorString" formControlName="IntColorString">
+                       [id]="'IntColorString' + paintWorkItem.PaintLevel" formControlName="IntColorString">
                 <span class="mx-1">|</span>
                 <input type="text" class="my-input-click" placeholder="Internal StandardTime"
                        (click)="onOpenDialogBox('StandardTimeInt')" readonly
-                       id="IntStandradTimeString" formControlName="IntStandradTimeString">
+                       [id]="'IntStandradTimeString' + paintWorkItem.PaintLevel" formControlName="IntStandradTimeString">
             </div>
         </div>
         <hr class="w-100 my-0 py-0 bg-primary"/>
         <div class="my-form">
-            <label for="ExtArea" class="my-label-col-1">External:</label>
+            <label [for]="'ExtArea' + paintWorkItem.PaintLevel" class="my-label-col-1">External:</label>
             <div class="edit-form-content col-sm-5">
                 <input type="number" min="1" class="my-input" placeholder="Area m²"
-                       id="ExtArea" formControlName="ExtArea">
+                       [id]="'ExtArea' + paintWorkItem.PaintLevel" formControlName="ExtArea">
                 <span class="mx-1">|</span>
                 <input type="number" min="1" class="my-input" placeholder="DFT-MIN"
-                       id="ExtDFTMin" formControlName="ExtDFTMin">
+                       [id]="'ExtDFTMin' + paintWorkItem.PaintLevel" formControlName="ExtDFTMin">
                 <span class="mx-1">|</span>
                 <input type="number" min="1" class="my-input" placeholder="DFT-MAX"
-                       id="ExtDFTMax" formControlName="ExtDFTMax">
+                       [id]="'ExtDFTMax' + paintWorkItem.PaintLevel" formControlName="ExtDFTMax">
             </div>
 
-            <label for="ExtColorString" class="my-label-col-1">Color/Standard:</label>
+            <label [for]="'ExtColorString' + paintWorkItem.PaintLevel" class="my-label-col-1">Color/Standard:</label>
             <div class="edit-form-content col-sm-5">
                 <input type="text" class="my-input-click" placeholder="External Color"
                        (click)="onOpenDialogBox('ColorExt')" readonly
-                       id="ExtColorString" formControlName="ExtColorString">
+                       [id]="'ExtColorString' + paintWorkItem.PaintLevel" formControlName="ExtColorString">
                 <span class="mx-1">|</span>
                 <input type="text" class="my-input-click" placeholder="External StandardTime"
                        (click)="onOpenDialogBox('StandardTimeExt')" readonly
-                       id="ExtStandradTimeString" formControlName="ExtStandradTimeString">
+                       [id]="'ExtStandradTimeString' + paintWorkItem.PaintLevel" formControlName="ExtStandradTimeString">
             </div>
         </div>
     </form>
