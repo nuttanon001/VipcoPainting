@@ -125,6 +125,38 @@ namespace VipcoPainting.Helpers
             CreateMap<PaintWorkItemViewModel, PaintWorkItem>();
 
             #endregion PaintWorkItem
+
+            #region BlastRoom
+
+            CreateMap<BlastRoom, BlastRoomViewModel>()
+                .ForMember(x => x.TeamBlastString,
+                          o => o.MapFrom(s => s.PaintTeam == null ? "-" : $"{s.PaintTeam.TeamName}"))
+                .ForMember(x => x.PaintTeam, o => o.Ignore());
+
+            CreateMap<BlastRoomViewModel, BlastRoom>();
+            #endregion
+
+            #region TaskMaster
+
+            CreateMap<TaskMaster, TaskMasterViewModel>();
+
+            #endregion
+
+            #region TaskBlastDetail
+
+            CreateMap<TaskBlastDetail, TaskBlastDetailViewModel>()
+                .ForMember(x => x.BlastRoomString,
+                            o => o.MapFrom(s => s.BlastRoom == null ? "-" : $"{s.BlastRoom.BlastRoomName}/{(s.BlastRoom.PaintTeam.TeamName ?? "-")}"))
+                .ForMember(x => x.BlastRoom,o => o.Ignore());
+            #endregion
+
+            #region TaskPaintDetail
+            CreateMap<TaskPaintDetail, TaskPaintDetailViewModel>()
+                .ForMember(x => x.PaintTeamString,
+                            o => o.MapFrom(s => s.PaintTeam == null ? "-" : $"{s.PaintTeam.TeamName}"))
+                .ForMember(x => x.PaintTeam, o => o.Ignore());
+
+            #endregion
         }
     }
 }

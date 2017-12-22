@@ -1,0 +1,51 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Blast Room-Edit</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="BlastRoomName" class="my-label">Room Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert blast room name here."
+                                   id="BlastRoomName" formControlName="BlastRoomName" required>
+                            <validation-messages [control]="editValueForm.controls.BlastRoomName"></validation-messages>
+                        </div>
+
+                        <label for="BlastRoomNumber" class="my-label">Room Number:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" max="100" class="my-input" placeholder="Insert blast room number here."
+                                   id="BlastRoomNumber" formControlName="BlastRoomNumber">
+                            <validation-messages [control]="editValueForm.controls.BlastRoomNumber"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="PaintTeamId" class="my-label">Team:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="paintTeams" filter="filter" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="PaintTeamId" formControlName="PaintTeamId" required>
+                            </p-dropdown>
+                            <validation-messages [control]="editValueForm.controls.PaintTeamId"></validation-messages>
+                        </div>
+
+                        <label for="Remark" class="my-label">Remark:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert blast room remark here."
+                                   id="Remark" formControlName="Remark">
+                            <validation-messages [control]="editValueForm.controls.Remark"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

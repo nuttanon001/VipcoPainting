@@ -17,12 +17,12 @@ using VipcoPainting.Services.Interfaces;
 namespace VipcoPainting.Controllers
 {
     [Produces("application/json")]
-    [Route("api/BlastRoom")]
-    public class BlastRoomController : Controller
+    [Route("api/TaskPaintDetail")]
+    public class TaskPaintDetailController : Controller
     {
         #region PrivateMembers
         // Repository
-        private IRepositoryPainting<BlastRoom> repository;
+        private IRepositoryPainting<TaskPaintDetail> repository;
         // Mapper
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
@@ -30,7 +30,7 @@ namespace VipcoPainting.Controllers
         #endregion PrivateMenbers
 
         #region Constructor
-        public BlastRoomController(IRepositoryPainting<BlastRoom> repo, IMapper map)
+        public TaskPaintDetailController(IRepositoryPainting<TaskPaintDetail> repo, IMapper map)
         {
             // Repository
             this.repository = repo;
@@ -46,82 +46,48 @@ namespace VipcoPainting.Controllers
 
         #region GET
 
-        // GET: api/BlastRoom
+        // GET: api/TaskPaintDetail
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
             var Includes = new List<string> { "PaintTeam" };
 
-            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel, BlastRoom>
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<TaskPaintDetailViewModel, TaskPaintDetail>
                                  (await this.repository.GetAllWithInclude2Async(Includes)),
                                   this.DefaultJsonSettings);
         }
 
-        // GET: api/BlastRoom/5
+        // GET: api/TaskPaintDetail/5
         [HttpGet("{key}")]
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "PaintTeam"};
+            var Includes = new List<string> { "PaintTeam" };
 
-            return new JsonResult(this.mapper.Map<BlastRoom, BlastRoomViewModel>
-                                 (await this.repository.GetAsynvWithIncludes(key, "BlastRoomId", Includes)),
+            return new JsonResult(this.mapper.Map<TaskPaintDetail, TaskPaintDetailViewModel>
+                                 (await this.repository.GetAsynvWithIncludes(key, "TaskPaintDetailId", Includes)),
                                   this.DefaultJsonSettings);
         }
 
+        // GET: api/TaskPaintDetail/GetByMaster/5
+        [HttpGet("GetByMaster/{MasterId}")]
+        public async Task<IActionResult> GetByMaster(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Where(x => x.TaskMasterId == MasterId)
+                                .Include(x => x.PaintTeam);
+
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<TaskPaintDetailViewModel, TaskPaintDetail>
+                                 (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
+        }
         #endregion GET
 
         #region POST
-        // POST: api/BlastRoom/GetScroll
-        [HttpPost("GetScroll")]
-        public async Task<IActionResult> GetScroll([FromBody] ScrollViewModel Scroll)
-        {
-            var QueryData = this.repository.GetAllAsQueryable().Include(x => x.PaintTeam).AsQueryable();
 
-            // Filter
-            var filters = string.IsNullOrEmpty(Scroll.Filter) ? new string[] { "" }
-                                : Scroll.Filter.ToLower().Split(null);
-
-            foreach (var keyword in filters)
-            {
-                QueryData = QueryData.Where(x => x.BlastRoomName.ToLower().Contains(keyword) ||
-                                                 x.BlastRoomNumber.ToString().Contains(keyword) ||
-                                                 x.PaintTeam.TeamName.ToLower().Contains(keyword));
-            }
-
-            // Order
-            switch (Scroll.SortField)
-            {
-                case "BlastRoomName":
-                    if (Scroll.SortOrder == -1)
-                        QueryData = QueryData.OrderByDescending(e => e.BlastRoomName);
-                    else
-                        QueryData = QueryData.OrderBy(e => e.BlastRoomName);
-                    break;
-
-                case "TeamBlastString":
-                    if (Scroll.SortOrder == -1)
-                        QueryData = QueryData.OrderByDescending(e => e.PaintTeam.TeamName);
-                    else
-                        QueryData = QueryData.OrderBy(e => e.PaintTeam.TeamName);
-                    break;
-
-                default:
-                    QueryData = QueryData.OrderByDescending(e => e.CreateDate);
-                    break;
-            }
-            // Skip Take
-            QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
-
-            return new JsonResult(new ScrollDataViewModel<BlastRoomViewModel>(Scroll,
-                this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel,BlastRoom>
-                (await QueryData.AsNoTracking().ToListAsync())), this.DefaultJsonSettings);
-        }
-
-        // POST: api/BlastRoom
+        // POST: api/TaskPaintDetail
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]BlastRoom nBlastWorkItem)
+        public async Task<IActionResult> Post([FromBody]TaskPaintDetail nBlastWorkItem)
         {
             if (nBlastWorkItem != null)
             {
@@ -131,20 +97,23 @@ namespace VipcoPainting.Controllers
                 if (nBlastWorkItem.PaintTeam != null)
                     nBlastWorkItem.PaintTeam = null;
 
+                if (nBlastWorkItem.PaintWorkItem != null)
+                    nBlastWorkItem.PaintWorkItem = null;
+
                 return new JsonResult(await this.repository.AddAsync(nBlastWorkItem), this.DefaultJsonSettings);
             }
-            return NotFound(new { Error = "Not found blast room data !!!" });
+            return NotFound(new { Error = "Not found task blast detail data !!!" });
         }
 
         #endregion POST
 
         #region PUT
 
-        // PUT: api/BlastRoom/5
+        // PUT: api/TaskPaintDetail/5
         [HttpPut("{key}")]
-        public async Task<IActionResult> PutByNumber(int key, [FromBody]BlastRoom uBlastWorkItem)
+        public async Task<IActionResult> PutByNumber(int key, [FromBody]TaskPaintDetail uBlastWorkItem)
         {
-            var Message = "Blast room not been found.";
+            var Message = "Task blast detail not been found.";
 
             if (uBlastWorkItem != null)
             {
@@ -154,6 +123,9 @@ namespace VipcoPainting.Controllers
 
                 if (uBlastWorkItem.PaintTeam != null)
                     uBlastWorkItem.PaintTeam = null;
+
+                if (uBlastWorkItem.PaintWorkItem != null)
+                    uBlastWorkItem.PaintWorkItem = null;
 
                 return new JsonResult(await this.repository.UpdateAsync(uBlastWorkItem, key), this.DefaultJsonSettings);
             }
@@ -165,7 +137,7 @@ namespace VipcoPainting.Controllers
 
         #region DELETE
 
-        // DELETE: api/BlastRoom/5
+        // DELETE: api/TaskPaintDetail/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

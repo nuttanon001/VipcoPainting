@@ -1,6 +1,7 @@
 ﻿import { RequirePaintList } from "./require-paint-list.model";
+import { BaseModel } from "../base.model";
 
-export interface RequirePaintMaster {
+export interface RequirePaintMaster extends BaseModel {
     RequirePaintingMasterId: number;
     ReceiveDate?: Date;
     RequireDate?: Date;
@@ -8,18 +9,14 @@ export interface RequirePaintMaster {
     PaintingSchedule?: string;
     RequireNo?: string;
     RequirePaintingStatus?: number;
-    Creator?: string;
-    CreateDate?: Date;
-    Modifyer?: string;
-    ModifyDate?: Date;
 
     //FK
     RequireEmp?: string;
-    RequireString?: string;
     ReceiveEmp?: string;
-    ReceiveString?: string;
-
     ProjectCodeSubId?: number;
+    // ViewModel
+    RequireString?: string;
+    ReceiveString?: string;
     ProjectCodeSubString?: string;
 }
 

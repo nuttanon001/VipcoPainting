@@ -209,6 +209,7 @@ export class RequirePaintingEditComponent
         } else {
             listItem = {
                 RequirePaintingListId: 0,
+                RequirePaintingListStatus : 1
             };
             this.indexListItem = -1;
         }

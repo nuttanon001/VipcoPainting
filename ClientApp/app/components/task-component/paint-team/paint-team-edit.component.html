@@ -1,0 +1,33 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Paint Team-Edit</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="TeamName" class="my-label">Team Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert paint team name here."
+                                   id="TeamName" formControlName="TeamName" required>
+                            <validation-messages [control]="editValueForm.controls.TeamName"></validation-messages>
+                        </div>
+
+                        <label for="Ramark" class="my-label">Remark:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert paint team remark here."
+                                   id="Ramark" formControlName="Ramark">
+                            <validation-messages [control]="editValueForm.controls.Ramark"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

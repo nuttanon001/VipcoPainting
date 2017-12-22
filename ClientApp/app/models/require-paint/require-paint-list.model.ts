@@ -1,8 +1,10 @@
 ﻿import { BlastWorkItem } from "./blast-workitem.model";
 import { PaintWorkItem } from "./paint-workitem.model";
+import { BaseModel } from "../base.model";
 
-export interface RequirePaintList {
+export interface RequirePaintList extends BaseModel {
     RequirePaintingListId: number;
+    RequirePaintingListStatus?: number;
     Description?: string;
     PartNo?: string;
     MarkNo?: string;
@@ -18,10 +20,6 @@ export interface RequirePaintList {
     Weight?: number;
     PlanStart?: Date;
     PlanEnd?: Date;
-    Creator?: string;
-    CreateDate?: Date;
-    Modifyer?: string;
-    ModifyDate?: Date;
     // FK
     RequirePaintingMasterId?: number;
     BlastWorkItems?: Array<BlastWorkItem>;

@@ -12,6 +12,7 @@ namespace VipcoPainting.Models
     {
         [Key]
         public int RequirePaintingListId { get; set; }
+        public RequirePaintingListStatus? RequirePaintingListStatus { get; set; }
         [Required]
         [StringLength(250)]
         public string Description { get; set; }
@@ -42,5 +43,13 @@ namespace VipcoPainting.Models
         public ICollection<BlastWorkItem> BlastWorkItems { get; set; }
         // PaintWorkItem
         public ICollection<PaintWorkItem> PaintWorkItems { get; set; }
+    }
+
+    public enum RequirePaintingListStatus
+    {
+        Waiting = 1,
+        Tasking = 2,
+        Complate = 3,
+        Cancel = 4,
     }
 }

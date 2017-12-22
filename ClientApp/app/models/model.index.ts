@@ -13,3 +13,9 @@ export { SurfaceType } from "./surface-type/surface-type.model";
 export { ValidationMaster, ValidationResult, FormErrors } from "./vaildation/validation.model";
 export { User } from "./user/user.model";
 export { IDictionary } from "./dictionary/idictionary.model";
+// Task
+export { BlastRoom } from "./task/blast-room.model";
+export { PaintTeam } from "./task/paint-team.model";
+export { TaskMaster } from "./task/task-master.model";
+export { TaskBlastDetail } from "./task/task-blast-detail.model";
+export { TaskPaintDetail } from "./task/task-paint-detail.model";

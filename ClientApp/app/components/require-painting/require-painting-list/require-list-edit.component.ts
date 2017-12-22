@@ -113,6 +113,7 @@ export class RequireListEditComponent implements OnInit {
         // console.log("buildForm");
         this.RequirePaintListForm = this.fb.group({
             RequirePaintingListId: [this.RequirePaintList.RequirePaintingListId],
+            RequirePaintingListStatus: [this.RequirePaintList.RequirePaintingListStatus],
             Description: [this.RequirePaintList.Description,
                 [
                     Validators.required,

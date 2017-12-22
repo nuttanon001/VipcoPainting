@@ -27,16 +27,30 @@
 
   <ItemGroup>
     <None Remove="ClientApp\app\components\other-component\orther.index.ts" />
+    <None Remove="ClientApp\app\components\task-component\task.index.ts" />
+    <None Remove="ClientApp\app\models\base.model.ts" />
     <None Remove="ClientApp\app\models\dictionary\idictionary.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
+    <None Remove="ClientApp\app\models\task\blast-room.model.ts" />
+    <None Remove="ClientApp\app\models\task\paint-team.model.ts" />
+    <None Remove="ClientApp\app\models\task\task-blast-detail.model.ts" />
+    <None Remove="ClientApp\app\models\task\task-master.model.ts" />
+    <None Remove="ClientApp\app\models\task\task-paint-detail.model.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\other-component\orther.index.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\task-component\task.index.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\base.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\dictionary\idictionary.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\task\blast-room.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\task\paint-team.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\task\task-blast-detail.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\task\task-master.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\task\task-paint-detail.model.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

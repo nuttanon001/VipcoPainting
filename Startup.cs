@@ -31,6 +31,7 @@ namespace VipcoPainting
             // this is in package Microsoft.AspNetCore.NodeServices
             services.AddNodeServices();
             // Add AutoMapper
+            AutoMapper.Mapper.Reset();
             services.AddAutoMapper(typeof(Startup));
             // Add DbContext.
             // Change AddDbContextPool if EF Core 2.1

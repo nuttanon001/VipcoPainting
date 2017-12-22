@@ -124,6 +124,7 @@ namespace VipcoPainting.Controllers
                         (await this.repositoryProMas.GetAsync(requirePaintMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
 
                     requirePaintMaster.ProjectCodeSubString += $"/{requirePaintMaster.ProjectCodeSub.Code}";
+                    requirePaintMaster.ProjectCodeSub = null;
                 }
             }
 

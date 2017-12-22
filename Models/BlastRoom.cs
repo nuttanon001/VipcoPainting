@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
@@ -12,8 +13,6 @@ namespace VipcoPainting.Models
         public int BlastRoomId { get; set; }
         [StringLength(100)]
         public string BlastRoomName { get; set; }
-        [MinLength(1)]
-        [MaxLength(100)]
         public int? BlastRoomNumber { get; set; }
         [StringLength(200)]
         public string Remark { get; set; }

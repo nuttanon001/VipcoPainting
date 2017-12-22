@@ -35,6 +35,7 @@ namespace VipcoPainting.Models
     {
         Waiting = 1,
         Tasking = 2,
-        Complate = 3
+        Complate = 3,
+        Cancel = 4,
     }
 }
