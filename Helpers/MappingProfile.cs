@@ -113,6 +113,10 @@ namespace VipcoPainting.Helpers
                             o => o.MapFrom(s => s.ExtColorItem == null ? null : $"{ s.ExtColorItem.ColorName }"))
                 .ForMember(x => x.IntColorString,
                             o => o.MapFrom(s => s.IntColorItem == null ? null : $"{ s.IntColorItem.ColorName }"))
+                .ForMember(x => x.IntAreaString,
+                            o => o.MapFrom(s => s.IntArea == null ? "-" : $"Area:{s.IntArea} DFT:{s.IntDFTMin}/{s.IntDFTMax}"))
+                .ForMember(x => x.ExtAreaString,
+                            o => o.MapFrom(s => s.ExtArea == null ? "-" : $"Area:{s.ExtArea} DFT:{s.ExtDFTMin}/{s.ExtDFTMax}"))
                 .ForMember(x => x.StandradTimeExt, o => o.Ignore())
                 .ForMember(x => x.StandradTimeInt, o => o.Ignore())
                 .ForMember(x => x.ExtColorItem, o => o.Ignore())

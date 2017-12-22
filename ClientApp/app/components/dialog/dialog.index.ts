@@ -6,3 +6,4 @@ export { StandradTimeDialogComponent } from "./standrad-time-dialog.component";
 export { SurfaceTypeDialogComponent } from "./surface-type-dialog.component";
 export { EmployeeDialogComponent } from "./employee-dialog.component";
 export { ProjectDialogComponent } from "./project-dialog.component";
+export { RequirePaintingDialogComponent } from "./require-painting-dialog.component";

@@ -18,7 +18,7 @@ namespace VipcoPainting.Models
         public string PaintingSchedule { get; set; }
         [StringLength(200)]
         public string RequireNo { get; set; }
-
+        public RequirePaintingStatus RequirePaintingStatus { get; set; }
         //FK
         // RequireEmployee
         public string RequireEmp { get; set; }
@@ -29,6 +29,12 @@ namespace VipcoPainting.Models
         public ProjectCodeSub ProjectCodeSub { get; set; }
         // RequirePaintingLists
         public ICollection<RequirePaintingList> RequirePaintingLists { get; set; }
+    }
 
+    public enum RequirePaintingStatus
+    {
+        Waiting = 1,
+        Tasking = 2,
+        Complate = 3
     }
 }

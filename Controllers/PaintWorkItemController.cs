@@ -79,6 +79,7 @@ namespace VipcoPainting.Controllers
         {
             var QueryData = this.repository.GetAllAsQueryable()
                                 .Where(x => x.RequirePaintingListId == MasterId)
+                                .OrderBy(x => x.PaintLevel)
                                 .Include(x => x.StandradTimeExt)
                                 .Include(x => x.StandradTimeInt)
                                 .Include(x => x.ExtColorItem)
@@ -87,6 +88,7 @@ namespace VipcoPainting.Controllers
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<PaintWorkItemViewModel, PaintWorkItem>
                                  (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
         }
+
         #endregion GET
 
         #region POST

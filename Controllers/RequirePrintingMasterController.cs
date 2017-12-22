@@ -2,17 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-
 using System;
+using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using VipcoPainting.Helpers;
 using VipcoPainting.Models;
-using VipcoPainting.ViewModels;
 using VipcoPainting.Services.Interfaces;
-using System.Linq.Expressions;
+using VipcoPainting.ViewModels;
 
 namespace VipcoPainting.Controllers
 {
@@ -33,7 +31,7 @@ namespace VipcoPainting.Controllers
 
         private async Task<string> GeneratedCode(int ProjectSubId)
         {
-            if (ProjectSubId > 0 )
+            if (ProjectSubId > 0)
             {
                 var ProjectSub = await this.repositoryProSub.GetAsync(ProjectSubId);
                 if (ProjectSub != null)
@@ -72,7 +70,7 @@ namespace VipcoPainting.Controllers
         #region Constructor
 
         public RequirePaintingMasterController(
-            IRepositoryPainting<RequirePaintingMaster> repo, 
+            IRepositoryPainting<RequirePaintingMaster> repo,
             IRepositoryPainting<ProjectCodeSub> repoProSub,
             IRepositoryMachine<ProjectCodeMaster> repoProMas,
             IRepositoryMachine<Employee> repoEmp,
@@ -117,24 +115,140 @@ namespace VipcoPainting.Controllers
             {
                 if (!string.IsNullOrEmpty(requirePaintMaster.RequireEmp))
                 {
-                    requirePaintMaster.RequireString = 
+                    requirePaintMaster.RequireString =
                         (await this.repositoryEmp.GetAsync(requirePaintMaster.RequireEmp))?.NameThai ?? "";
                 }
                 if (requirePaintMaster.ProjectCodeSub != null)
                 {
-                    requirePaintMaster.ProjectCodeSubString = 
+                    requirePaintMaster.ProjectCodeSubString =
                         (await this.repositoryProMas.GetAsync(requirePaintMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
 
                     requirePaintMaster.ProjectCodeSubString += $"/{requirePaintMaster.ProjectCodeSub.Code}";
                 }
             }
 
-            return new JsonResult(requirePaintMaster,this.DefaultJsonSettings);
+            return new JsonResult(requirePaintMaster, this.DefaultJsonSettings);
+        }
+
+        // GET: api/RequirePaintingMaster/RequirePaintingMasterHasWait/
+        [HttpGet("RequirePaintingMasterHasWait")]
+        public async Task<IActionResult> GetRequirePaintingMasterHasWait()
+        {
+            string Message = "";
+
+            try
+            {
+                var QueryData = this.repository.GetAllAsQueryable()
+                                               .Include(x => x.ProjectCodeSub)
+                                               .AsQueryable();
+
+                QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Waiting);
+
+                var GetData = await QueryData.ToListAsync();
+                if (GetData.Any())
+                {
+                    var dataTable = new List<IDictionary<String, Object>>();
+                    List<string> columns = new List<string>() { "JobNumber", "Employee" };
+
+                    foreach (var item in GetData.Where(x => x.ReceiveDate != null)
+                                                .OrderBy(x => x.ReceiveDate)
+                                                .GroupBy(x => x.ReceiveDate.Value.Date)
+                                                .Select(x => x.Key))
+                        columns.Add(item.ToString("dd/MM/yy"));
+
+                    foreach (var ProjectCodeSub in GetData.GroupBy(x => x.ProjectCodeSub))
+                    {
+                        foreach (var RequireEmp in ProjectCodeSub.GroupBy(x => x.RequireEmp))
+                        {
+                            if (RequireEmp == null)
+                                continue;
+                            else
+                            {
+                                var Employee = await this.repositoryEmp.GetAsync(RequireEmp.Key);
+
+                                IDictionary<String, Object> rowData = new ExpandoObject();
+                                var EmployeeReq = RequireEmp.Key != null ? $"{(Employee?.NameThai ?? "")}" : "No-Data";
+                                // add column time
+                                rowData.Add(columns[1], EmployeeReq);
+                                foreach (var item in RequireEmp)
+                                {
+                                    // Get ProjectMaster
+                                    var ProjectMaster = await this.repositoryProMas.GetAsync(item.ProjectCodeSub.ProjectCodeMasterId ?? 0);
+
+                                    string JobNumber = $"{ProjectMaster?.ProjectCode ?? "No-Data"}/{(item.ProjectCodeSub == null ? "No-Data" : item.ProjectCodeSub.Code)}";
+                                    // if don't have type add item to rowdata
+                                    if (!rowData.Keys.Any(x => x == "JobNumber"))
+                                        rowData.Add(columns[0], JobNumber);
+
+                                    var key = columns.Where(y => y.Contains(item.ReceiveDate.Value.ToString("dd/MM/yy"))).FirstOrDefault();
+                                    // if don't have data add it to rowData
+                                    if (!rowData.Keys.Any(x => x == key))
+                                        rowData.Add(key, $"คลิกที่ไอคอน เพื่อแสดงข้อมูล#{item.RequirePaintingMasterId}");
+                                    else
+                                        rowData[key] += $"#{item.RequirePaintingMasterId}";
+                                }
+                                dataTable.Add(rowData);
+                            }
+                        }
+                    }
+
+                    if (dataTable.Any())
+                        return new JsonResult(new
+                        {
+                            Columns = columns,
+                            DataTable = dataTable
+                        }, this.DefaultJsonSettings);
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
         }
 
         #endregion GET
 
         #region POST
+
+        // POST: api/RequirePaintingMaster/GetMultiKey
+        [HttpPost("GetMultipleKey")]
+        public async Task<IActionResult> GetMultipleKey([FromBody] List<string> ListKey)
+        {
+            if (ListKey != null)
+            {
+                var Includes = new List<string> { "ProjectCodeSub" };
+                var RequirePaintingMaster = new List<RequirePaintingMasterViewModel>();
+
+                foreach (var key in ListKey)
+                {
+                    if (int.TryParse(key, out int keyInt))
+                    {
+                        var requirePaintMaster = (this.mapper.Map<RequirePaintingMaster, RequirePaintingMasterViewModel>
+                            (await this.repository.GetAsynvWithIncludes(keyInt, "RequirePaintingMasterId", Includes)));
+
+                        if (!string.IsNullOrEmpty(requirePaintMaster.RequireEmp))
+                        {
+                            requirePaintMaster.RequireString =
+                                (await this.repositoryEmp.GetAsync(requirePaintMaster.RequireEmp))?.NameThai ?? "";
+                        }
+                        if (requirePaintMaster.ProjectCodeSub != null)
+                        {
+                            requirePaintMaster.ProjectCodeSubString =
+                                (await this.repositoryProMas.GetAsync(requirePaintMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
+
+                            requirePaintMaster.ProjectCodeSubString += $"/{requirePaintMaster.ProjectCodeSub.Code}";
+                        }
+
+                        RequirePaintingMaster.Add(requirePaintMaster);
+                    }
+                }
+
+                if (RequirePaintingMaster.Any())
+                    return new JsonResult(RequirePaintingMaster, this.DefaultJsonSettings);
+            }
+            return NotFound(new { Error = "Not Found Key." });
+        }
 
         // POST: api/RequirePaintingMaster/GetScroll
         [HttpPost("GetScroll")]
@@ -188,8 +302,8 @@ namespace VipcoPainting.Controllers
                 QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
 
                 return new JsonResult(new ScrollDataViewModel<RequirePaintingMasterViewModel>
-                    (Scroll, 
-                    this.ConvertTable.ConverterTableToViewModel<RequirePaintingMasterViewModel,RequirePaintingMaster>(await QueryData.AsNoTracking().ToListAsync())), 
+                    (Scroll,
+                    this.ConvertTable.ConverterTableToViewModel<RequirePaintingMasterViewModel, RequirePaintingMaster>(await QueryData.AsNoTracking().ToListAsync())),
                     this.DefaultJsonSettings);
             }
             catch (Exception ex)
@@ -197,7 +311,7 @@ namespace VipcoPainting.Controllers
                 Message = $"Has error {ex.ToString()}";
             }
             return NotFound(new { Error = Message });
-         }
+        }
 
         // POST: api/RequirePaintingMaster
         [HttpPost]
@@ -240,7 +354,7 @@ namespace VipcoPainting.Controllers
 
                 if (uRequirePaintingMaster.RequirePaintingLists != null)
                     uRequirePaintingMaster.RequirePaintingLists = null;
-                
+
                 // update Master not update Detail it need to update Detail directly
                 return new JsonResult(await this.repository.UpdateAsync(uRequirePaintingMaster, key), this.DefaultJsonSettings);
             }

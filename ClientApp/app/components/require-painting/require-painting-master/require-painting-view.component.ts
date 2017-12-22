@@ -1,11 +1,12 @@
 ﻿// angular
-import { Component, Output, EventEmitter, Input } from "@angular/core";
+import { Component, Output, EventEmitter, Input, ViewContainerRef} from "@angular/core";
 // models
 import { RequirePaintMaster, RequirePaintList } from "../../../models/model.index";
 // components
 import { BaseViewComponent } from "../../base-component/base-view.component";
 // services
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
+import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { TableColumn } from "@swimlane/ngx-datatable";
 
 @Component({
@@ -25,11 +26,12 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
         { prop: "UnitNo", name: "UnitNo", flexGrow: 1 },
         { prop: "Quantity", name: "Q'ty", flexGrow: 1 },
         { prop: "Weight", name: "Weight", flexGrow: 1 },
-
     ];
     /** require-painting-view ctor */
     constructor(
         private service: RequirePaintListService,
+        private dialogService: DialogsService,
+        private viewContainerRef: ViewContainerRef,
     ) {
         super();
     }
@@ -41,5 +43,12 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
                 this.requireLists = dbLists.slice();//[...dbDetail];
                 // console.log("DataBase is :", this.details);
             }, error => console.error(error));
+    }
+
+    // on Require-Workitem
+    onRequestWorkItem(value?: RequirePaintList) {
+        if (value) {
+            this.dialogService.dialogRequestPaintList(this.viewContainerRef, value.RequirePaintingListId);
+        }
     }
 }

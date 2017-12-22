@@ -10,6 +10,19 @@ import { BaseRestService, BaseCommunicateService } from "../base-service/base.in
 @Injectable()
 export class RequirePaintMasterService extends BaseRestService<RequirePaintMaster> {
     constructor(http: Http) { super(http, "api/RequirePaintingMaster/"); }
+
+    // get waiting require painting master
+    getRequirePaintingMasterHasWait(): Observable<any> {
+        let url: string = `${this.actionUrl}RequirePaintingMasterHasWait/`;
+        return this.http.get(url).map(this.extractData).catch(this.handleError);
+    }
+
+    // GetMultipleKey
+    // get require paint master with MultipleKey
+    postGetMultipleKey(MutipleKey: Array<string>): Observable<Array<RequirePaintMaster>> {
+        let url: string = `${this.actionUrl}GetMultipleKey/`;
+        return this.http.post(url, MutipleKey).map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

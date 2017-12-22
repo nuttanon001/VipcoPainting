@@ -14,5 +14,7 @@ namespace VipcoPainting.ViewModels
         public string IntStandradTimeString { get; set; }
         public string ExtStandradTimeString { get; set; }
         public string PaintLevelString { get; set; }
+        public string IntAreaString { get; set; }
+        public string ExtAreaString { get; set; }
     }
 }

@@ -19,5 +19,7 @@ namespace VipcoPainting.Models
         public double? VolumeSolids { get; set; }
 
         //FK
+        //RequisitionMaster
+        public ICollection<RequisitionMaster> RequisitionMasters { get; set; }
     }
 }

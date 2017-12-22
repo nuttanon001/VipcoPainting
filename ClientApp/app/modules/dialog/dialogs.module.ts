@@ -13,7 +13,8 @@ import {
     StandradTimeDialogComponent,
     SurfaceTypeDialogComponent,
     EmployeeDialogComponent,
-    ProjectDialogComponent
+    ProjectDialogComponent,
+    RequirePaintingDialogComponent
 } from "../../components/dialog/dialog.index";
 // modules
 import { CustomMaterialModule } from "../customer-material/customer-material.module";
@@ -38,7 +39,8 @@ import { ValidationModule } from "../validation/validation.module";
         StandradTimeDialogComponent,
         SurfaceTypeDialogComponent,
         EmployeeDialogComponent,
-        ProjectDialogComponent
+        ProjectDialogComponent,
+        RequirePaintingDialogComponent
     ],
     declarations: [
         ErrorDialog,
@@ -48,7 +50,8 @@ import { ValidationModule } from "../validation/validation.module";
         StandradTimeDialogComponent,
         SurfaceTypeDialogComponent,
         EmployeeDialogComponent,
-        ProjectDialogComponent
+        ProjectDialogComponent,
+        RequirePaintingDialogComponent
     ],
     providers: [
         DialogsService,
@@ -63,7 +66,8 @@ import { ValidationModule } from "../validation/validation.module";
         StandradTimeDialogComponent,
         SurfaceTypeDialogComponent,
         EmployeeDialogComponent,
-        ProjectDialogComponent
+        ProjectDialogComponent,
+        RequirePaintingDialogComponent
     ],
 })
 export class DialogsModule { }

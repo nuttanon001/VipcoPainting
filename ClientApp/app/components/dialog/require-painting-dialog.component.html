@@ -1,0 +1,52 @@
+﻿<div class="master-dialog-vh">
+    <H5 style="color:cadetblue">Blast & Paint WorkItem</H5>
+    <div class="child-container">
+        <div class="center-content">
+            <split direction="vertical" [gutterSize]="4" [visibleTransition]="true">
+                <split-area [size]="40" [order]="1">
+                    <div class="child-container">
+                        <div class="center-content">
+                            <span class="text-success mb-1">Blast</span>
+                            <ngx-datatable class="material"
+                                           [rows]="blastWorkItems"
+                                           [columns]="columnsBlastWork"
+                                           [columnMode]="force"
+                                           [headerHeight]="50"
+                                           [footerHeight]="0"
+                                           [rowHeight]="50"
+                                           [scrollbarV]="true"
+                                           [scrollbarH]="true"
+                                           [style.height]="'40vh'">
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </split-area>
+                <split-area [size]="60" [order]="2">
+                    <div class="child-container">
+                        <div class="center-content">
+                            <span class="text-success mb-1">Paint</span>
+                            <ngx-datatable class="material"
+                                           [rows]="paintWorkItems"
+                                           [columns]="columnsPaintWork"
+                                           [columnMode]="force"
+                                           [headerHeight]="50"
+                                           [footerHeight]="0"
+                                           [rowHeight]="50"
+                                           [scrollbarV]="true"
+                                           [scrollbarH]="true"
+                                           [style.height]="'40vh'">
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </split-area>
+            </split>
+        </div>
+        <div class="right-content">
+            <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
+                    matTooltip="Go Back" matTooltipPosition="left">
+                <i class="fa fa-2x fa-minus" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+</div>

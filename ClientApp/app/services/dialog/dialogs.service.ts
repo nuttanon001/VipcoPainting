@@ -9,13 +9,14 @@ import {
     StandradTimeDialogComponent,
     SurfaceTypeDialogComponent,
     EmployeeDialogComponent,
-    ProjectDialogComponent
+    ProjectDialogComponent,
+    RequirePaintingDialogComponent
 } from "../../components/dialog/dialog.index";
 // models
 import {
     Color, StandradTime,
     SurfaceType, Employee,
-    ProjectSub
+    ProjectSub,
 } from "../../models/model.index";
 
 @Injectable()
@@ -149,4 +150,19 @@ export class DialogsService {
         return dialogRef.afterClosed();
     }
 
+    public dialogRequestPaintList(viewContainerRef: ViewContainerRef, MasterId: number = 0): Observable<boolean> {
+        let dialogRef: MatDialogRef<RequirePaintingDialogComponent>;
+        let config: MatDialogConfig = new MatDialogConfig();
+
+        // config
+        config.viewContainerRef = viewContainerRef;
+        config.data = MasterId;
+        // config.height = this.height;
+        // config.width= this.width;
+        config.hasBackdrop = true;
+
+        // open dialog
+        dialogRef = this.dialog.open(RequirePaintingDialogComponent, config);
+        return dialogRef.afterClosed();
+    }
 }

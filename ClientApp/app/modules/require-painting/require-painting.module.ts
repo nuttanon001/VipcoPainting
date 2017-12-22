@@ -9,8 +9,6 @@ import { RequirePaintingCenterComponent } from "../../components/require-paintin
 import { RequirePaintingEditComponent } from "../../components/require-painting/require-painting-master/require-painting-edit.component";
 import { RequirePaintingMasterComponent } from "../../components/require-painting/require-painting-master/require-painting-master.component";
 import { RequirePaintingViewComponent } from "../../components/require-painting/require-painting-master/require-painting-view.component";
-import { RequirePaintingListEditComponent } from "../../components/require-painting/require-painting-list/require-painting-list-edit.component";
-import { RequirePaintingListViewComponent } from "../../components/require-painting/require-painting-list/require-painting-list-view.component";
 import { RequireListEditComponent } from "../../components/require-painting/require-painting-list/require-list-edit.component";
 import { PaintWorkItemEditComponent } from "../../components/require-painting/workitem/paint-workitem-edit.component";
 import { BlastWorkitemEditComponent } from "../../components/require-painting/workitem/blast-workitem-edit.component";
@@ -21,7 +19,7 @@ import {
 } from "../module.index";
 // services
 import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
-import { RequirePaintMasterService,RequirePaintMasterServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
+import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
 import { BlastWorkitemService } from "../../services/require-paint/blast-workitem.service";
 import { PaintWorkitemService } from "../../services/require-paint/paint-workitem.service";
 
@@ -31,8 +29,6 @@ import { PaintWorkitemService } from "../../services/require-paint/paint-workite
         RequirePaintingEditComponent,
         RequirePaintingMasterComponent,
         RequirePaintingViewComponent,
-        RequirePaintingListEditComponent,
-        RequirePaintingListViewComponent,
         RequireListEditComponent,
         PaintWorkItemEditComponent,
         BlastWorkitemEditComponent,

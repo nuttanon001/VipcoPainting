@@ -105,7 +105,9 @@ export class RequirePaintingEditComponent
         } else {
             this.editValue = {
                 RequirePaintingMasterId: 0,
-                RequireDate: new Date
+                RequirePaintingStatus : 1,
+                RequireDate: new Date,
+                ReceiveDate: new Date,
             };
 
             if (this.serviceAuth.getAuth) {

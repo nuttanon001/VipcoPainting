@@ -7,6 +7,7 @@ export interface RequirePaintMaster {
     FinishDate?: Date;
     PaintingSchedule?: string;
     RequireNo?: string;
+    RequirePaintingStatus?: number;
     Creator?: string;
     CreateDate?: Date;
     Modifyer?: string;
