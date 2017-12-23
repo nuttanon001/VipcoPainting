@@ -126,6 +126,13 @@ label {
     cursor: pointer;
 }
 
+.my-input-read-only {
+    @extend .my-input;
+    background-color: transparent !important;
+    color: maroon !important;
+    cursor: pointer;
+}
+
 .my-input-combobox {
     @extend .form-control;
     @extend .form-control-sm;

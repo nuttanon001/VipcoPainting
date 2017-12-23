@@ -50,20 +50,20 @@ namespace VipcoPainting.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
+            //var Includes = new List<string> { "" };
+            //return new JsonResult(await this.repository.GetAllWithInclude2Async(Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         // GET: api/SurfaceType/5
         [HttpGet("{key}")]
         public async Task<IActionResult> Get(int key)
         {
-            // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "SurfaceTypeId", Includes),
-                                        this.DefaultJsonSettings);
+            return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            //var Includes = new List<string> { "" };
+            //return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "SurfaceTypeId", Includes),
+            //                            this.DefaultJsonSettings);
         }
 
         #endregion GET

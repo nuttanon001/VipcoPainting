@@ -5,6 +5,7 @@ import "rxjs/Rx";
 import "hammerjs";
 // services
 import { DialogsService } from "../../services/dialog/dialogs.service";
+import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
 // components
 import {
     ConfirmDialog, ContextDialog,
@@ -14,8 +15,10 @@ import {
     SurfaceTypeDialogComponent,
     EmployeeDialogComponent,
     ProjectDialogComponent,
-    RequirePaintingDialogComponent
+    RequirePaintingDialogComponent,
+    RequirePaintingViewDialogComponent
 } from "../../components/dialog/dialog.index";
+import { RequirePaintingViewScheduleComponent } from "../../components/require-painting/require-painting-master/require-painting-view-schedule.component";
 // modules
 import { CustomMaterialModule } from "../customer-material/customer-material.module";
 import { ValidationModule } from "../validation/validation.module";
@@ -40,7 +43,9 @@ import { ValidationModule } from "../validation/validation.module";
         SurfaceTypeDialogComponent,
         EmployeeDialogComponent,
         ProjectDialogComponent,
-        RequirePaintingDialogComponent
+        RequirePaintingDialogComponent,
+        RequirePaintingViewDialogComponent,
+        RequirePaintingViewScheduleComponent
     ],
     declarations: [
         ErrorDialog,
@@ -51,10 +56,13 @@ import { ValidationModule } from "../validation/validation.module";
         SurfaceTypeDialogComponent,
         EmployeeDialogComponent,
         ProjectDialogComponent,
-        RequirePaintingDialogComponent
+        RequirePaintingDialogComponent,
+        RequirePaintingViewDialogComponent,
+        RequirePaintingViewScheduleComponent
     ],
     providers: [
         DialogsService,
+        RequirePaintListService,
     ],
     // a list of components that are not referenced in a reachable component template.
     // doc url is :https://angular.io/guide/ngmodule-faq
@@ -67,7 +75,9 @@ import { ValidationModule } from "../validation/validation.module";
         SurfaceTypeDialogComponent,
         EmployeeDialogComponent,
         ProjectDialogComponent,
-        RequirePaintingDialogComponent
+        RequirePaintingDialogComponent,
+        RequirePaintingViewDialogComponent,
+        RequirePaintingViewScheduleComponent
     ],
 })
 export class DialogsModule { }

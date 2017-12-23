@@ -65,6 +65,11 @@ namespace VipcoPainting.Controllers
             return "xxxx/xx/xx";
         }
 
+        private IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+        {
+            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+                yield return day;
+        }
         #endregion PrivateMenbers
 
         #region Constructor
@@ -151,9 +156,9 @@ namespace VipcoPainting.Controllers
                     var dataTable = new List<IDictionary<String, Object>>();
                     List<string> columns = new List<string>() { "JobNumber", "Employee" };
 
-                    foreach (var item in GetData.Where(x => x.ReceiveDate != null)
-                                                .OrderBy(x => x.ReceiveDate)
-                                                .GroupBy(x => x.ReceiveDate.Value.Date)
+                    foreach (var item in GetData.Where(x => x.RequireDate != null)
+                                                .OrderBy(x => x.RequireDate)
+                                                .GroupBy(x => x.RequireDate.Value.Date)
                                                 .Select(x => x.Key))
                         columns.Add(item.ToString("dd/MM/yy"));
 
@@ -181,7 +186,7 @@ namespace VipcoPainting.Controllers
                                     if (!rowData.Keys.Any(x => x == "JobNumber"))
                                         rowData.Add(columns[0], JobNumber);
 
-                                    var key = columns.Where(y => y.Contains(item.ReceiveDate.Value.ToString("dd/MM/yy"))).FirstOrDefault();
+                                    var key = columns.Where(y => y.Contains(item.RequireDate.Value.ToString("dd/MM/yy"))).FirstOrDefault();
                                     // if don't have data add it to rowData
                                     if (!rowData.Keys.Any(x => x == key))
                                         rowData.Add(key, $"คลิกที่ไอคอน เพื่อแสดงข้อมูล#{item.RequirePaintingMasterId}");
@@ -311,6 +316,173 @@ namespace VipcoPainting.Controllers
             {
                 Message = $"Has error {ex.ToString()}";
             }
+            return NotFound(new { Error = Message });
+        }
+
+        // POST: api/RequirePaintingMaster/RequirePaintSchedule
+        [HttpPost("RequirePaintSchedule")]
+        public async Task<IActionResult> RequirePaintSchedule([FromBody] OptionRequirePaintSchedule Scehdule)
+        {
+            string Message = "";
+            try
+            {
+                var QueryData = this.repository.GetAllAsQueryable()
+                                               .Where(x => x.RequireDate != null)
+                                               .Include(x => x.ProjectCodeSub)
+                                               .AsQueryable();
+                int TotalRow;
+
+                if (Scehdule != null)
+                {
+                    if (!string.IsNullOrEmpty(Scehdule.Filter))
+                    {
+                        // Filter
+                        var filters = string.IsNullOrEmpty(Scehdule.Filter) ? new string[] { "" }
+                                            : Scehdule.Filter.ToLower().Split(null);
+                        foreach (var keyword in filters)
+                        {
+                            QueryData = QueryData.Where(x => x.RequireNo.ToLower().Contains(keyword) ||
+                                                             x.PaintingSchedule.ToLower().Contains(keyword) ||
+                                                             x.ProjectCodeSub.Code.ToLower().Contains(keyword));
+                        }
+                    }
+
+                    // Option ProjectCodeMaster
+                    if (Scehdule.ProjectId.HasValue)
+                    {
+                        QueryData = QueryData.Where(x => x.ProjectCodeSubId == Scehdule.ProjectId);
+                    }
+                    // Option SDate
+                    if (Scehdule.SDate.HasValue)
+                    {
+                    }
+
+                    // Option EDate
+                    if (Scehdule.EDate.HasValue)
+                    {
+                    }
+
+                    // Option Status
+                    if (Scehdule.Status.HasValue)
+                    {
+                        if (Scehdule.Status == 1)
+                            QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Waiting);
+                        else if (Scehdule.Status == 2)
+                            QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Tasking);
+                        else
+                            QueryData = QueryData.Where(x => x.RequirePaintingStatus != RequirePaintingStatus.Cancel);
+                    }
+                    else
+                    {
+                        QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Waiting);
+                    }
+                    
+                    TotalRow = await QueryData.CountAsync();
+
+                    // Option Skip and Task
+                    if (Scehdule.Skip.HasValue && Scehdule.Take.HasValue)
+                        QueryData = QueryData.Skip(Scehdule.Skip ?? 0).Take(Scehdule.Take ?? 10);
+                    else
+                        QueryData = QueryData.Skip(0).Take(10);
+                }
+                else
+                {
+                    TotalRow = await QueryData.CountAsync();
+                }
+
+                var GetData = await QueryData.ToListAsync();
+                if (GetData.Any())
+                {
+                    List<string> Columns = new List<string>();
+
+                    var MinDate = GetData.Min(x => x.RequireDate);
+                    var MaxDate = GetData.Max(x => x.RequireDate);
+
+                    if (MinDate == null && MaxDate == null)
+                    {
+                        return NotFound(new { Error = "Data not found" });
+                    }
+
+                    foreach (DateTime day in EachDay(MinDate.Value, MaxDate.Value))
+                    {
+                        if (GetData.Any(x => x.RequireDate.Value.Date == day.Date))
+                            Columns.Add(day.Date.ToString("dd/MM/yy"));
+                    }
+
+                    var DataTable = new List<IDictionary<String, Object>>();
+
+                    foreach (var Data in GetData.OrderBy(x => x.ProjectCodeSub.ProjectCodeMasterId))
+                    {
+                        var ProjectMaster = await this.repositoryProMas.GetAsync(Data.ProjectCodeSub.ProjectCodeMasterId ?? 0);
+                        var JobNumber = $"{ProjectMaster?.ProjectCode ?? "No-Data"}/{(Data.ProjectCodeSub == null ? "No-Data" : Data.ProjectCodeSub.Code)}";
+
+                        IDictionary<String, Object> rowData;
+                        bool update = false;
+                        if (DataTable.Any(x => (string)x["JobNumber"] == JobNumber))
+                        {
+                            var FirstData = DataTable.FirstOrDefault(x => (string)x["JobNumber"] == JobNumber);
+                            if (FirstData != null)
+                            {
+                                rowData = FirstData;
+                                update = true;
+                            }
+                            else
+                                rowData = new ExpandoObject();
+                        }
+                        else
+                            rowData = new ExpandoObject();
+
+                        if (Data.RequireDate != null)
+                        {
+                            //Get Employee Name
+                            var Employee = await this.repositoryEmp.GetAsync(Data.RequireEmp);
+                            var EmployeeReq = Employee != null ? $"คุณ{(Employee?.NameThai ?? "")}" : "No-Data";
+
+                            var Key = Data.RequireDate.Value.ToString("dd/MM/yy");
+                            if (rowData.Any(x => x.Key == Key))
+                            {
+                                // New Value
+                                var ListMaster = (List<RequirePaintingMasterViewModel>)rowData[Key];
+                                ListMaster.Add(new RequirePaintingMasterViewModel
+                                {
+                                    RequirePaintingMasterId = Data.RequirePaintingMasterId,
+                                    RequireString = $"{EmployeeReq} | No.{Data.RequireNo}",
+                                });
+
+                                rowData[Key] = ListMaster;
+                            }
+                            else // add new
+                            {
+                                var Master = new RequirePaintingMasterViewModel()
+                                {
+                                    RequirePaintingMasterId = Data.RequirePaintingMasterId,
+                                    RequireString = $"{EmployeeReq} | No.{Data.RequireNo}",
+                                };
+                                rowData.Add(Key, new List<RequirePaintingMasterViewModel>() { Master });
+                            }
+                        }
+
+                        if (!update)
+                        {
+                            rowData.Add("JobNumber", JobNumber);
+                            DataTable.Add(rowData);
+                        }
+                    }
+
+                    return new JsonResult(new
+                    {
+                        TotalRow = TotalRow,
+                        Columns = Columns,
+                        DataTable = DataTable
+                    }, this.DefaultJsonSettings);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+
             return NotFound(new { Error = Message });
         }
 

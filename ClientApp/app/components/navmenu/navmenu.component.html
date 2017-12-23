@@ -34,6 +34,12 @@
                 </a>
                 <mat-menu #menu2="matMenu" [overlapTrigger]="false">
                     <div>
+                        <button mat-menu-item [routerLink]="['/require-painting/require-schedule']" routerLinkActive="active">
+                            <i class="fa fa-history" aria-hidden="true"></i>
+                            <span>RequestPaintWaiting</span>
+                        </button>
+
+                        <hr />
                         <button mat-menu-item [routerLink]="['/color-item']" routerLinkActive="active">
                             <i class="fa fa-tint" aria-hidden="true"></i>
                             <span>ColorItem</span>

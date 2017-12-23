@@ -5,13 +5,12 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import "hammerjs";
 
 // components
-import { RequirePaintingCenterComponent } from "../../components/require-painting/require-painting-master/require-painting-center.component";
-import { RequirePaintingEditComponent } from "../../components/require-painting/require-painting-master/require-painting-edit.component";
-import { RequirePaintingMasterComponent } from "../../components/require-painting/require-painting-master/require-painting-master.component";
-import { RequirePaintingViewComponent } from "../../components/require-painting/require-painting-master/require-painting-view.component";
-import { RequireListEditComponent } from "../../components/require-painting/require-painting-list/require-list-edit.component";
-import { PaintWorkItemEditComponent } from "../../components/require-painting/workitem/paint-workitem-edit.component";
-import { BlastWorkitemEditComponent } from "../../components/require-painting/workitem/blast-workitem-edit.component";
+import {
+    BlastWorkitemEditComponent, PaintWorkItemEditComponent,
+    RequireListEditComponent, RequirePaintingCenterComponent,
+    RequirePaintingEditComponent, RequirePaintingMasterComponent,
+    RequirePaintingScheduleComponent, RequirePaintingViewComponent
+} from "../../components/require-painting/require.index";
 // modules
 import { RequirePaintingRoutingModule } from "./require-painting-routing.module";
 import {
@@ -32,6 +31,7 @@ import { PaintWorkitemService } from "../../services/require-paint/paint-workite
         RequireListEditComponent,
         PaintWorkItemEditComponent,
         BlastWorkitemEditComponent,
+        RequirePaintingScheduleComponent,
     ],
     imports: [
         // angular

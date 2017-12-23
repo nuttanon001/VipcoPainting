@@ -1,4 +1,5 @@
 ﻿import { BaseModel } from "../base.model";
+import { PaintWorkItem } from "../model.index";
 
 export interface TaskPaintDetail extends BaseModel {
     TaskPaintDetailId: number;
@@ -12,4 +13,5 @@ export interface TaskPaintDetail extends BaseModel {
     PaintWorkItemId?: number;
     // ViewModel
     PaintTeamString?: string;
+    PaintWorkItem?: PaintWorkItem;
 }

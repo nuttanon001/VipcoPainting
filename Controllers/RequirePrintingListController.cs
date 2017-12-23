@@ -378,6 +378,10 @@ namespace VipcoPainting.Controllers
 
                             if (nRequirePaintingList.RequirePaintingMaster != null)
                                 nRequirePaintingList.RequirePaintingMaster = null;
+
+                            if (nRequirePaintingList.RequirePaintingListStatus == null)
+                                nRequirePaintingList.RequirePaintingListStatus = RequirePaintingListStatus.Waiting;
+
                             // Remove null
                             nRequirePaintingList.BlastWorkItems.Remove(null);
                             nRequirePaintingList.PaintWorkItems.Remove(null);

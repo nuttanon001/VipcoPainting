@@ -1,0 +1,18 @@
+﻿<div class="master-dialog-vh">
+    <H5 style="color:cadetblue">Information of Request Blast&Paint</H5>
+    <div class="child-container">
+        <div class="center-content">
+            <div *ngIf="displayValue">
+                <require-painting-view-schedule [displayValue]="displayValue" (selected)="onSelectedValue($event)"
+                                                [height]="'55vh'">
+                </require-painting-view-schedule>
+            </div>
+        </div>
+        <div class="right-content">
+            <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
+                    matTooltip="Go Back" matTooltipPosition="left">
+                <i class="fa fa-2x fa-minus" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>

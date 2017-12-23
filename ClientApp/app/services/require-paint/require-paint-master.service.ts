@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 // rxjs
 import { Observable } from "rxjs/Rx";
 // models
-import { RequirePaintMaster, RequirePaintMasterHasList } from "../../models/model.index";
+import { RequirePaintMaster, RequirePaintMasterHasList, RequirePaintSchedule } from "../../models/model.index";
 // base-service
 import { BaseRestService, BaseCommunicateService } from "../base-service/base.index";
 
@@ -23,6 +23,14 @@ export class RequirePaintMasterService extends BaseRestService<RequirePaintMaste
         let url: string = `${this.actionUrl}GetMultipleKey/`;
         return this.http.post(url, MutipleKey).map(this.extractData).catch(this.handleError);
     }
+    // ===================== OverTime Schedule ===========================\\
+    // get RequirePaint Schedule
+    getRequirePaintSchedule(option: RequirePaintSchedule): Observable<any> {
+        let url: string = `${this.actionUrl}RequirePaintSchedule/`;
+        return this.http.post(url, JSON.stringify(option), this.getRequestOption())
+            .map(this.extractData).catch(this.handleError);
+    }
+
 }
 
 @Injectable()

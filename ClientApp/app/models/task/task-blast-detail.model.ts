@@ -1,4 +1,5 @@
 ﻿import { BaseModel } from "../base.model";
+import { BlastWorkItem } from "../model.index";
 
 export interface TaskBlastDetail extends BaseModel {
     TaskBlastDetailId: number;
@@ -12,4 +13,5 @@ export interface TaskBlastDetail extends BaseModel {
     BlastWorkItemId?: number;
     //ViewModel
     BlastRoomString?: string;
+    BlastWorkItem?: BlastWorkItem;
 }

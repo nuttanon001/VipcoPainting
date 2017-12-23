@@ -17,7 +17,6 @@ import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { DataTableServiceCommunicate } from "../../../services/data-table/data-table.service";
 import { TaskMasterService, TaskMasterServiceCommunicate } from "../../../services/task/task-master.service";
 
-
 @Component({
     selector: "task-master",
     templateUrl: "./task-master.component.html",
@@ -91,6 +90,62 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
             if (value.AssignDate !== null) {
                 value.AssignDate = moment.tz(value.AssignDate, zone).toDate();
             }
+
+            // TaskBlastDetail
+            if (value.TaskBlastDetails) {
+                value.TaskBlastDetails.forEach((item, index) => {
+                    if (item.CreateDate !== null) {
+                        item.CreateDate = moment.tz(item.CreateDate, zone).toDate();
+                    }
+                    if (item.ModifyDate !== null) {
+                        item.ModifyDate = moment.tz(item.ModifyDate, zone).toDate();
+                    }
+                    // can't update FromBody with same data from webapi try new object and send back update
+                    if (value.TaskBlastDetails) {
+                        let newData: TaskBlastDetail = {
+                            TaskBlastDetailId: item.TaskBlastDetailId,
+                            Remark: item.Remark,
+                            Creator: item.Creator,
+                            CreateDate: item.CreateDate,
+                            Modifyer: item.Modifyer,
+                            ModifyDate: item.ModifyDate,
+                            //FK
+                            TaskMasterId: item.TaskMasterId,
+                            BlastRoomId: item.BlastRoomId,
+                            BlastWorkItemId: item.BlastWorkItemId,
+                        };
+                        value.TaskBlastDetails[index] = newData;
+                    }
+                });
+            }
+
+            // TaskPaintDetail
+            if (value.TaskPaintDetails) {
+                value.TaskPaintDetails.forEach((item, index) => {
+                    if (item.CreateDate !== null) {
+                        item.CreateDate = moment.tz(item.CreateDate, zone).toDate();
+                    }
+                    if (item.ModifyDate !== null) {
+                        item.ModifyDate = moment.tz(item.ModifyDate, zone).toDate();
+                    }
+                    // can't update FromBody with same data from webapi try new object and send back update
+                    if (value.TaskPaintDetails) {
+                        let newData: TaskPaintDetail = {
+                            TaskPaintDetailId: item.TaskPaintDetailId,
+                            Remark: item.Remark,
+                            Creator: item.Creator,
+                            CreateDate: item.CreateDate,
+                            Modifyer: item.Modifyer,
+                            ModifyDate: item.ModifyDate,
+                            //FK
+                            TaskMasterId: item.TaskMasterId,
+                            PaintTeamId: item.PaintTeamId,
+                            PaintWorkItemId: item.PaintWorkItemId,
+                        };
+                        value.TaskPaintDetails[index] = newData;
+                    }
+                });
+            }
         }
         return value;
     }
@@ -125,49 +180,6 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
         }
         // change timezone
         value = this.changeTimezone(value);
-        // TaskPaintDetail
-        if (value.TaskPaintDetails) {
-            value.TaskPaintDetails.forEach((taskPaint, index) => {
-                // can't update FromBody with same data from webapi try new object and send back update
-                if (value.TaskPaintDetails) {
-                    let newData: TaskPaintDetail = {
-                        TaskPaintDetailId: taskPaint.TaskPaintDetailId,
-                        Remark: taskPaint.Remark,
-                        Creator: taskPaint.Creator,
-                        CreateDate: taskPaint.CreateDate,
-                        Modifyer: taskPaint.Modifyer,
-                        ModifyDate: taskPaint.ModifyDate,
-                        //FK
-                        TaskMasterId: taskPaint.TaskMasterId,
-                        PaintTeamId: taskPaint.PaintTeamId,
-                        PaintWorkItemId: taskPaint.PaintWorkItemId,
-                    };
-                    value.TaskPaintDetails[index] = newData;
-                }
-            });
-        }
-        // TaskBlastDetail
-        if (value.TaskBlastDetails) {
-            value.TaskBlastDetails.forEach((taskBlast, index) => {
-                // can't update FromBody with same data from webapi try new object and send back update
-                if (value.TaskBlastDetails) {
-                    let newData: TaskBlastDetail = {
-                        TaskBlastDetailId: taskBlast.TaskBlastDetailId,
-                        Remark: taskBlast.Remark,
-                        Creator: taskBlast.Creator,
-                        CreateDate: taskBlast.CreateDate,
-                        Modifyer: taskBlast.Modifyer,
-                        ModifyDate: taskBlast.ModifyDate,
-                        //FK
-                        TaskMasterId: taskBlast.TaskMasterId,
-                        BlastRoomId: taskBlast.BlastRoomId,
-                        BlastWorkItemId: taskBlast.BlastWorkItemId,
-                    };
-                    value.TaskBlastDetails[index] = newData;
-                }
-            });
-        }
-
         // update data
         this.service.putKeyNumber(value, value.TaskMasterId).subscribe(
             (complete: any) => {

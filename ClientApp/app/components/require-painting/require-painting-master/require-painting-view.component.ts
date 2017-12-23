@@ -19,6 +19,7 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
 {
     requireLists: Array<RequirePaintList> = new Array;
     @Input("height") height: string = "calc(100vh - 184px)";
+
     columns: Array<TableColumn> = [
         { prop: "Description", name: "Description", flexGrow: 1 },
         { prop: "MarkNo", name: "MarkNo", flexGrow: 1 },
@@ -46,7 +47,7 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
     }
 
     // on Require-Workitem
-    onRequestWorkItem(value?: RequirePaintList) {
+    onSelectedRequestWorkItem(value?: RequirePaintList) {
         if (value) {
             this.dialogService.dialogRequestPaintList(this.viewContainerRef, value.RequirePaintingListId);
         }

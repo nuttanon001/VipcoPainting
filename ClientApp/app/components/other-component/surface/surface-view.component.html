@@ -1,1 +1,42 @@
-﻿<div style="border: 1px solid red">surface-view Component</div>
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Surface-View</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        Surface Code :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.SurfaceCode || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Surface Name :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.SurfaceName || "-"}}
+                    </div>
+
+                </div>
+
+                <div class="row my-1">
+
+                    <div class="my-label">
+                        CreateDate :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue.CreateDate | date:'dd/MM/yyyy') || "-"}}
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

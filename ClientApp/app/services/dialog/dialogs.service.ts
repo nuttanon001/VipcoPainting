@@ -10,7 +10,8 @@ import {
     SurfaceTypeDialogComponent,
     EmployeeDialogComponent,
     ProjectDialogComponent,
-    RequirePaintingDialogComponent
+    RequirePaintingDialogComponent,
+    RequirePaintingViewDialogComponent
 } from "../../components/dialog/dialog.index";
 // models
 import {
@@ -163,6 +164,23 @@ export class DialogsService {
 
         // open dialog
         dialogRef = this.dialog.open(RequirePaintingDialogComponent, config);
+        return dialogRef.afterClosed();
+    }
+
+    public dialogRequestPaintView(viewContainerRef: ViewContainerRef, MasterId: number): Observable<number> {
+        
+        let dialogRef: MatDialogRef<RequirePaintingViewDialogComponent>;
+        let config: MatDialogConfig = new MatDialogConfig();
+
+        // config
+        config.viewContainerRef = viewContainerRef;
+        config.data = MasterId;
+        // config.height = this.height;
+        // config.width= this.width;
+        config.hasBackdrop = true;
+
+        // open dialog
+        dialogRef = this.dialog.open(RequirePaintingViewDialogComponent, config);
         return dialogRef.afterClosed();
     }
 }

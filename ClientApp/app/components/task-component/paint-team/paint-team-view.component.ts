@@ -6,8 +6,8 @@ import { PaintTeam } from "../../../models/model.index";
 import { BaseViewComponent } from "../../base-component/base-view.component";
 
 @Component({
-    selector: 'paint-team-view',
-    templateUrl: './paint-team-view.component.html',
+    selector: "paint-team-view",
+    templateUrl: "./paint-team-view.component.html",
     styleUrls: ["../../../styles/view.style.scss"],
 })
 /** paint-team-view component*/

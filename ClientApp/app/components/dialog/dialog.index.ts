@@ -7,3 +7,4 @@ export { SurfaceTypeDialogComponent } from "./surface-type-dialog.component";
 export { EmployeeDialogComponent } from "./employee-dialog.component";
 export { ProjectDialogComponent } from "./project-dialog.component";
 export { RequirePaintingDialogComponent } from "./require-painting-dialog.component";
+export { RequirePaintingViewDialogComponent } from "./require-painting-view-dialog.component";
