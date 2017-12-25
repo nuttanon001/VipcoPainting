@@ -1,4 +1,5 @@
 ﻿import { Component, ViewContainerRef } from "@angular/core";
+import { Router, ActivatedRoute, ParamMap } from "@angular/router";
 // components
 import { BaseMasterComponent } from "../../base-component/base-master.component";
 // models
@@ -33,6 +34,8 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
         dialogsService: DialogsService,
         viewContainerRef: ViewContainerRef,
         private serverAuth: AuthService,
+        private router: Router,
+        private route: ActivatedRoute,
     ) {
         super(
             service,
@@ -51,6 +54,26 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
         { prop: "AssignByString", name: "AssingBy", flexGrow: 1 },
 
     ];
+
+    // on inti override
+    ngOnInit(): void {
+        // override class
+        super.ngOnInit();
+
+        this.route.paramMap.subscribe((param: ParamMap) => {
+            let key: number = Number(param.get("condition") || 0);
+
+            if (key) {
+                let newTaskMaster: TaskMaster = {
+                    TaskMasterId: 0,
+                    RequirePaintingListId : key
+                };
+                setTimeout(() => {
+                    this.onDetailEdit(newTaskMaster);
+                }, 500);
+            }
+        }, error => console.error(error));
+    }
 
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
@@ -156,7 +179,9 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
             value.Creator = this.serverAuth.getAuth.UserName || "";
         }
         // change timezone
+        console.log("BDATA:", JSON.stringify(value));
         value = this.changeTimezone(value);
+        console.log("ADATA:", JSON.stringify(value));
         // insert data
         this.service.post(value).subscribe(
             (complete: any) => {

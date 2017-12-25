@@ -17,27 +17,21 @@
             <div class="edit-container mx-3">
                 <form [formGroup]="RequirePaintListForm">
                     <div class="my-form">
-                        <label for="PlanStart" class="my-label">PlanStart:</label>
-                        <div class="col-sm-4">
+                        <label for="PlanStart" class="my-label">DatePlan:</label>
+                        <div class="edit-form-content col-sm-10">
                             <p-calendar formControlName="PlanStart" [showIcon]="true"
-                                        id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Choose a date"
-                                        appendTo="body" required
+                                        id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
+                                        appendTo="body"
                                         [maxDate]="RequirePaintListForm.controls.PlanEnd.value">
                             </p-calendar>
-                            <span class="is-request-date">**</span>
-                        </div>
-
-                        <label for="PlanEnd" class="my-label">PlanEnd:</label>
-                        <div class="col-sm-4">
+                            <span style="margin-left:37px;margin-right:7px;">|</span>
                             <p-calendar formControlName="PlanEnd" [showIcon]="true"
-                                        id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  Choose a date"
-                                        appendTo="body" required
+                                        id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  End plane date"
+                                        appendTo="body"
                                         [minDate]="RequirePaintListForm.controls.PlanStart.value">
                             </p-calendar>
-                            <span class="is-request-date">**</span>
                         </div>
                     </div>
-
 
                     <div class="my-form">
                         <label for="Description" class="my-label">Description:</label>

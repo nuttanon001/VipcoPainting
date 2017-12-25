@@ -14,7 +14,8 @@ import {
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatStepperModule
+    MatStepperModule,
+    MatSliderModule
 } from "@angular/material";
 
 import {
@@ -70,6 +71,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         MatCardModule,
         MatProgressSpinnerModule,
         MatStepperModule,
+        MatSliderModule,
         // angularSplit
         AngularSplitModule,
         // ngxDataTable
@@ -105,6 +107,7 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
         MatCardModule,
         MatProgressSpinnerModule,
         MatStepperModule,
+        MatSliderModule,
         // angularSplit
         AngularSplitModule,
         // ngxDataTable

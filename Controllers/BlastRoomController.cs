@@ -51,10 +51,19 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get()
         {
             // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "PaintTeam" };
+            //var Includes = new List<string> { "PaintTeam" };
+
+            //return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel, BlastRoom>
+            //                     (await this.repository.GetAllWithInclude2Async(Includes)),
+            //                      this.DefaultJsonSettings);
+
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Include(x => x.PaintTeam)
+                                .OrderBy(x => x.BlastRoomName)
+                                .AsNoTracking();
 
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel, BlastRoom>
-                                 (await this.repository.GetAllWithInclude2Async(Includes)),
+                                 (await QueryData.ToListAsync()),
                                   this.DefaultJsonSettings);
         }
 

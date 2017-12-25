@@ -200,8 +200,8 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
                 .subscribe(RequirePaintListId => {
                     if (RequirePaintListId) {
                         // Debug here
-                        console.log("RequirePaintListId is:", RequirePaintListId);
-                        // this.router.navigate(["task-machine/jobcard-detail/", RequirePaintListId]);
+                        // console.log("RequirePaintListId is:", RequirePaintListId);
+                        this.router.navigate(["task/task-master/", RequirePaintListId]);
                     }
                 });
         }

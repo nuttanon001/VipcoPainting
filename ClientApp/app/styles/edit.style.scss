@@ -38,6 +38,15 @@
     overflow:scroll;
 }
 
+.bottom-container-40vh {
+    order: 2;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    height: 40vh;
+    overflow: scroll;
+}
+
 .chlid-edit-container-center {
     display: flex;
     align-items: center;
@@ -97,21 +106,26 @@ label {
     box-shadow: none; /* You may want to include this as bootstrap applies these styles too */
 }
 
-.my-label-col-1 {
+.base-label {
     @extend .col-form-label;
     @extend .col-form-label-sm;
-    @extend .col-sm-1;
+    align-items: center;
 }
 
 .my-label {
-    @extend .col-form-label;
-    @extend .col-form-label-sm;
+    @extend .base-label;
     @extend .col-sm-2;
 }
 
+
+.my-label-col-1 {
+    @extend .base-label;
+    @extend .col-sm-1;
+}
+
+
 .my-label-col-3 {
-    @extend .col-form-label;
-    @extend .col-form-label-sm;
+    @extend .base-label;
     @extend .col-sm-3;
 }
 
@@ -130,7 +144,6 @@ label {
     @extend .my-input;
     background-color: transparent !important;
     color: maroon !important;
-    cursor: pointer;
 }
 
 .my-input-combobox {

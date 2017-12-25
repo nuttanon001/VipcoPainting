@@ -51,7 +51,7 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get()
         {
             // return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
-            var Includes = new List<string> { "BlastRoom.PaintTeam" };
+            var Includes = new List<string> { "BlastRoom.PaintTeam", "BlastWorkItem" };
 
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<TaskBlastDetailViewModel, TaskBlastDetail>
                                  (await this.repository.GetAllWithInclude2Async(Includes)),
@@ -63,7 +63,7 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "BlastRoom.PaintTeam" };
+            var Includes = new List<string> { "BlastRoom.PaintTeam", "BlastWorkItem" };
 
             return new JsonResult(this.mapper.Map<TaskBlastDetail, TaskBlastDetailViewModel>
                                  (await this.repository.GetAsynvWithIncludes(key, "TaskBlastDetailId", Includes)),

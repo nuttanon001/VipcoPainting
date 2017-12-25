@@ -8,7 +8,10 @@ import {
     BlastRoomCenterComponent, BlastRoomEditComponent,
     BlastRoomMasterComponent, BlastRoomViewComponent,
     PaintTeamCenterComponent, PaintTeamEditComponent,
-    PaintTeamMasterComponent,PaintTeamViewComponent
+    PaintTeamMasterComponent, PaintTeamViewComponent,
+    TaskBlastEditComponent, TaskPaintEditComponent,
+    TaskEditComponent, TaskMasterComponent,
+    TaskCenterComponent, TaskViewComponent,
 } from "../../components/task-component/task.index";
 // modules
 import { TaskRoutingModule } from "./task-routing.module";
@@ -16,8 +19,13 @@ import {
     CustomMaterialModule, ValidationModule,
 } from "../module.index";
 // services
+import { TaskMasterService,TaskMasterServiceCommunicate } from "../../services/task/task-master.service";
 import { BlastRoomService,BlastRoomServiceCommunicate } from "../../services/task/blast-room.service";
-import { PaintTeamService,PaintTeamServiceCommunicate } from "../../services/task/paint-team.service";
+import { PaintTeamService, PaintTeamServiceCommunicate } from "../../services/task/paint-team.service";
+import { TaskBlastDetailService } from "../../services/task/task-blast-detail.service";
+import { TaskPaintDetailService } from "../../services/task/task-paint-detail.service";
+import { RequirePaintMasterService } from "../../services/require-paint/require-paint-master.service";
+import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
 
 @NgModule({
     declarations: [
@@ -28,7 +36,13 @@ import { PaintTeamService,PaintTeamServiceCommunicate } from "../../services/tas
         PaintTeamCenterComponent,
         PaintTeamEditComponent,
         PaintTeamMasterComponent,
-        PaintTeamViewComponent
+        PaintTeamViewComponent,
+        TaskBlastEditComponent,
+        TaskPaintEditComponent,
+        TaskEditComponent,
+        TaskMasterComponent,
+        TaskCenterComponent,
+        TaskViewComponent,
     ],
     imports: [
         // angular
@@ -44,7 +58,13 @@ import { PaintTeamService,PaintTeamServiceCommunicate } from "../../services/tas
         BlastRoomService,
         BlastRoomServiceCommunicate,
         PaintTeamService,
-        PaintTeamServiceCommunicate
+        PaintTeamServiceCommunicate,
+        TaskMasterService,
+        TaskMasterServiceCommunicate,
+        RequirePaintMasterService,
+        RequirePaintListService,
+        TaskBlastDetailService,
+        TaskPaintDetailService
         // dataTableServiceCommunicate
     ]
 })

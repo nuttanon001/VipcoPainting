@@ -5,7 +5,7 @@ import { TaskMaster } from "../../../models/model.index";
 // components
 import { BaseViewComponent } from "../../base-component/base-view.component";
 @Component({
-    selector: "paint-team-view",
+    selector: "task-view",
     templateUrl: "./task-view.component.html",
     styleUrls: ["../../../styles/view.style.scss"],
 })

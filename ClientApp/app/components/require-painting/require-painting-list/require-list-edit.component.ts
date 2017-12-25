@@ -29,6 +29,7 @@ export class RequireListEditComponent implements OnInit {
     // Parameter
     paintWorks: Array<PaintWorkItem>;
     listBoxs: Array<boolean>;
+    maxDate: Date = new Date;
     // Blast
     blastWork: boolean;
     blastWorkItem: BlastWorkItem;

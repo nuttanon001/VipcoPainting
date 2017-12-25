@@ -39,6 +39,7 @@ export class TaskBlastEditComponent implements OnInit {
     }
     // Value
     @Input() blastWorkItem: BlastWorkItem;
+    @Output() hasChange = new EventEmitter<boolean>();
     // FormGroup
     taskBlastDetailForm: FormGroup;
     // ComboBox
@@ -48,15 +49,15 @@ export class TaskBlastEditComponent implements OnInit {
         this.buildForm();
         this.getBlastRoomCombobox();
     }
-    // get PaintTeam Array
+    // get BlastRoom Array
     getBlastRoomCombobox(): void {
         if (!this.blastRooms) {
-            // paintTeam ComboBox
+            // BlastRoom ComboBox
             this.service.getAll()
                 .subscribe(dbPatinTeam => {
                     this.blastRooms = new Array;
                     for (let item of dbPatinTeam) {
-                        this.blastRooms.push({ label: `${(item.TeamBlastString || "")}`, value: item.BlastRoomId });
+                        this.blastRooms.push({ label: `${(item.BlastRoomName || "")}/${(item.TeamBlastString || "")}`, value: item.BlastRoomId });
                     }
                 }, error => console.error(error));
         }
@@ -88,7 +89,7 @@ export class TaskBlastEditComponent implements OnInit {
             ],
             //ViewModel
             BlastRoomString: [this.taskBlastDetail.BlastRoomString],
-
+            BlastWorkItem: [this.taskBlastDetail.BlastWorkItem],
         });
         this.taskBlastDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
     }
@@ -96,6 +97,7 @@ export class TaskBlastEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.taskBlastDetailForm) { return; }
         const form = this.taskBlastDetailForm;
+        this.hasChange.emit(form.valid);
         if (form.valid) {
             this.taskBlastDetail = form.value;
         }

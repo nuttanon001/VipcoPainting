@@ -10,7 +10,7 @@
                         <div class="my-form">
                             <label for="RequireNo" class="my-label">RequireNo:</label>
                             <div class="col-sm-4">
-                                <input type="text" class="my-input" placeholder="Code will automatically generated."
+                                <input type="text" class="my-input-read-only" placeholder="Code will automatically generated."
                                        id="RequireNo" formControlName="RequireNo" readonly>
                                 <validation-messages [control]="editValueForm.controls.RequireNo"></validation-messages>
                             </div>
@@ -31,8 +31,8 @@
                                             appendTo="body"
                                             [maxDate]="maxDate">
                                 </p-calendar>
-                                <span class="is-request-date">**</span>
-                                <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>
+                                <!--<span class="is-request-date">**</span>
+                                <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>-->
                             </div>
 
                             <label for="RequireString" class="my-label">RequesterBy:</label>

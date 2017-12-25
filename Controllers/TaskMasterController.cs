@@ -33,6 +33,24 @@ namespace VipcoPainting.Controllers
         private ConverterTableToVM ConvertTable;
         private HelpersClass<TaskMaster> helpers;
 
+        private Models.TaskStatus CheckTaskStatus(TaskMaster taskMaster)
+        {
+            var Result = Models.TaskStatus.Cancel;
+
+            if (taskMaster != null)
+            {
+                if (taskMaster.TaskProgress.HasValue)
+                {
+                    if (taskMaster.TaskProgress == 0)
+                        Result = Models.TaskStatus.Waiting;
+                    else
+                        Result = taskMaster.TaskProgress >= 100 ? Models.TaskStatus.Complated : Models.TaskStatus.Tasking;
+                }
+                else
+                    Result = Models.TaskStatus.Waiting;
+            }
+            return Result;
+        }
         #endregion PrivateMenbers
 
         #region Constructor
@@ -178,63 +196,75 @@ namespace VipcoPainting.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]TaskMaster nTaskMaster)
         {
-            if (nTaskMaster != null) {
-                nTaskMaster = helpers.AddHourMethod(nTaskMaster);
-
-                nTaskMaster.CreateDate = DateTime.Now;
-                nTaskMaster.Creator = nTaskMaster.Creator ?? "Someone";
-
-                if (nTaskMaster.RequirePaintingList != null)
-                    nTaskMaster.RequirePaintingList = null;
-
-                // Remove null
-                nTaskMaster.TaskBlastDetails.Remove(null);
-                nTaskMaster.TaskPaintDetails.Remove(null);
-
-                if (nTaskMaster.TaskBlastDetails != null)
+            var Message = "TaskMaster not been found.";
+            try
+            {
+                if (nTaskMaster != null)
                 {
-                    // Add BlastWork item
-                    foreach (var nTaskBlast in nTaskMaster.TaskBlastDetails)
+                    nTaskMaster = helpers.AddHourMethod(nTaskMaster);
+
+                    nTaskMaster.CreateDate = DateTime.Now;
+                    nTaskMaster.Creator = nTaskMaster.Creator ?? "Someone";
+
+                    nTaskMaster.TaskStatus = this.CheckTaskStatus(nTaskMaster);
+
+                    if (nTaskMaster.RequirePaintingList != null)
+                        nTaskMaster.RequirePaintingList = null;
+
+                    // Remove null
+                    nTaskMaster.TaskBlastDetails.Remove(null);
+                    nTaskMaster.TaskPaintDetails.Remove(null);
+
+                    if (nTaskMaster.TaskBlastDetails != null)
                     {
-                        if (nTaskBlast == null)
-                            continue;
+                        // Add BlastWork item
+                        foreach (var nTaskBlast in nTaskMaster.TaskBlastDetails)
+                        {
+                            if (nTaskBlast == null)
+                                continue;
 
-                        nTaskBlast.CreateDate = nTaskMaster.CreateDate;
-                        nTaskBlast.Creator = nTaskMaster.Creator;
+                            nTaskBlast.CreateDate = nTaskMaster.CreateDate;
+                            nTaskBlast.Creator = nTaskMaster.Creator;
 
-                        // Clear BlastRoom
-                        if (nTaskBlast.BlastRoom != null)
-                            nTaskBlast.BlastRoom = null;
+                            // Clear BlastRoom
+                            if (nTaskBlast.BlastRoom != null)
+                                nTaskBlast.BlastRoom = null;
 
-                        // Clear BlastWorkItem
-                        if (nTaskBlast.BlastWorkItem != null)
-                            nTaskBlast.BlastWorkItem = null;
+                            // Clear BlastWorkItem
+                            if (nTaskBlast.BlastWorkItem != null)
+                                nTaskBlast.BlastWorkItem = null;
+                        }
                     }
+
+                    if (nTaskMaster.TaskPaintDetails != null)
+                    {
+                        foreach (var nTaskPaint in nTaskMaster.TaskPaintDetails)
+                        {
+                            if (nTaskPaint == null)
+                                continue;
+
+                            nTaskPaint.CreateDate = nTaskMaster.CreateDate;
+                            nTaskPaint.Creator = nTaskMaster.Creator;
+
+                            // Clear PaintTeam
+                            if (nTaskPaint.PaintTeam != null)
+                                nTaskPaint.PaintTeam = null;
+
+                            // Clear PaintWorkItem
+                            if (nTaskPaint.PaintWorkItem != null)
+                                nTaskPaint.PaintWorkItem = null;
+                        }
+                    }
+
+                    return new JsonResult(await this.repository.AddAsync(nTaskMaster), this.DefaultJsonSettings);
                 }
 
-                if (nTaskMaster.TaskPaintDetails != null)
-                {
-                    foreach (var nTaskPaint in nTaskMaster.TaskPaintDetails)
-                    {
-                        if (nTaskPaint == null)
-                            continue;
-
-                        nTaskPaint.CreateDate = nTaskMaster.CreateDate;
-                        nTaskPaint.Creator = nTaskMaster.Creator;
-
-                        // Clear PaintTeam
-                        if (nTaskPaint.PaintTeam != null)
-                            nTaskPaint.PaintTeam = null;
-
-                        // Clear PaintWorkItem
-                        if (nTaskPaint.PaintWorkItem != null)
-                            nTaskPaint.PaintWorkItem = null;
-                    }
-                }
-
-                return new JsonResult(await this.repository.AddAsync(nTaskMaster), this.DefaultJsonSettings);
             }
-            return NotFound(new { Error = "Not found task master data !!!" });
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
         }
 
         #endregion POST
@@ -257,6 +287,8 @@ namespace VipcoPainting.Controllers
 
                 if (uTaskMaster.RequirePaintingList != null)
                     uTaskMaster.RequirePaintingList = null;
+
+                uTaskMaster.TaskStatus = this.CheckTaskStatus(uTaskMaster);
 
                 // Remove null
                 uTaskMaster.TaskBlastDetails.Remove(null);

@@ -19,9 +19,6 @@ namespace VipcoPainting.Models
         public string AssignBy { get; set; }
         public DateTime? ActualSDate { get; set; }
         public DateTime? ActualEDate { get; set; }
-
-        [MinLength(0)]
-        [MaxLength(100)]
         public double? TaskProgress { get; set; }
 
         [Required]

@@ -40,6 +40,7 @@ export class TaskPaintEditComponent implements OnInit {
     }
     // Value
     @Input() paintWorkItem: PaintWorkItem;
+    @Output() hasChange = new EventEmitter<boolean>();
     // FormGroup
     taskPaintDetailForm: FormGroup;
     // ComboBox
@@ -50,8 +51,12 @@ export class TaskPaintEditComponent implements OnInit {
         this.getPaintTeamCombobox();
 
         if (this.paintWorkItem) {
-            this.paintWorkItem.IntColorString += `: ${this.paintWorkItem.IntCalcColorUsage}`;
-            this.paintWorkItem.ExtColorString += `: ${this.paintWorkItem.ExtCalcColorUsage}`;
+            if (this.paintWorkItem.IntCalcColorUsage) {
+                this.paintWorkItem.IntColorString += `: ${this.paintWorkItem.IntCalcColorUsage}`;
+            }
+            if (this.paintWorkItem.ExtCalcColorUsage) {
+                this.paintWorkItem.ExtColorString += `: ${this.paintWorkItem.ExtCalcColorUsage}`;
+            }
         }
     }
     // get PaintTeam Array
@@ -94,6 +99,7 @@ export class TaskPaintEditComponent implements OnInit {
             ],
             //ViewModel
             PaintTeamString: [this.taskPaintDetail.PaintTeamString],
+            PaintWorkItem: [this.taskPaintDetail.PaintWorkItem],
 
         });
         this.taskPaintDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
@@ -102,6 +108,7 @@ export class TaskPaintEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.taskPaintDetailForm) { return; }
         const form = this.taskPaintDetailForm;
+        this.hasChange.emit(form.valid);
         if (form.valid) {
             this.taskPaintDetail = form.value;
         }

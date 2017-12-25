@@ -22,16 +22,16 @@
         </div>
 
         <div class="my-form">
-            <label for="BlastRoomId" class="my-label">Team:</label>
-            <div class="col-sm-4">
+            <label for="BlastRoomId" class="my-label-col-1">Room:</label>
+            <div class="col-sm-5">
                 <p-dropdown class="my-input-combobox" [options]="blastRooms" [style]="{'width':'100%'}"
                             appendTo="body"
                             id="BlastRoomId" formControlName="BlastRoomId" required>
                 </p-dropdown>
             </div>
 
-            <label for="Remark" class="my-label">Remark:</label>
-            <div class="col-sm-4">
+            <label for="Remark" class="my-label-col-1">Remark:</label>
+            <div class="col-sm-5">
                 <input type="text" class="my-input" placeholder="Insert blast room remark here."
                        id="Remark" formControlName="Remark">
             </div>

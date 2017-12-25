@@ -3,7 +3,8 @@ import { Routes, RouterModule } from "@angular/router";
 // componentes
 import {
     BlastRoomCenterComponent, BlastRoomMasterComponent,
-    PaintTeamCenterComponent, PaintTeamMasterComponent
+    PaintTeamCenterComponent, PaintTeamMasterComponent,
+    TaskCenterComponent, TaskMasterComponent,
 } from "../../components/task-component/task.index";
 // service
 import { AuthGuard } from "../../services/auth/auth-guard.service";
@@ -32,6 +33,21 @@ const blastRoomRoutes: Routes = [
             }
         ],
     },
+    {
+        path: "task",
+        component: TaskCenterComponent,
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: "task-master/:condition",
+                component: TaskMasterComponent,
+            },
+            {
+                path: "",
+                component: TaskMasterComponent,
+            }
+        ]
+    }
 ];
 
 @NgModule({

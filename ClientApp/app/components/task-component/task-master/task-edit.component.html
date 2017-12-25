@@ -1,1 +1,131 @@
-﻿<div style="border: 1px solid red">task-edit Component</div>
+﻿<div *ngIf="editValue && requirePaintList && requirePaintMaster; else elseBlock">
+    <div class="edit-container">
+        <form [formGroup]="editValueForm">
+            <div>
+                <div class="my-form">
+                    <label for="ProjectCodeSubString" class="my-label">Job-No:</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="my-input-read-only" [value]="requirePaintMaster.ProjectCodeSubString"
+                               id="ProjectCodeSubString" readonly>
+                    </div>
+
+                    <label for="Description" class="my-label">PartName:</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="my-input-read-only" [value]="requirePaintList.Description"
+                               id="Description" readonly>
+                    </div>
+                </div>
+
+                <div class="my-form">
+                    <label for="MarkNo" class="my-label">MarkNo/Unit:</label>
+                    <div class="edit-form-content col-sm-4">
+                        <input type="text" class="my-input-read-only" [value]="requirePaintList.MarkNo"
+                               id="MarkNo" readonly>
+                        <span class="mx-1">/</span>
+                        <input type="text" class="my-input-read-only" [value]="requirePaintList.UnitNo"
+                               id="UnitNo" readonly>
+                    </div>
+
+                    <label for="Quantity" class="my-label">Quantity:</label>
+                    <div class="edit-form-content col-sm-4">
+                        <input type="text" class="my-input-read-only" [value]="requirePaintList.Quantity"
+                               id="Quantity" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-form">
+                <label for="TaskNo" class="my-label">TaskNo:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="my-input-read-only" placeholder="Code will automatically generated."
+                           id="TaskNo" formControlName="TaskNo" readonly>
+                    <validation-messages [control]="editValueForm.controls.TaskNo"></validation-messages>
+                </div>
+
+                <label for="AssignByString" class="my-label">AssignBy:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="my-input-click" placeholder="Choose employee here"
+                           (click)="openDialog('Employee')"
+                           id="AssignByString" formControlName="AssignByString" required readonly>
+                    <validation-messages [control]="editValueForm.controls.AssignByString"></validation-messages>
+                </div>
+            </div>
+
+            <div class="my-form">
+                <label for="ActualSDate" class="my-label">ActualDate:</label>
+                <div class="edit-form-content col-sm-6">
+                    <p-calendar formControlName="ActualSDate" [showIcon]="true"
+                                id="ActualSDate" dateFormat="dd/mm/yy" placeholder="  Start actual date"
+                                appendTo="body"
+                                [maxDate]="editValueForm.controls.ActualEDate.value || maxDate">
+                    </p-calendar>
+                    <span style="margin-left:37px;margin-right:7px;">|</span>
+                    <p-calendar formControlName="ActualEDate" [showIcon]="true"
+                                id="ActualEDate" dateFormat="dd/mm/yy" placeholder="  End actual date"
+                                appendTo="body"
+                                [minDate]="editValueForm.controls.ActualSDate.value"
+                                [maxDate]="maxDate">
+                    </p-calendar>
+                </div>
+
+                <label for="TaskProgress" class="my-label-col-1">Progress:</label>
+                <div class="col-sm-3">
+                    <mat-slider style="width:85%;margin-top:-5px"
+                                thumbLabel
+                                [max]="100"
+                                [min]="0"
+                                formControlName="TaskProgress">
+                    </mat-slider>
+                    {{editValueForm.controls.TaskProgress.value}}%
+                    <!--<input type="number" class="my-input" min="0" max="100"
+                               id="TaskProgress" formControlName="TaskProgress">
+                        <validation-messages [control]="editValueForm.controls.TaskProgress"></validation-messages>-->
+                </div>
+            </div>
+        </form>
+        <!-- Detail -->
+        <mat-tab-group>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>Blast WorkItem</b>
+                </ng-template>
+                <div class="edit-container">
+                    <div *ngIf="ShowBlast;else BlastBlock">
+                        <div *ngFor="let item of editValue.TaskBlastDetails;let i = index">
+                            <div *ngIf="item">
+                                <task-blast-edit [(taskBlastDetail)]="editValue.TaskBlastDetails[i]" (hasChange)="needPatchValue($event)"
+                                                 [blastWorkItem]="editValue.TaskBlastDetails[i].BlastWorkItem"></task-blast-edit>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-template #BlastBlock>
+                        <span class="text-danger">Blast  work item no data.</span> 
+                    </ng-template>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>Paint WorkItem Has {{editValue?.TaskPaintDetails?.length || 0}} Layer</b>
+                </ng-template>
+                <div class="edit-center-content ">
+                    <div class="bottom-container-40vh" *ngIf="ShowPaint;else PaintBlock">
+                        <div *ngFor="let item of editValue.TaskPaintDetails;let i = index">
+                            <div *ngIf="item">
+                                <task-paint-edit [(taskPaintDetail)]="editValue.TaskPaintDetails[i]" (hasChange)="needPatchValue($event)"
+                                                 [paintWorkItem]="editValue.TaskPaintDetails[i].PaintWorkItem"></task-paint-edit>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-template #PaintBlock>
+                        <span class="text-danger">Paint work item no data.</span>
+                    </ng-template>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>
