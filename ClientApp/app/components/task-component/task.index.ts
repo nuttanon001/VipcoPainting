@@ -13,6 +13,7 @@ export { TaskCenterComponent } from "./task-master/task-center.component";
 export { TaskEditComponent } from "./task-master/task-edit.component";
 export { TaskMasterComponent } from "./task-master/task-master.component";
 export { TaskViewComponent } from "./task-master/task-view.component";
+export { TaskScheduleComponent } from "./task-master/task-schedule.component";
 // TaskPaint
 export { TaskBlastEditComponent } from "./task-paint/task-blast-edit.component";
 export { TaskPaintEditComponent } from "./task-paint/task-paint-edit.component";

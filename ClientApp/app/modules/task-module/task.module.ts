@@ -12,6 +12,7 @@ import {
     TaskBlastEditComponent, TaskPaintEditComponent,
     TaskEditComponent, TaskMasterComponent,
     TaskCenterComponent, TaskViewComponent,
+    TaskScheduleComponent
 } from "../../components/task-component/task.index";
 // modules
 import { TaskRoutingModule } from "./task-routing.module";
@@ -43,6 +44,7 @@ import { RequirePaintListService } from "../../services/require-paint/require-pa
         TaskMasterComponent,
         TaskCenterComponent,
         TaskViewComponent,
+        TaskScheduleComponent,
     ],
     imports: [
         // angular

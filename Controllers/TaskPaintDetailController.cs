@@ -76,11 +76,57 @@ namespace VipcoPainting.Controllers
         {
             var QueryData = this.repository.GetAllAsQueryable()
                                 .Where(x => x.TaskMasterId == MasterId)
-                                .Include(x => x.PaintTeam);
+                                .Include(x => x.PaintTeam)
+                                .Include(x => x.PaintWorkItem.IntColorItem)
+                                .Include(x => x.PaintWorkItem.ExtColorItem);
 
-            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<TaskPaintDetailViewModel, TaskPaintDetail>
-                                 (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
+            var GetData = this.ConvertTable.ConverterTableToViewModel<TaskPaintDetailViewModel,TaskPaintDetail>
+                            (await QueryData.AsNoTracking().ToListAsync());
+            foreach(var item in GetData)
+                item.PaintWorkItem = this.mapper.Map<PaintWorkItemViewModel>(item.PaintWorkItem);
+
+            return new JsonResult(GetData, this.DefaultJsonSettings);
         }
+
+        [HttpGet("GetByMasterCalculate/{MasterId}")]
+        public async Task<IActionResult> GetByMasterCalculate(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                    .Where(x => x.TaskMasterId == MasterId)
+                    .Include(x => x.PaintTeam)
+                    .Include(x => x.PaintWorkItem.IntColorItem)
+                    .Include(x => x.PaintWorkItem.StandradTimeInt)
+                    .Include(x => x.PaintWorkItem.ExtColorItem)
+                    .Include(x => x.PaintWorkItem.StandradTimeExt);
+
+            var GetData = this.ConvertTable.ConverterTableToViewModel<TaskPaintDetailViewModel, TaskPaintDetail>
+                            (await QueryData.AsNoTracking().ToListAsync());
+            foreach (var item in GetData){ 
+                item.PaintWorkItem = this.mapper.Map<PaintWorkItemViewModel>(item.PaintWorkItem);
+                if (item.PaintWorkItem.IntArea != null)
+                {
+                    var loss = (item.PaintWorkItem.StandradTimeInt.PercentLoss ?? 0) / 100;
+                    var area = item.PaintWorkItem.IntArea;
+                    var sv = item.PaintWorkItem.IntColorItem.VolumeSolids ?? 0;
+                    double[] thicks = { item.PaintWorkItem.IntDFTMin ?? 0, item.PaintWorkItem.IntDFTMax ?? 0 };
+                    var thick = thicks.Average();
+                    item.PaintWorkItem.IntCalcColorUsage = (area*thick) / (sv * 10 * (1 - loss));
+                }
+
+                if (item.PaintWorkItem.ExtArea != null)
+                {
+                    var loss = (item.PaintWorkItem.StandradTimeExt.PercentLoss ?? 0) / 100;
+                    var area = item.PaintWorkItem.ExtArea;
+                    var sv = item.PaintWorkItem.ExtColorItem.VolumeSolids ?? 0;
+                    double[] thicks = { item.PaintWorkItem.ExtDFTMin ?? 0, item.PaintWorkItem.ExtDFTMax ?? 0 };
+                    var thick = thicks.Average();
+                    item.PaintWorkItem.ExtCalcColorUsage = (area * thick) / (sv * 10 * (1 - loss));
+                }
+            }
+
+            return new JsonResult(GetData, this.DefaultJsonSettings);
+        }
+
         #endregion GET
 
         #region POST

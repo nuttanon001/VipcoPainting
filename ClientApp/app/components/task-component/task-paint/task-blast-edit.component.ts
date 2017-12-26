@@ -39,6 +39,7 @@ export class TaskBlastEditComponent implements OnInit {
     }
     // Value
     @Input() blastWorkItem: BlastWorkItem;
+    @Input() ReadOnly: boolean = false;
     @Output() hasChange = new EventEmitter<boolean>();
     // FormGroup
     taskBlastDetailForm: FormGroup;

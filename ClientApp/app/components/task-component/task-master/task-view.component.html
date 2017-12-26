@@ -1,1 +1,112 @@
-﻿<div style="border: 1px solid red">task-view Component</div>
+﻿<div *ngIf="displayValue && requirePaintMaster && requirePaintList,else elseBlock">
+    <div class="view-container">
+        <div class="row my-1">
+            <div class="my-label">
+                Job-No :
+            </div>
+            <div class="my-value">
+                {{requirePaintMaster?.ProjectCodeSubString || "-"}}
+            </div>
+
+            <div class="my-label">
+                PartName :
+            </div>
+            <div class="my-value">
+                {{requirePaintList?.Description || "-"}}
+            </div>
+
+        </div>
+
+        <div class="row my-1">
+            <div class="my-label">
+                MarkNo/Unit :
+            </div>
+            <div class="my-value">
+                {{requirePaintList?.MarkNo || "-"}}/{{requirePaintList?.UnitNo || "0"}}
+            </div>
+
+            <div class="my-label">
+                Quantity :
+            </div>
+            <div class="my-value">
+                {{requirePaintList?.Quantity || "0"}}
+            </div>
+        </div>
+
+        <div class="row my-1">
+            <div class="my-label">
+                TaskNo :
+            </div>
+            <div class="my-value">
+                {{displayValue?.TaskNo || "-"}}
+            </div>
+
+            <div class="my-label">
+                AssignBy :
+            </div>
+            <div class="my-value">
+                {{displayValue?.AssignByString || "-"}}
+            </div>
+        </div>
+
+        <div class="row my-1">
+            <div class="my-label">
+                ActualDate :
+            </div>
+            <div class="my-value">
+                {{(displayValue?.ActualSDate | date:'dd/MM/yyyy') || "NoDate"}} - {{(displayValue?.ActualEDate | date:'dd/MM/yyyy') || "NoDate"}}
+            </div>
+
+            <div class="my-label">
+                TaskProgress :
+            </div>
+            <div class="my-value">
+                {{displayValue?.TaskProgress || "0"}} %
+            </div>
+        </div>
+    </div>
+    <!-- Detail -->
+    <mat-tab-group>
+        <mat-tab *ngIf="ShowBlast">
+            <ng-template mat-tab-label>
+                <b>Blast WorkItem</b>
+            </ng-template>
+            <div class="edit-container">
+                <div *ngIf="ShowBlast;else BlastBlock">
+                    <div *ngFor="let item of displayValue.TaskBlastDetails;let i = index">
+                        <div *ngIf="item">
+                            <task-blast-edit [(taskBlastDetail)]="displayValue.TaskBlastDetails[i]" [ReadOnly]="true"
+                                             [blastWorkItem]="displayValue.TaskBlastDetails[i].BlastWorkItem"></task-blast-edit>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #BlastBlock>
+                    <span class="text-danger">Blast work item no data.</span>
+                </ng-template>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="ShowPaint">
+            <ng-template mat-tab-label>
+                <b>Paint WorkItem Has <i class="text-danger mx-1">{{displayValue?.TaskPaintDetails?.length || 0}}</i> Layer</b>
+            </ng-template>
+            <div class="edit-center-content ">
+                <div class="bottom-container-40vh" *ngIf="ShowPaint;else PaintBlock">
+                    <div *ngFor="let item of displayValue.TaskPaintDetails;let i = index">
+                        <div *ngIf="item">
+                            <task-paint-edit [(taskPaintDetail)]="displayValue.TaskPaintDetails[i]" [ReadOnly]="true"
+                                             [paintWorkItem]="displayValue.TaskPaintDetails[i].PaintWorkItem"></task-paint-edit>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #PaintBlock>
+                    <span class="text-danger">Paint work item no data.</span>
+                </ng-template>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

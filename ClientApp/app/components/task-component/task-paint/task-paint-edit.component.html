@@ -1,23 +1,33 @@
 ﻿<div class="edit-container border border-info" *ngIf="taskPaintDetail && paintWorkItem">
     <form [formGroup]="taskPaintDetailForm" class="m-1">
-        <h5 class="alert-info mx-1">&nbsp;&nbsp;Level:{{paintWorkItem?.PaintLevelString || ""}}</h5>
+        <h5 class="alert-info mx-1">&nbsp;&nbsp;Level:{{paintWorkItem?.PaintLevelString || "-"}}</h5>
         <div class="my-form">
-            <label class="my-label-col-1">Internal.m²:</label>
+            <label class="my-label-col-1">Internal:</label>
             <div class="col-sm-2">
-                <input type="text" class="my-input-read-only" [value]="paintWorkItem.IntArea" readonly>
+                <input type="text" class="my-input-read-only" [value]="((paintWorkItem?.IntArea || 0)| number) + ' m²'" readonly>
             </div>
             <label class="my-label-col-1">Color:</label>
-            <div class="col-sm-2">
-                <input type="text" class="my-input-read-only" [value]="paintWorkItem.IntColorString" readonly>
+            <div class="col-sm-3">
+                <input type="text" class="my-input-read-only" [value]="paintWorkItem?.IntColorString || '-'" readonly>
             </div>
+            <label class="my-label-col-1">Usage:</label>
+            <div class="col-sm-3">
+                <input type="text" class="my-input-read-only" [value]="((paintWorkItem?.IntCalcColorUsage || 0)| number) + ' l.'" readonly>
+            </div>
+        </div>
 
-            <label class="my-label-col-1">External.m²:</label>
+        <div class="my-form">
+            <label class="my-label-col-1">External:</label>
             <div class="col-sm-2">
-                <input type="text" class="my-input-read-only" [value]="paintWorkItem.ExtArea" readonly>
+                <input type="text" class="my-input-read-only" [value]="((paintWorkItem?.ExtArea || 0)| number) + ' m²'" readonly>
             </div>
             <label class="my-label-col-1">Color:</label>
-            <div class="col-sm-2">
-                <input type="text" class="my-input-read-only" [value]="paintWorkItem.ExtColorString" readonly>
+            <div class="col-sm-3">
+                <input type="text" class="my-input-read-only" [value]="paintWorkItem?.ExtColorString || '-'" readonly>
+            </div>
+            <label class="my-label-col-1">Usage:</label>
+            <div class="col-sm-3">
+                <input type="text" class="my-input-read-only" [value]="((paintWorkItem?.ExtCalcColorUsage || 0)| number) + ' l.'" readonly>
             </div>
         </div>
 
@@ -25,13 +35,14 @@
             <label [for]="'PaintTeamId' + paintWorkItem.PaintLevel" class="my-label-col-1">Team:</label>
             <div class="col-sm-5">
                 <p-dropdown class="my-input-combobox" [options]="paintTeams" [style]="{'width':'100%'}"
-                            appendTo="body"
+                            appendTo="body" [readonly]="ReadOnly"
                             [id]="'PaintTeamId' + paintWorkItem.PaintLevel" formControlName="PaintTeamId" required>
                 </p-dropdown>
             </div>
             <label [for]="'Remark' + paintWorkItem.PaintLevel" class="my-label-col-1">Remark:</label>
             <div class="col-sm-5">
-                <input type="text" class="my-input" placeholder="Insert blast room remark here."
+                <input type="text" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input'" placeholder="Insert remark here."
+                       [readonly]="ReadOnly"
                        [id]="'Remark' + paintWorkItem.PaintLevel" formControlName="Remark">
             </div>
         </div>

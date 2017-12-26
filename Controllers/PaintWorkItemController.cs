@@ -89,6 +89,57 @@ namespace VipcoPainting.Controllers
                                  (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
         }
 
+        // GET: api/PaintWorkItem/GetByMaster/5
+        [HttpGet("GetByMasterCalculate/{MasterId}")]
+        public async Task<IActionResult> GetByMasterCalculate(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Where(x => x.RequirePaintingListId == MasterId)
+                                .OrderBy(x => x.PaintLevel)
+                                .Include(x => x.StandradTimeExt)
+                                .Include(x => x.StandradTimeInt)
+                                .Include(x => x.ExtColorItem)
+                                .Include(x => x.IntColorItem);
+
+            //var GetData = this.ConvertTable.ConverterTableToViewModel<PaintWorkItemViewModel, PaintWorkItem>
+            //                    (await QueryData.AsNoTracking().ToListAsync());
+
+            var GetData = await QueryData.AsNoTracking().ToListAsync();
+
+            foreach (var item in GetData)
+            {
+                if (item.IntCalcColorUsage == null)
+                {
+                    if (item.IntArea != null)
+                    {
+                        var loss = (item.StandradTimeInt.PercentLoss ?? 0) / 100;
+                        var area = item.IntArea;
+                        var sv = item.IntColorItem.VolumeSolids ?? 0;
+                        double[] thicks = { item.IntDFTMin ?? 0, item.IntDFTMax ?? 0 };
+                        var thick = thicks.Average();
+                        item.IntCalcColorUsage = (area * thick) / (sv * 10 * (1 - loss));
+                    }
+                }
+             
+                if (item.ExtCalcColorUsage == null)
+                {
+                    if (item.ExtArea != null)
+                    {
+                        var loss = (item.StandradTimeExt.PercentLoss ?? 0) / 100;
+                        var area = item.ExtArea;
+                        var sv = item.ExtColorItem.VolumeSolids ?? 0;
+                        double[] thicks = { item.ExtDFTMin ?? 0, item.ExtDFTMax ?? 0 };
+                        var thick = thicks.Average();
+                        item.ExtCalcColorUsage = (area * thick) / (sv * 10 * (1 - loss));
+                    }
+                }
+            }
+
+            return new JsonResult(
+                this.ConvertTable.ConverterTableToViewModel<PaintWorkItemViewModel,PaintWorkItem>(GetData), 
+                this.DefaultJsonSettings);
+        }
+
         #endregion GET
 
         #region POST

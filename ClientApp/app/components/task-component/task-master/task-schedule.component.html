@@ -1,0 +1,127 @@
+﻿<div class="master-container" *ngIf="!taskMasterEdit;else EditBlock">
+    <div class="child-col-container">
+        <h4 class="text-primary">Paint Task Schedule </h4>
+
+        <div class="child-row-container my-1">
+            <div class="plan-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan
+            <div class="ml-1 actual-col" style="margin-right:5px;">|||||</div> Actual
+        </div>
+        <hr class="w-100 bg-info m-0" />
+        <form [formGroup]="reportForm" class="form-content">
+            <div>
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <input type="text" formControlName="Filter" placeholder="Insert paint task schedule."
+                       style="width:200px;">
+            </div>
+
+            <div>
+                <i class="fa fa-product-hunt" aria-hidden="true"></i>
+                <input type="text" placeholder="Choose job-no here"
+                       (click)="onShowDialog('Project')" readonly
+                       style="width:250px;cursor:pointer;" formControlName="ProjectSubString"
+                       matTooltip="Choose job-no here.">
+            </div>
+
+            <div>
+                <i class="fa fa-user-circle" aria-hidden="true"></i>
+                <input type="text" placeholder="Choose employee requested here."
+                       (click)="onShowDialog('Employee')" readonly
+                       style="width:250px;cursor:pointer;" formControlName="CreatorName"
+                       matTooltip="Choose employee requested here.">
+            </div>
+
+            <div style="margin:0 0 10px 0;">
+                <button type="button" mat-mini-fab color="warn" (click)="resetFilter()"
+                        matTooltip="Reset all filter" style="margin:4px;">
+                    <i class="fa fa-2x fa-minus" aria-hidden="true" style="margin:0px;"></i>
+                </button>
+            </div>
+
+        </form>
+    </div>
+    <div class="bottom-container my-2">
+        <p-dataTable [value]="taskMasters" rowGroupMode="rowspan"
+                     [lazy]="true" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,20]"
+                     [totalRecords]="totalRecords" (onLazyLoad)="loadDataLazy($event)"
+                     scrollable="true" scrollWidth="94vw">
+            <p-headerColumnGroup>
+                <p-row>
+                    <p-column *ngFor="let colup of columnsUpper" [header]="colup.header"
+                              [rowspan]="colup.rowspan" [style]="colup.style" [colspan]="colup.colspan">
+                    </p-column>
+                </p-row>
+                <p-row>
+                    <p-column *ngFor="let collow of columnsLower" [header]="collow.header"
+                              [style]="{'width':'35px'}">
+                    </p-column>
+                </p-row>
+            </p-headerColumnGroup>
+            <p-column *ngFor="let column of columns" [field]="column.field" [styleClass]="column.styleclass"
+                      [header]="column.header" [style]="column.style" [sortable]="true">
+                <ng-template *ngIf="column.isCol" let-col let-data1="rowData" pTemplate="body">
+                    <div [ngSwitch]="data1[col.field]" class="child-col-container">
+                        <div *ngSwitchCase="1">
+                            <div class="plan-col">
+                                |
+                            </div>
+                            <div class="empty-col">
+                                |
+                            </div>
+                        </div>
+                        <div *ngSwitchCase="2">
+                            <div class="empty-col">
+                                |
+                            </div>
+                            <div class="actual-col">
+                                |
+                            </div>
+                        </div>
+                        <div *ngSwitchCase="3">
+                            <div class="plan-col">
+                                |
+                            </div>
+                            <div class="actual-col">
+                                |
+                            </div>
+                        </div>
+                        <div *ngSwitchDefault>
+                            -
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template *ngIf="column.isLink" let-col let-data1="rowData" pTemplate="body">
+                    <div *ngIf="data1[col.field]">
+                        <i (click)="onSelectTaskMasterId(data1['TaskMasterId'])" style="cursor:pointer;color:red;">
+                            {{data1[col.field]}}
+                        </i>
+                    </div>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </div>
+</div>
+
+<ng-template #EditBlock>
+    <div class="child-container">
+        <!--Center-->
+        <div class="center-content-scroll">
+            <div class="card-body">
+                <!--Component-->
+                <div *ngIf="taskMasterEdit">
+                    <task-edit></task-edit>
+                </div>
+            </div>
+        </div>
+        <!--Right-->
+        <div class="right-content">
+            <button type="button" mat-icon-button color="warn" (click)="onCancelEdit()"
+                    matTooltip="Cancel" matTooltipPosition="left">
+                <i class="fa fa-2x fa-minus" aria-hidden="true"></i>
+            </button>
+            <button type="button" mat-icon-button color="primary" (click)="onUpdateToDataBase()"
+                    [disabled]="!canSave" matTooltip="Save" matTooltipPosition="left">
+                <i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</ng-template>

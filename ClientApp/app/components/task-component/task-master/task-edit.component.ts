@@ -156,7 +156,7 @@ export class TaskEditComponent extends BaseEditComponent<TaskMaster, TaskMasterS
     // onGetPaintWorkItem
     onGetPaintWorkItemAndBlastWorkItem(MasterId: number): void {
         if (MasterId) {
-            this.servicePaintWork.getByMasterId(MasterId)
+            this.servicePaintWork.getByMasterId(MasterId,"GetByMasterCalculate/")
                 .subscribe(dbPaintWork => {
                     if (!this.editValue.TaskPaintDetails) {
                         this.editValue.TaskPaintDetails = new Array;

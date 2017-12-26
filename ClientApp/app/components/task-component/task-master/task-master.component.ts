@@ -50,7 +50,7 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     columns: Array<TableColumn> = [
         { prop: "TaskNo", name: "TaskNo", flexGrow: 1 },
-        { prop: "ProjectCodeSubString", name: "Job", flexGrow: 2, },
+        { prop: "ProjectCodeSubString", name: "Job", flexGrow: 1, },
         { prop: "AssignByString", name: "AssingBy", flexGrow: 1 },
 
     ];
@@ -175,15 +175,15 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
 
     // on insert data
     onInsertToDataBase(value: TaskMaster): void {
+        let tempValue: TaskMaster = Object.assign({}, value);
+
         if (this.serverAuth.getAuth) {
-            value.Creator = this.serverAuth.getAuth.UserName || "";
+            tempValue.Creator = this.serverAuth.getAuth.UserName || "";
         }
         // change timezone
-        console.log("BDATA:", JSON.stringify(value));
-        value = this.changeTimezone(value);
-        console.log("ADATA:", JSON.stringify(value));
+        tempValue = this.changeTimezone(tempValue);
         // insert data
-        this.service.post(value).subscribe(
+        this.service.post(tempValue).subscribe(
             (complete: any) => {
                 this.displayValue = complete;
                 this.onSaveComplete();
@@ -200,13 +200,15 @@ export class TaskMasterComponent extends BaseMasterComponent<TaskMaster, TaskMas
 
     // on update data
     onUpdateToDataBase(value: TaskMaster): void {
+        let tempValue: TaskMaster = Object.assign({}, value);
+
         if (this.serverAuth.getAuth) {
-            value.Modifyer = this.serverAuth.getAuth.UserName || "";
+            tempValue.Modifyer = this.serverAuth.getAuth.UserName || "";
         }
         // change timezone
-        value = this.changeTimezone(value);
+        tempValue = this.changeTimezone(tempValue);
         // update data
-        this.service.putKeyNumber(value, value.TaskMasterId).subscribe(
+        this.service.putKeyNumber(tempValue, tempValue.TaskMasterId).subscribe(
             (complete: any) => {
                 this.displayValue = complete;
                 this.onSaveComplete();

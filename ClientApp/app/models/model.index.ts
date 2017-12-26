@@ -21,3 +21,4 @@ export { PaintTeam } from "./task/paint-team.model";
 export { TaskMaster } from "./task/task-master.model";
 export { TaskBlastDetail } from "./task/task-blast-detail.model";
 export { TaskPaintDetail } from "./task/task-paint-detail.model";
+export { OptionTaskMasterSchedule } from "./task/option-taskmaster-schedule.model";

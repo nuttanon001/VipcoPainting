@@ -40,6 +40,7 @@ export class TaskPaintEditComponent implements OnInit {
     }
     // Value
     @Input() paintWorkItem: PaintWorkItem;
+    @Input() ReadOnly: boolean = false;
     @Output() hasChange = new EventEmitter<boolean>();
     // FormGroup
     taskPaintDetailForm: FormGroup;
@@ -50,14 +51,14 @@ export class TaskPaintEditComponent implements OnInit {
         this.buildForm();
         this.getPaintTeamCombobox();
 
-        if (this.paintWorkItem) {
-            if (this.paintWorkItem.IntCalcColorUsage) {
-                this.paintWorkItem.IntColorString += `: ${this.paintWorkItem.IntCalcColorUsage}`;
-            }
-            if (this.paintWorkItem.ExtCalcColorUsage) {
-                this.paintWorkItem.ExtColorString += `: ${this.paintWorkItem.ExtCalcColorUsage}`;
-            }
-        }
+        //if (this.paintWorkItem) {
+        //    if (this.paintWorkItem.IntCalcColorUsage) {
+        //        this.paintWorkItem.IntColorString += `: ${this.paintWorkItem.IntCalcColorUsage}`;
+        //    }
+        //    if (this.paintWorkItem.ExtCalcColorUsage) {
+        //        this.paintWorkItem.ExtColorString += `: ${this.paintWorkItem.ExtCalcColorUsage}`;
+        //    }
+        //}
     }
     // get PaintTeam Array
     getPaintTeamCombobox(): void {

@@ -5,6 +5,7 @@ import {
     BlastRoomCenterComponent, BlastRoomMasterComponent,
     PaintTeamCenterComponent, PaintTeamMasterComponent,
     TaskCenterComponent, TaskMasterComponent,
+    TaskScheduleComponent
 } from "../../components/task-component/task.index";
 // service
 import { AuthGuard } from "../../services/auth/auth-guard.service";
@@ -36,15 +37,24 @@ const blastRoomRoutes: Routes = [
     {
         path: "task",
         component: TaskCenterComponent,
-        canActivate: [AuthGuard],
         children: [
             {
                 path: "task-master/:condition",
                 component: TaskMasterComponent,
+                canActivate: [AuthGuard],
+            },
+            {
+                path: "task-master-schedule",
+                component: TaskScheduleComponent,
+            },
+            {
+                path: "task-master-schedule/:condition",
+                component: TaskScheduleComponent,
             },
             {
                 path: "",
                 component: TaskMasterComponent,
+                canActivate: [AuthGuard],
             }
         ]
     }

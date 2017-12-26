@@ -163,7 +163,7 @@
             <ng-template mat-tab-label>
                 <b>WorkItem Paint</b>
             </ng-template>
-            <div class="edit-container">
+            <div class="edit-center-content">
                 <div class="my-form">
                     <div class="col-sm-2">
                         <p-checkbox name="level1" value="PrimerCoat" label="PrimerCoat" 
@@ -191,20 +191,20 @@
                         <paint-workitem-edit [(paintWorkItem)]="item"></paint-workitem-edit>
                     </div>
                 </div>-->
-
-                <div *ngIf="listBoxs[0]">
-                    <paint-workitem-edit #pc1 [(paintWorkItem)]="paintWorks[0]"></paint-workitem-edit>
+                <div class="bottom-container-60vh">
+                    <div *ngIf="listBoxs[0]">
+                        <paint-workitem-edit #pc1 [(paintWorkItem)]="paintWorks[0]"></paint-workitem-edit>
+                    </div>
+                    <div *ngIf="listBoxs[1]">
+                        <paint-workitem-edit #mc1 [(paintWorkItem)]="paintWorks[1]"></paint-workitem-edit>
+                    </div>
+                    <div *ngIf="listBoxs[2]">
+                        <paint-workitem-edit #ic1 [(paintWorkItem)]="paintWorks[2]"></paint-workitem-edit>
+                    </div>
+                    <div *ngIf="listBoxs[3]">
+                        <paint-workitem-edit #tc1 [(paintWorkItem)]="paintWorks[3]"></paint-workitem-edit>
+                    </div>
                 </div>
-                <div *ngIf="listBoxs[1]">
-                    <paint-workitem-edit #mc1 [(paintWorkItem)]="paintWorks[1]"></paint-workitem-edit>
-                </div>
-                <div *ngIf="listBoxs[2]">
-                    <paint-workitem-edit #ic1 [(paintWorkItem)]="paintWorks[2]"></paint-workitem-edit>
-                </div>
-                <div *ngIf="listBoxs[3]">
-                    <paint-workitem-edit #tc1 [(paintWorkItem)]="paintWorks[3]"></paint-workitem-edit>
-                </div>
-
             </div>
         </mat-tab>
     </mat-tab-group>

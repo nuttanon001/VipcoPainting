@@ -3,13 +3,20 @@ import { Http } from "@angular/http";
 // rxjs
 import { Observable } from "rxjs/Rx";
 // models
-import { TaskMaster } from "../../models/model.index";
+import { TaskMaster, OptionTaskMasterSchedule } from "../../models/model.index";
 // base-service
 import { BaseRestService, BaseCommunicateService } from "../base-service/base.index";
 
 @Injectable()
 export class TaskMasterService extends BaseRestService<TaskMaster> {
     constructor(http: Http) { super(http, "api/TaskMaster/"); }
+    // ===================== TaskMaster Schedule ===========================\\
+    // get TaskMachine WaitAndProcess
+    getTaskMasterSchedule(option: OptionTaskMasterSchedule): Observable<any> {
+        let url: string = `${this.actionUrl}TaskMasterSchedule/`;
+        return this.http.post(url, JSON.stringify(option), this.getRequestOption())
+            .map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

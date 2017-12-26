@@ -35,6 +35,7 @@
     <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
     <None Remove="ClientApp\app\models\task\blast-room.model.ts" />
+    <None Remove="ClientApp\app\models\task\option-taskmaster-schedule.model.ts" />
     <None Remove="ClientApp\app\models\task\paint-team.model.ts" />
     <None Remove="ClientApp\app\models\task\task-blast-detail.model.ts" />
     <None Remove="ClientApp\app\models\task\task-master.model.ts" />
@@ -51,6 +52,7 @@
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\blast-room.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\task\option-taskmaster-schedule.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\paint-team.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\task-blast-detail.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\task-master.model.ts" />

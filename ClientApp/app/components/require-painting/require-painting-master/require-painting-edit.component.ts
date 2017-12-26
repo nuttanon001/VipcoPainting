@@ -144,7 +144,7 @@ export class RequirePaintingEditComponent
                 ]
             ],
             RequireNo: [this.editValue.RequireNo],
-
+            RequirePaintingStatus: [this.editValue.RequirePaintingStatus],
             Creator: [this.editValue.Creator],
             CreateDate: [this.editValue.CreateDate],
             Modifyer: [this.editValue.Modifyer],

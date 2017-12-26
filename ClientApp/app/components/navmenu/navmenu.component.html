@@ -11,6 +11,12 @@
 
     <div class="collapse navbar-collapse pl-4" id="Mynavbars" style="z-index:1500;">
         <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['/task/task-master-schedule','1']" routerLinkActive="active">
+                    <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                    <span>Paint Task Schedule</span>
+                </a>
+            </li>
             <li class="nav-item" *ngIf="GetLevel1">
                 <a #mainMenu="matMenuTrigger" [matMenuTriggerFor]="menu1"
                    (onMenuOpen)="menuOnCloseMenu1()" (mouseover)="menuOnOpenMenu1()"
@@ -36,11 +42,15 @@
                     <div>
                         <button mat-menu-item [routerLink]="['/require-painting/require-schedule']" routerLinkActive="active">
                             <i class="fa fa-history" aria-hidden="true"></i>
-                            <span>RequestPaintWaiting</span>
+                            <span>RequestPaint Waiting</span>
+                        </button>
+                        <button mat-menu-item [routerLink]="['/task/task-master-schedule','2']"  routerLinkActive="active">
+                            <i class="fa fa-tasks" aria-hidden="true"></i>
+                            <span>PaintTask(Processing)</span>
                         </button>
                         <button mat-menu-item [routerLink]="['/task']" routerLinkActive="active">
                             <i class="fa fa-paint-brush" aria-hidden="true"></i>
-                            <span>Paint Task</span>
+                            <span>PaintTask</span>
                         </button>
 
                         <hr />
