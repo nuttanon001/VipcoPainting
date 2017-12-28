@@ -114,10 +114,10 @@ namespace VipcoPainting.Controllers
                     {
                         var loss = (item.StandradTimeInt.PercentLoss ?? 0) / 100;
                         var area = item.IntArea;
-                        var sv = item.IntColorItem.VolumeSolids ?? 0;
+                        var vs = (item.IntColorItem.VolumeSolids ?? 0)/100;
                         double[] thicks = { item.IntDFTMin ?? 0, item.IntDFTMax ?? 0 };
                         var thick = thicks.Average();
-                        item.IntCalcColorUsage = (area * thick) / (sv * 10 * (1 - loss));
+                        item.IntCalcColorUsage = (area * thick) / (vs * 10 * (1 - loss));
                     }
                 }
              
@@ -127,10 +127,10 @@ namespace VipcoPainting.Controllers
                     {
                         var loss = (item.StandradTimeExt.PercentLoss ?? 0) / 100;
                         var area = item.ExtArea;
-                        var sv = item.ExtColorItem.VolumeSolids ?? 0;
+                        var vs = (item.ExtColorItem.VolumeSolids ?? 0) / 100;
                         double[] thicks = { item.ExtDFTMin ?? 0, item.ExtDFTMax ?? 0 };
                         var thick = thicks.Average();
-                        item.ExtCalcColorUsage = (area * thick) / (sv * 10 * (1 - loss));
+                        item.ExtCalcColorUsage = (area * thick) / (vs * 10 * (1 - loss));
                     }
                 }
             }

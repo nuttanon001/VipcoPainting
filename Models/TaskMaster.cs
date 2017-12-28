@@ -27,7 +27,6 @@ namespace VipcoPainting.Models
         //FK
         // RequirePaintingList
         public int? RequirePaintingListId { get; set; }
-
         public RequirePaintingList RequirePaintingList { get; set; }
         // TaskBlastDetail
         public ICollection<TaskBlastDetail> TaskBlastDetails { get; set; }

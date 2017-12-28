@@ -16,6 +16,8 @@ namespace VipcoPainting.Models
             modelBuilder.Entity<BlastRoom>().ToTable("BlastRoom");
             modelBuilder.Entity<BlastWorkItem>().ToTable("BlastWorkItem");
             modelBuilder.Entity<ColorItem>().ToTable("ColorItem");
+            modelBuilder.Entity<PaintTaskDetail>().ToTable("PaintTaskDetail");
+            modelBuilder.Entity<PaintTaskMaster>().ToTable("PaintTaskMaster");
             modelBuilder.Entity<PaintTeam>().ToTable("PaintTeam");
             modelBuilder.Entity<PaintWorkItem>().ToTable("PaintWorkItem");
             modelBuilder.Entity<ProjectCodeSub>().ToTable("ProjectCodeSub");
@@ -32,6 +34,8 @@ namespace VipcoPainting.Models
         public DbSet<BlastRoom> BlastRooms { get; set; }
         public DbSet<BlastWorkItem> BlastWorkItems { get; set; }
         public DbSet<ColorItem> ColorItems { get; set; }
+        public DbSet<PaintTaskDetail> PaintTaskDetails { get; set; }
+        public DbSet<PaintTaskMaster> PaintTaskMasters { get; set; }
         public DbSet<PaintTeam> PaintTeams { get; set; }
         public DbSet<PaintWorkItem> PaintWorkItems { get; set; }
         public DbSet<ProjectCodeSub> ProjectCodeSubs { get; set; }

@@ -1,6 +1,6 @@
 ﻿// angular
 import { Component, ViewContainerRef } from "@angular/core";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, Validators, AbstractControl } from "@angular/forms";
 // models
 import { StandradTime } from "../../../models/model.index";
 // components

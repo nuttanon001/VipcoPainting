@@ -22,5 +22,7 @@ namespace VipcoPainting.Models
         public PaintTeam PaintTeam { get; set; }
         //TaskBlastDetail
         public ICollection<TaskBlastDetail> TaskBlastDetails { get; set; }
+        //PaintTaskDetail
+        public ICollection<PaintTaskDetail> PaintTaskDetails { get; set; }
     }
 }

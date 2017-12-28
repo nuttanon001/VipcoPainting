@@ -60,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="my-form">
+                    <div class="my-form" *ngIf="editValueForm?.controls?.TypeStandardTime?.value === 2">
                         <label for="PercentLoss" class="my-label">Loss(%):</label>
                         <div class="col-sm-4">
                             <input type="number" min="1" max="100" class="my-input" placeholder="Insert percent loss for standard-time."

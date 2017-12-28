@@ -114,9 +114,9 @@ namespace VipcoPainting.Helpers
                 .ForMember(x => x.IntColorString,
                             o => o.MapFrom(s => s.IntColorItem == null ? null : $"{ s.IntColorItem.ColorName }"))
                 .ForMember(x => x.IntAreaString,
-                            o => o.MapFrom(s => s.IntArea == null ? "-" : $"Area:{s.IntArea} DFT:{s.IntDFTMin}/{s.IntDFTMax}"))
+                            o => o.MapFrom(s => s.IntArea == null ? "" : $"Area:{s.IntArea} DFT:{s.IntDFTMin}/{s.IntDFTMax}"))
                 .ForMember(x => x.ExtAreaString,
-                            o => o.MapFrom(s => s.ExtArea == null ? "-" : $"Area:{s.ExtArea} DFT:{s.ExtDFTMin}/{s.ExtDFTMax}"))
+                            o => o.MapFrom(s => s.ExtArea == null ? "" : $"Area:{s.ExtArea} DFT:{s.ExtDFTMin}/{s.ExtDFTMax}"))
                 .ForMember(x => x.StandradTimeExt, o => o.Ignore())
                 .ForMember(x => x.StandradTimeInt, o => o.Ignore())
                 .ForMember(x => x.ExtColorItem, o => o.Ignore())
@@ -156,6 +156,20 @@ namespace VipcoPainting.Helpers
                             o => o.MapFrom(s => s.PaintTeam == null ? "-" : $"{s.PaintTeam.TeamName}"))
                 .ForMember(x => x.PaintTeam, o => o.Ignore());
 
+            #endregion
+
+            #region PaintTaskMaster
+            CreateMap<PaintTaskMaster, PaintTaskMasterViewModel>();
+            #endregion
+
+            #region PaintTaskDetail
+            CreateMap<PaintTaskDetail, PaintTaskDetailViewModel>()
+                .ForMember(x => x.BlastRoomString,
+                            o => o.MapFrom(s => s.BlastRoom == null ? "-" : $"{s.BlastRoom.BlastRoomName}/{(s.BlastRoom.PaintTeam.TeamName ?? "-")}"))
+                .ForMember(x => x.BlastRoom, o => o.Ignore())
+                .ForMember(x => x.PaintTeamString,
+                            o => o.MapFrom(s => s.PaintTeam == null ? "-" : $"{s.PaintTeam.TeamName}"))
+                .ForMember(x => x.PaintTeam, o => o.Ignore());
             #endregion
         }
     }

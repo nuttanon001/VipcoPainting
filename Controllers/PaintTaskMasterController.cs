@@ -18,14 +18,13 @@ using VipcoPainting.Services.Interfaces;
 namespace VipcoPainting.Controllers
 {
     [Produces("application/json")]
-    [Route("api/TaskMaster")]
-    public class TaskMasterController : Controller
+    [Route("api/PaintTaskMaster")]
+    public class PaintTaskMasterController : Controller
     {
         #region PrivateMembers
         // Repository
-        private IRepositoryPainting<TaskMaster> repository;
-        private IRepositoryPainting<TaskBlastDetail> repositoryTaskBlast;
-        private IRepositoryPainting<TaskPaintDetail> repositoryTaskPaint;
+        private IRepositoryPainting<PaintTaskMaster> repository;
+        private IRepositoryPainting<PaintTaskDetail> repositoryDetail;
         private IRepositoryMachine<Employee> repositoryEmp;
         private IRepositoryMachine<ProjectCodeMaster> repositoryProMaster;
         private IRepositoryPainting<RequirePaintingList> repositoryReqPaintingList;
@@ -33,23 +32,20 @@ namespace VipcoPainting.Controllers
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
-        private HelpersClass<TaskMaster> helpers;
+        private HelpersClass<PaintTaskMaster> helpers;
 
-        private Models.TaskStatus CheckTaskStatus(TaskMaster taskMaster)
+        private PaintTaskStatus CheckTaskStatus(PaintTaskMaster taskMaster)
         {
-            var Result = Models.TaskStatus.Cancel;
+            var Result = PaintTaskStatus.Cancel;
 
             if (taskMaster != null)
             {
-                if (taskMaster.TaskProgress.HasValue)
+                if (taskMaster.MainProgress.HasValue)
                 {
-                    if (taskMaster.TaskProgress == 0)
-                        Result = Models.TaskStatus.Waiting;
-                    else
-                        Result = taskMaster.TaskProgress >= 100 ? Models.TaskStatus.Complated : Models.TaskStatus.Tasking;
+                    Result = taskMaster.MainProgress >= 100 ? PaintTaskStatus.Complated : PaintTaskStatus.Waiting;
                 }
                 else
-                    Result = Models.TaskStatus.Waiting;
+                    Result = PaintTaskStatus.Waiting;
             }
             return Result;
         }
@@ -68,7 +64,7 @@ namespace VipcoPainting.Controllers
                     {
                         var RequireNo = reqPaintingList.RequirePaintingMaster.RequireNo;
                         var Runing = await this.repository.GetAllAsQueryable()
-                                           .CountAsync(x => x.TaskNo.StartsWith(RequireNo)) + 1;
+                                           .CountAsync(x => x.TaskPaintNo.StartsWith(RequireNo)) + 1;
 
                         return $"{RequireNo}-{Runing.ToString("000")}";
                     }
@@ -77,7 +73,7 @@ namespace VipcoPainting.Controllers
                 // return $"{proDetail.ProjectCodeMaster.ProjectCode}/{typeMachine.TypeMachineCode}/{Runing.ToString("0000")}";
             }
 
-            return "xxxx/xx/xx";
+            return "xxxx/xx-xxx";
         }
         private IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
         {
@@ -87,24 +83,22 @@ namespace VipcoPainting.Controllers
         #endregion PrivateMenbers
 
         #region Constructor
-        public TaskMasterController(
-            IRepositoryPainting<TaskMaster> repo,
-            IRepositoryPainting<TaskBlastDetail> repoTaskBlast,
-            IRepositoryPainting<TaskPaintDetail> repoTaskPaint,
+        public PaintTaskMasterController(
+            IRepositoryPainting<PaintTaskMaster> repo,
+            IRepositoryPainting<PaintTaskDetail> repoDetail,
             IRepositoryPainting<RequirePaintingList> repoPaintingList,
             IRepositoryMachine<ProjectCodeMaster> repoProMaster,
             IRepositoryMachine<Employee> repoEmp, IMapper map)
         {
             // Repository
             this.repository = repo;
-            this.repositoryTaskBlast = repoTaskBlast;
-            this.repositoryTaskPaint = repoTaskPaint;
+            this.repositoryDetail = repoDetail;
             this.repositoryReqPaintingList = repoPaintingList;
             this.repositoryEmp = repoEmp;
             this.repositoryProMaster = repoProMaster;
             // Mapper
             this.mapper = map;
-            this.helpers = new HelpersClass<TaskMaster>();
+            this.helpers = new HelpersClass<PaintTaskMaster>();
             // Json
             this.DefaultJsonSettings = new Helpers.JsonSerializer().DefaultJsonSettings;
             // ConvertTable
@@ -115,27 +109,28 @@ namespace VipcoPainting.Controllers
 
         #region GET
 
-        // GET: api/TaskMaster
+        // GET: api/PaintTaskMaster
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
+            // With Includes
             //var Includes = new List<string> { "PaintTeam" };
-
-            //return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel, TaskMaster>
+            //return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel, PaintTaskMaster>
             //                     (await this.repository.GetAllWithInclude2Async(Includes)),
             //                      this.DefaultJsonSettings);
         }
 
-        // GET: api/TaskMaster/5
+        // GET: api/PaintTaskMaster/5
         [HttpGet("{key}")]
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            // With Includes
             var Includes = new List<string> { "RequirePaintingList.RequirePaintingMaster.ProjectCodeSub" };
 
-            var taskMaster = this.mapper.Map<TaskMaster, TaskMasterViewModel>
-                             (await this.repository.GetAsynvWithIncludes(key, "TaskMasterId", Includes));
+            var taskMaster = this.mapper.Map<PaintTaskMaster, PaintTaskMasterViewModel>
+                             (await this.repository.GetAsynvWithIncludes(key, "PaintTaskMasterId", Includes));
 
             if (taskMaster != null)
             {
@@ -161,7 +156,7 @@ namespace VipcoPainting.Controllers
         #endregion GET
 
         #region POST
-        // POST: api/TaskMaster/TaskMasterSchedule
+        // POST: api/PaintTaskMaster/TaskMasterSchedule
         [HttpPost("TaskMasterSchedule")]
         public async Task<IActionResult> TaskMasterSchedule([FromBody] OptionTaskMasterSchedule Scehdule)
         {
@@ -171,13 +166,14 @@ namespace VipcoPainting.Controllers
             {
                 var QueryData = this.repository.GetAllAsQueryable()
                                                .Include(x => x.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
+                                               .Include(x => x.PaintTaskDetails)
                                                .AsQueryable();
                 int TotalRow;
 
                 if (Scehdule != null)
                 {
                     if (Scehdule.TaskMasterId.HasValue)
-                        QueryData = QueryData.Where(x => x.TaskMasterId == Scehdule.TaskMasterId);
+                        QueryData = QueryData.Where(x => x.PaintTaskMasterId == Scehdule.TaskMasterId);
 
                     if (!string.IsNullOrEmpty(Scehdule.Filter))
                     {
@@ -185,7 +181,7 @@ namespace VipcoPainting.Controllers
                                    : Scehdule.Filter.ToLower().Split(null);
                         foreach (var keyword in filters)
                         {
-                            QueryData = QueryData.Where(x => x.TaskNo.ToLower().Contains(keyword));
+                            QueryData = QueryData.Where(x => x.TaskPaintNo.ToLower().Contains(keyword));
                         }
                     }
 
@@ -213,10 +209,9 @@ namespace VipcoPainting.Controllers
                     if (Scehdule.Mode != null)
                     {
                         if (Scehdule.Mode == 2)
-                            QueryData = QueryData.Where(x => x.TaskStatus == Models.TaskStatus.Waiting ||
-                                                             x.TaskStatus == Models.TaskStatus.Tasking);
+                            QueryData = QueryData.Where(x => x.PaintTaskStatus == PaintTaskStatus.Waiting);
                         else
-                            QueryData = QueryData.Where(x => x.TaskStatus != Models.TaskStatus.Cancel);
+                            QueryData = QueryData.Where(x => x.PaintTaskStatus != PaintTaskStatus.Cancel);
                     }
 
                     TotalRow = await QueryData.CountAsync();
@@ -236,19 +231,23 @@ namespace VipcoPainting.Controllers
                     IDictionary<string, int> ColumnGroupTop = new Dictionary<string, int>();
                     IDictionary<DateTime, string> ColumnGroupBtm = new Dictionary<DateTime, string>();
                     List<string> ColumnsAll = new List<string>();
+                    // PlanDate
+                    var PlanStart = GetData.Select(x => x.PaintTaskDetails.Min(z => z.PlanSDate)).FirstOrDefault();
+                    var PlanEnd = GetData.Select(x => x.PaintTaskDetails.Max(z => z.PlanEDate)).FirstOrDefault();
+                    var ActualStart = GetData.Select(x => x.PaintTaskDetails.Min(z => z.ActualSDate)).FirstOrDefault();
+                    var ActualEnd = GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualEDate)).FirstOrDefault();
+
                     DateTime MinDate; DateTime MaxDate;
                     // Min
-                    if (GetData.Any(x => x.ActualSDate != null))
-                        MinDate = GetData.Min(x => x.RequirePaintingList.PlanStart.Value.Date) < GetData.Where(x => x.ActualSDate != null).Min(x => x?.ActualSDate?.Date ?? x.RequirePaintingList.PlanStart.Value.Date) ?
-                                    GetData.Min(x => x.RequirePaintingList.PlanStart.Value.Date) : GetData.Where(x => x.ActualSDate != null).Min(x => x?.ActualSDate?.Date ?? x.RequirePaintingList.PlanStart.Value.Date);
+                    if (ActualStart != null)
+                        MinDate = PlanStart.Date < ActualStart.Value.Date ? PlanStart : ActualStart.Value;
                     else
-                        MinDate = GetData.Min(x => x.RequirePaintingList.PlanStart.Value.Date);
+                        MinDate = PlanStart;
                     // Max
-                    if (GetData.Any(x => x.ActualEDate != null))
-                        MaxDate = GetData.Max(x => x.RequirePaintingList.PlanEnd.Value.Date) > GetData.Where(x => x.ActualEDate != null).Max(x => x?.ActualEDate?.Date ?? x.RequirePaintingList.PlanEnd.Value.Date) ?
-                                    GetData.Max(x => x.RequirePaintingList.PlanEnd.Value.Date) : GetData.Max(x => x?.ActualEDate?.Date ?? x.RequirePaintingList.PlanEnd.Value.Date);
+                    if (ActualEnd != null)
+                        MaxDate = PlanEnd > ActualEnd.Value ? PlanEnd : ActualEnd.Value;
                     else
-                        MaxDate = GetData.Max(x => x.RequirePaintingList.PlanEnd.Value.Date);
+                        MaxDate = PlanEnd;
 
                     if (MinDate == null && MaxDate == null)
                     {
@@ -278,7 +277,7 @@ namespace VipcoPainting.Controllers
                     foreach (var Data in GetData.OrderBy(x => x.RequirePaintingList.PlanStart.Value).ThenBy(x => x.RequirePaintingList.PlanEnd.Value))
                     {
                         IDictionary<String, Object> rowData = new ExpandoObject();
-                        var Progress = Data.TaskProgress ?? 0;
+                        var Progress = Data.MainProgress ?? 0;
                         var ProjectMaster = "NoData";
                         if (Data?.RequirePaintingList?.RequirePaintingMaster?.ProjectCodeSub != null)
                         {
@@ -290,14 +289,15 @@ namespace VipcoPainting.Controllers
 
                         // add column time
                         rowData.Add("ProjectMaster", ProjectMaster);
-                        rowData.Add("WorkItem",(Data.RequirePaintingList == null ? "" : Data.RequirePaintingList.Description) + 
+                        rowData.Add("WorkItem", (Data.RequirePaintingList == null ? "" : Data.RequirePaintingList.Description) +
                                                (Data.RequirePaintingList == null ? "" : $" | {Data.RequirePaintingList.MarkNo}") +
                                                (Data.RequirePaintingList == null ? "" : $" | UnitNo({(Data.RequirePaintingList.UnitNo ?? 0).ToString("00")})"));
                         rowData.Add("Progress", Progress.ToString("00.0") + "%");
-                        rowData.Add("TaskMasterId", Data?.TaskMasterId ?? 1);
+                        rowData.Add("PaintTaskMasterId", Data?.PaintTaskMasterId ?? 1);
 
-                        // Data is 1:Plan,2:Actual,3:PlanAndActual
-                        // For Plan
+                        // Data is 1:Plan1,2:Plan2,3:Plan1AndPlan2,
+                        // 4:Actual,5:Plan1AndActual,6:Plan2AndActual,7:Plan1,Plan2AndActual
+                        // For Plan1
                         if (Data.RequirePaintingList.PlanStart.Value != null && Data.RequirePaintingList.PlanEnd.Value != null)
                         {
                             foreach (DateTime day in EachDay(Data.RequirePaintingList.PlanStart.Value, Data.RequirePaintingList.PlanEnd.Value))
@@ -306,12 +306,34 @@ namespace VipcoPainting.Controllers
                                     rowData.Add(ColumnGroupBtm.FirstOrDefault(x => x.Key == day.Date).Value, 1);
                             }
                         }
-                        //For Actual
-                        if (Data.ActualSDate != null)
-                        {
-                            var EndDate = Data.ActualEDate ?? (MaxDate > DateTime.Today ? DateTime.Today : MaxDate);
 
-                            foreach (DateTime day in EachDay(Data.ActualSDate.Value, EndDate))
+                        // For Plan2
+                        var DetailPlanStart = Data.PaintTaskDetails.Min(x => x.PlanSDate);
+                        var DetailPlanEnd = Data.PaintTaskDetails.Min(x => x.PlanEDate);
+                        if (DetailPlanStart != null && DetailPlanEnd != null)
+                        {
+                            foreach (DateTime day in EachDay(DetailPlanStart, DetailPlanEnd))
+                            {
+                                if (ColumnGroupBtm.Any(x => x.Key == day.Date))
+                                {
+                                    var Col = ColumnGroupBtm.FirstOrDefault(x => x.Key == day.Date);
+
+                                    // if Have Plan1 change value to 3
+                                    if (rowData.Keys.Any(x => x == Col.Value))
+                                        rowData[Col.Value] = 3;
+                                    else // else Don't have plan1 change value is 2 for plan2
+                                        rowData.Add(Col.Value, 2);
+                                }
+                            }
+                        }
+
+                        //For Actual
+                        var DetailActualStart = Data.PaintTaskDetails.Min(x => x.ActualSDate);
+                        if (DetailActualStart != null)
+                        {
+                            var EndDate = Data.PaintTaskDetails.Min(x => x.ActualSDate) ?? (MaxDate > DateTime.Today ? DateTime.Today : MaxDate);
+
+                            foreach (DateTime day in EachDay(DetailActualStart.Value, EndDate))
                             {
                                 if (ColumnGroupBtm.Any(x => x.Key == day.Date))
                                 {
@@ -320,9 +342,16 @@ namespace VipcoPainting.Controllers
 
                                     // if Have Plan change value to 3
                                     if (rowData.Keys.Any(x => x == Col.Value))
-                                        rowData[Col.Value] = 3;
-                                    else // else Don't have plan value is 2
-                                        rowData.Add(Col.Value, 2);
+                                    {
+                                        if ((int)rowData[Col.Value] == 1)
+                                            rowData[Col.Value] = 5;
+                                        else if ((int)rowData[Col.Value] == 2)
+                                            rowData[Col.Value] = 6;
+                                        else if ((int)rowData[Col.Value] == 3)
+                                            rowData[Col.Value] = 7;
+                                    }
+                                    else // else Don't have plan1 and plan2 change value is 4
+                                        rowData.Add(Col.Value, 4);
                                 }
                             }
                         }
@@ -357,7 +386,7 @@ namespace VipcoPainting.Controllers
             return NotFound(new { Error = Message });
         }
 
-        // POST: api/TaskMaster/GetScroll
+        // POST: api/PaintTaskMaster/GetScroll
         [HttpPost("GetScroll")]
         public async Task<IActionResult> GetScroll([FromBody] ScrollViewModel Scroll)
         {
@@ -371,7 +400,7 @@ namespace VipcoPainting.Controllers
 
             foreach (var keyword in filters)
             {
-                QueryData = QueryData.Where(x => x.TaskNo.ToLower().Contains(keyword));
+                QueryData = QueryData.Where(x => x.TaskPaintNo.ToLower().Contains(keyword));
             }
 
             // Order
@@ -379,9 +408,9 @@ namespace VipcoPainting.Controllers
             {
                 case "TaskNo":
                     if (Scroll.SortOrder == -1)
-                        QueryData = QueryData.OrderByDescending(e => e.TaskNo);
+                        QueryData = QueryData.OrderByDescending(e => e.TaskPaintNo);
                     else
-                        QueryData = QueryData.OrderBy(e => e.TaskNo);
+                        QueryData = QueryData.OrderBy(e => e.TaskPaintNo);
                     break;
 
                 case "AssignBy":
@@ -397,12 +426,12 @@ namespace VipcoPainting.Controllers
             }
             // Skip Take
             QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
-            var DataViewModel = this.ConvertTable.ConverterTableToViewModel<TaskMasterViewModel, TaskMaster>
+            var DataViewModel = this.ConvertTable.ConverterTableToViewModel<PaintTaskMasterViewModel, PaintTaskMaster>
                                     (await QueryData.AsNoTracking().ToListAsync());
 
             if (DataViewModel.Any())
             {
-                foreach(var item in DataViewModel)
+                foreach (var item in DataViewModel)
                 {
                     if (!string.IsNullOrEmpty(item.AssignBy))
                         item.AssignByString = (await this.repositoryEmp.GetAsync(item.AssignBy))?.NameThai ?? "-";
@@ -419,78 +448,65 @@ namespace VipcoPainting.Controllers
             }
 
             return new JsonResult
-                (new ScrollDataViewModel<TaskMasterViewModel>
+                (new ScrollDataViewModel<PaintTaskMasterViewModel>
                 (Scroll, DataViewModel), this.DefaultJsonSettings);
         }
 
-        // POST: api/TaskMaster
+        // POST: api/PaintTaskMaster
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]TaskMaster nTaskMaster)
+        public async Task<IActionResult> Post([FromBody]PaintTaskMaster nPaintTaskMaster)
         {
-            var Message = "TaskMaster not been found.";
+            var Message = "PaintTaskMaster not been found.";
             try
             {
-                if (nTaskMaster != null)
+                if (nPaintTaskMaster != null)
                 {
-                    nTaskMaster = helpers.AddHourMethod(nTaskMaster);
+                    nPaintTaskMaster = helpers.AddHourMethod(nPaintTaskMaster);
 
-                    nTaskMaster.CreateDate = DateTime.Now;
-                    nTaskMaster.Creator = nTaskMaster.Creator ?? "Someone";
+                    nPaintTaskMaster.CreateDate = DateTime.Now;
+                    nPaintTaskMaster.Creator = nPaintTaskMaster.Creator ?? "Someone";
 
-                    nTaskMaster.TaskStatus = this.CheckTaskStatus(nTaskMaster);
+                    nPaintTaskMaster.PaintTaskStatus = this.CheckTaskStatus(nPaintTaskMaster);
 
-                    if (nTaskMaster.RequirePaintingListId.HasValue)
-                        nTaskMaster.TaskNo = await this.GeneratedCode(nTaskMaster.RequirePaintingListId.Value);
+                    if (nPaintTaskMaster.RequirePaintingListId.HasValue)
+                        nPaintTaskMaster.TaskPaintNo = await this.GeneratedCode(nPaintTaskMaster.RequirePaintingListId.Value);
 
-                    if (nTaskMaster.RequirePaintingList != null)
-                        nTaskMaster.RequirePaintingList = null;
+                    if (nPaintTaskMaster.RequirePaintingList != null)
+                        nPaintTaskMaster.RequirePaintingList = null;
 
                     // Remove null
-                    nTaskMaster.TaskBlastDetails.Remove(null);
-                    nTaskMaster.TaskPaintDetails.Remove(null);
+                    nPaintTaskMaster.PaintTaskDetails.Remove(null);
 
-                    if (nTaskMaster.TaskBlastDetails != null)
+                    if (nPaintTaskMaster.PaintTaskDetails != null)
                     {
                         // Add BlastWork item
-                        foreach (var nTaskBlast in nTaskMaster.TaskBlastDetails)
+                        foreach (var nPaintTaskDetail in nPaintTaskMaster.PaintTaskDetails)
                         {
-                            if (nTaskBlast == null)
+                            if (nPaintTaskDetail == null)
                                 continue;
 
-                            nTaskBlast.CreateDate = nTaskMaster.CreateDate;
-                            nTaskBlast.Creator = nTaskMaster.Creator;
+                            nPaintTaskDetail.CreateDate = nPaintTaskMaster.CreateDate;
+                            nPaintTaskDetail.Creator = nPaintTaskMaster.Creator;
 
                             // Clear BlastRoom
-                            if (nTaskBlast.BlastRoom != null)
-                                nTaskBlast.BlastRoom = null;
+                            if (nPaintTaskDetail.BlastRoom != null)
+                                nPaintTaskDetail.BlastRoom = null;
 
                             // Clear BlastWorkItem
-                            if (nTaskBlast.BlastWorkItem != null)
-                                nTaskBlast.BlastWorkItem = null;
-                        }
-                    }
-
-                    if (nTaskMaster.TaskPaintDetails != null)
-                    {
-                        foreach (var nTaskPaint in nTaskMaster.TaskPaintDetails)
-                        {
-                            if (nTaskPaint == null)
-                                continue;
-
-                            nTaskPaint.CreateDate = nTaskMaster.CreateDate;
-                            nTaskPaint.Creator = nTaskMaster.Creator;
+                            if (nPaintTaskDetail.BlastWorkItem != null)
+                                nPaintTaskDetail.BlastWorkItem = null;
 
                             // Clear PaintTeam
-                            if (nTaskPaint.PaintTeam != null)
-                                nTaskPaint.PaintTeam = null;
+                            if (nPaintTaskDetail.PaintTeam != null)
+                                nPaintTaskDetail.PaintTeam = null;
 
                             // Clear PaintWorkItem
-                            if (nTaskPaint.PaintWorkItem != null)
-                                nTaskPaint.PaintWorkItem = null;
+                            if (nPaintTaskDetail.PaintWorkItem != null)
+                                nPaintTaskDetail.PaintWorkItem = null;
                         }
                     }
 
-                    return new JsonResult(await this.repository.AddAsync(nTaskMaster), this.DefaultJsonSettings);
+                    return new JsonResult(await this.repository.AddAsync(nPaintTaskMaster), this.DefaultJsonSettings);
                 }
 
             }
@@ -505,130 +521,82 @@ namespace VipcoPainting.Controllers
 
         #region PUT
 
-        // PUT: api/TaskMaster/5
+        // PUT: api/PaintTaskMaster/5
         [HttpPut("{key}")]
-        public async Task<IActionResult> PutByNumber(int key, [FromBody]TaskMaster uTaskMaster)
+        public async Task<IActionResult> PutByNumber(int key, [FromBody]PaintTaskMaster uPaintTaskMaster)
         {
             var Message = "task master not been found.";
             // For Update
-            if (uTaskMaster != null)
+            if (uPaintTaskMaster != null)
             {
                 // add hour to DateTime to set Asia/Bangkok
-                uTaskMaster = helpers.AddHourMethod(uTaskMaster);
+                uPaintTaskMaster = helpers.AddHourMethod(uPaintTaskMaster);
                 // set modified
-                uTaskMaster.ModifyDate = DateTime.Now;
-                uTaskMaster.Modifyer = uTaskMaster.Modifyer ?? "Someone";
+                uPaintTaskMaster.ModifyDate = DateTime.Now;
+                uPaintTaskMaster.Modifyer = uPaintTaskMaster.Modifyer ?? "Someone";
 
-                if (uTaskMaster.RequirePaintingList != null)
-                    uTaskMaster.RequirePaintingList = null;
+                if (uPaintTaskMaster.RequirePaintingList != null)
+                    uPaintTaskMaster.RequirePaintingList = null;
 
-                uTaskMaster.TaskStatus = this.CheckTaskStatus(uTaskMaster);
+                uPaintTaskMaster.PaintTaskStatus = this.CheckTaskStatus(uPaintTaskMaster);
 
                 // Remove null
-                uTaskMaster.TaskBlastDetails.Remove(null);
-                uTaskMaster.TaskPaintDetails.Remove(null);
+                uPaintTaskMaster.PaintTaskDetails.Remove(null);
 
-                if (uTaskMaster.TaskBlastDetails != null)
+                if (uPaintTaskMaster.PaintTaskDetails != null)
                 {
-                    foreach (var uTaskBlast in uTaskMaster.TaskBlastDetails)
+                    foreach (var uPaintTaskDetail in uPaintTaskMaster.PaintTaskDetails)
                     {
-                        if (uTaskBlast == null)
+                        if (uPaintTaskDetail == null)
                             continue;
 
-                        if (uTaskBlast.TaskBlastDetailId > 0)
+                        if (uPaintTaskDetail.PaintTaskDetailId > 0)
                         {
-                            uTaskBlast.ModifyDate = uTaskMaster.ModifyDate;
-                            uTaskBlast.Modifyer = uTaskMaster.Modifyer;
+                            uPaintTaskDetail.ModifyDate = uPaintTaskMaster.ModifyDate;
+                            uPaintTaskDetail.Modifyer = uPaintTaskMaster.Modifyer;
                         }
                         else
                         {
-                            uTaskBlast.CreateDate = uTaskMaster.ModifyDate;
-                            uTaskBlast.Creator = uTaskMaster.Modifyer;
+                            uPaintTaskDetail.CreateDate = uPaintTaskMaster.ModifyDate;
+                            uPaintTaskDetail.Creator = uPaintTaskMaster.Modifyer;
                         }
 
-                        uTaskBlast.BlastWorkItem = null;
-                        uTaskBlast.BlastRoom = null;
-                    }
-                }
-
-                if (uTaskMaster.TaskPaintDetails != null)
-                {
-                    foreach (var uTaskPaint in uTaskMaster.TaskPaintDetails)
-                    {
-                        if (uTaskPaint == null)
-                            continue;
-
-                        if (uTaskPaint.TaskPaintDetailId > 0)
-                        {
-                            uTaskPaint.ModifyDate = uTaskMaster.ModifyDate;
-                            uTaskPaint.Modifyer = uTaskMaster.Modifyer;
-                        }
-                        else
-                        {
-                            uTaskPaint.CreateDate = uTaskMaster.ModifyDate;
-                            uTaskPaint.Creator = uTaskMaster.Modifyer;
-                        }
-
-                        uTaskPaint.PaintTeam = null;
-                        uTaskPaint.PaintWorkItem = null;
+                        uPaintTaskDetail.BlastWorkItem = null;
+                        uPaintTaskDetail.BlastRoom = null;
+                        uPaintTaskDetail.PaintWorkItem = null;
+                        uPaintTaskDetail.PaintTeam = null;
                     }
                 }
 
                 // update Master not update Detail it need to update Detail directly
-                var updateComplate = await this.repository.UpdateAsync(uTaskMaster, key);
+                var updateComplate = await this.repository.UpdateAsync(uPaintTaskMaster, key);
                 if (updateComplate != null)
                 {
                     // filter
-                    Expression<Func<TaskBlastDetail, bool>> conditionBlast = m => m.TaskMasterId == key;
-                    var dbTaskBlasts = this.repositoryTaskBlast.FindAll(conditionBlast);
-                    Expression<Func<TaskPaintDetail, bool>> conditionPaint = m => m.TaskMasterId == key;
-                    var dbTaskPaints = this.repositoryTaskPaint.FindAll(conditionPaint);
+                    Expression<Func<PaintTaskDetail, bool>> conditionBlast = m => m.PaintTaskMasterId == key;
+                    var dbPaintTaskDetails = this.repositoryDetail.FindAll(conditionBlast);
 
                     //Remove TaskBlastDetail if edit remove it
-                    foreach (var dbTaskBlast in dbTaskBlasts)
+                    foreach (var dbPaintTaskDetail in dbPaintTaskDetails)
                     {
-                        if (!uTaskMaster.TaskBlastDetails.Any(x => x.TaskBlastDetailId == dbTaskBlast.TaskBlastDetailId))
-                            await this.repositoryTaskBlast.DeleteAsync(dbTaskBlast.TaskBlastDetailId);
-                    }
-
-                    //Remove TaskPaintDetail if edit remove it
-                    foreach (var dbTaskPaint in dbTaskPaints)
-                    {
-                        if (!uTaskMaster.TaskPaintDetails.Any(x => x.TaskPaintDetailId == dbTaskPaint.TaskPaintDetailId))
-                            await this.repositoryTaskPaint.DeleteAsync(dbTaskPaint.TaskPaintDetailId);
+                        if (!uPaintTaskMaster.PaintTaskDetails.Any(x => x.PaintTaskDetailId == dbPaintTaskDetail.PaintTaskDetailId))
+                            await this.repositoryDetail.DeleteAsync(dbPaintTaskDetail.PaintTaskDetailId);
                     }
 
                     //Update TaskBlastDetail or New TaskBlastDetail
-                    foreach (var uTaskBlast in uTaskMaster.TaskBlastDetails)
+                    foreach (var uPaintTaskDetail in uPaintTaskMaster.PaintTaskDetails)
                     {
-                        if (uTaskBlast == null)
+                        if (uPaintTaskDetail == null)
                             continue;
 
-                        if (uTaskBlast.TaskBlastDetailId > 0)
-                            await this.repositoryTaskBlast.UpdateAsync(uTaskBlast, uTaskBlast.TaskBlastDetailId);
+                        if (uPaintTaskDetail.PaintTaskDetailId > 0)
+                            await this.repositoryDetail.UpdateAsync(uPaintTaskDetail, uPaintTaskDetail.PaintTaskDetailId);
                         else
                         {
-                            if (uTaskBlast.TaskMasterId is null || uTaskBlast.TaskMasterId < 1)
-                                uTaskBlast.TaskMasterId = uTaskMaster.TaskMasterId;
+                            if (uPaintTaskDetail.PaintTaskMasterId is null || uPaintTaskDetail.PaintTaskMasterId < 1)
+                                uPaintTaskDetail.PaintTaskMasterId = uPaintTaskMaster.PaintTaskMasterId;
 
-                            await this.repositoryTaskBlast.AddAsync(uTaskBlast);
-                        }
-                    }
-
-                    //Update TaskPaintDetail or New TaskPaintDetail
-                    foreach (var uTaskPaint in uTaskMaster.TaskPaintDetails)
-                    {
-                        if (uTaskPaint == null)
-                            continue;
-
-                        if (uTaskPaint.TaskPaintDetailId > 0)
-                            await this.repositoryTaskPaint.UpdateAsync(uTaskPaint, uTaskPaint.TaskPaintDetailId);
-                        else
-                        {
-                            if (uTaskPaint.TaskMasterId is null || uTaskPaint.TaskMasterId < 1)
-                                uTaskPaint.TaskMasterId = uTaskMaster.TaskMasterId;
-
-                            await this.repositoryTaskPaint.AddAsync(uTaskPaint);
+                            await this.repositoryDetail.AddAsync(uPaintTaskDetail);
                         }
                     }
                 }
@@ -644,7 +612,7 @@ namespace VipcoPainting.Controllers
 
         #region DELETE
 
-        // DELETE: api/TaskMaster/5
+        // DELETE: api/PaintTaskMaster/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
