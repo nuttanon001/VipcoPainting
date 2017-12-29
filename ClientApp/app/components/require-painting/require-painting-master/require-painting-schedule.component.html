@@ -42,7 +42,7 @@
                             <li *ngFor="let master of data1[col.field];index as i;" class="text-success">
                                 <i class="fa fa-search" (click)="onSelectRequirePaintMaster(master.RequirePaintingMasterId)"
                                    style="cursor:pointer;">
-                                    {{master.RequireString}}
+                                    <span>{{master.RequireString}}</span> 
                                 </i>
                             </li>
                         </ol>

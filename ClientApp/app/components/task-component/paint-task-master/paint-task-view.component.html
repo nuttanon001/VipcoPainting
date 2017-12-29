@@ -1,0 +1,73 @@
+﻿<div *ngIf="displayValue && requirePaintMaster && requirePaintList,else elseBlock">
+    <div class="view-container">
+        <div class="row my-1">
+            <div class="my-label">
+                Job-No :
+            </div>
+            <div class="my-value">
+                {{requirePaintMaster?.ProjectCodeSubString || "-"}}
+            </div>
+
+            <div class="my-label">
+                WorkItemName :
+            </div>
+            <div class="my-value">
+                {{requirePaintList?.Description || "-"}}
+            </div>
+
+        </div>
+
+        <div class="row my-1">
+            <div class="my-label">
+                MarkNo/Unit :
+            </div>
+            <div class="my-value">
+                {{requirePaintList?.MarkNo || "-"}}/{{requirePaintList?.UnitNo || "0"}}
+            </div>
+
+            <div class="my-label">
+                Quantity :
+            </div>
+            <div class="my-value">
+                {{requirePaintList?.Quantity || "0"}}
+            </div>
+        </div>
+
+        <div class="row my-1">
+            <div class="my-label">
+                PaintTaskNo :
+            </div>
+            <div class="my-value">
+                {{displayValue?.TaskPaintNo || "-"}}
+            </div>
+
+            <div class="my-label">
+                AssignBy :
+            </div>
+            <div class="my-value">
+                {{displayValue?.AssignByString || "-"}}
+            </div>
+        </div>
+
+        <div class="row my-1">
+            <div class="my-label">
+                TotalProgress :
+            </div>
+            <div class="my-value">
+                {{displayValue?.MainProgress || "0"}} %
+            </div>
+        </div>
+    </div>
+    <!-- Detail -->
+    <div *ngIf="newValue;else NoData">
+        <paint-task-detail-list [paintTaskMaster]="newValue" [ReadOnly]="true"></paint-task-detail-list>
+    </div>
+    <ng-template>
+        <span class="text-danger">No Data</span>
+    </ng-template>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

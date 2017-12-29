@@ -87,9 +87,14 @@ namespace VipcoPainting.Controllers
             var GetData = this.ConvertTable.ConverterTableToViewModel<PaintTaskDetailViewModel, PaintTaskDetail>
                             (await QueryData.AsNoTracking().ToListAsync());
             foreach (var item in GetData)
+            {
                 item.PaintWorkItem = this.mapper.Map<PaintWorkItemViewModel>(item.PaintWorkItem);
-
-            return new JsonResult(GetData, this.DefaultJsonSettings);
+                item.BlastWorkItem = this.mapper.Map<BlastWorkItemViewModel>(item.BlastWorkItem);
+            }
+            if (GetData.Any())
+                return new JsonResult(GetData, this.DefaultJsonSettings);
+            else
+                return NotFound(new { Error = "Paint task detail not been found." });
         }
 
         #endregion GET
@@ -113,7 +118,7 @@ namespace VipcoPainting.Controllers
 
                 return new JsonResult(await this.repository.AddAsync(nPaintTaskDetail), this.DefaultJsonSettings);
             }
-            return NotFound(new { Error = "Not found task blast detail data !!!" });
+            return NotFound(new { Error = "Not found paint task detail data !!!" });
         }
 
         #endregion POST
@@ -124,7 +129,7 @@ namespace VipcoPainting.Controllers
         [HttpPut("{key}")]
         public async Task<IActionResult> PutByNumber(int key, [FromBody]PaintTaskDetail uPaintTaskDetail)
         {
-            var Message = "Task blast detail not been found.";
+            var Message = "Paint task detail not been found.";
 
             if (uPaintTaskDetail != null)
             {

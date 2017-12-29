@@ -22,3 +22,6 @@ export { TaskMaster } from "./task/task-master.model";
 export { TaskBlastDetail } from "./task/task-blast-detail.model";
 export { TaskPaintDetail } from "./task/task-paint-detail.model";
 export { OptionTaskMasterSchedule } from "./task/option-taskmaster-schedule.model";
+// PaintTask
+export { PaintTaskMaster } from "./paint-task/paint-task-master.model";
+export { PaintTaskDetail } from "./paint-task/paint-task-detail.model";

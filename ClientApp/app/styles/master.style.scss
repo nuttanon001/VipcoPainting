@@ -159,3 +159,8 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+
+// Style For Primeng
+:host /deep/ .ui-inputtext {
+    width:80%;
+}

@@ -12,7 +12,11 @@ import {
     TaskBlastEditComponent, TaskPaintEditComponent,
     TaskEditComponent, TaskMasterComponent,
     TaskCenterComponent, TaskViewComponent,
-    TaskScheduleComponent
+    TaskScheduleComponent,
+    PaintTaskCenterComponent, PaintTaskDetailBlastComponent,
+    PaintTaskDetailListComponent, PaintTaskDetailPaintComponent,
+    PaintTaskEditComponent, PaintTaskMasterComponent,
+    PaintTaskViewComponent
 } from "../../components/task-component/task.index";
 // modules
 import { TaskRoutingModule } from "./task-routing.module";
@@ -27,6 +31,8 @@ import { TaskBlastDetailService } from "../../services/task/task-blast-detail.se
 import { TaskPaintDetailService } from "../../services/task/task-paint-detail.service";
 import { RequirePaintMasterService } from "../../services/require-paint/require-paint-master.service";
 import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
+import { PaintTaskDetailService } from "../../services/paint-task/paint-task-detail.service";
+import { PaintTaskMasterService,PaintTaskMasterServiceCommunicate } from "../../services/paint-task/paint-task-master.service";
 
 @NgModule({
     declarations: [
@@ -45,6 +51,13 @@ import { RequirePaintListService } from "../../services/require-paint/require-pa
         TaskCenterComponent,
         TaskViewComponent,
         TaskScheduleComponent,
+        PaintTaskCenterComponent,
+        PaintTaskDetailBlastComponent,
+        PaintTaskDetailListComponent,
+        PaintTaskDetailPaintComponent,
+        PaintTaskEditComponent,
+        PaintTaskMasterComponent,
+        PaintTaskViewComponent
     ],
     imports: [
         // angular
@@ -66,7 +79,10 @@ import { RequirePaintListService } from "../../services/require-paint/require-pa
         RequirePaintMasterService,
         RequirePaintListService,
         TaskBlastDetailService,
-        TaskPaintDetailService
+        TaskPaintDetailService,
+        PaintTaskDetailService,
+        PaintTaskMasterService,
+        PaintTaskMasterServiceCommunicate
         // dataTableServiceCommunicate
     ]
 })

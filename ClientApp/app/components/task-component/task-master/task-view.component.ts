@@ -8,6 +8,7 @@ import { TaskBlastDetailService } from "../../../services/task/task-blast-detail
 import { TaskPaintDetailService } from "../../../services/task/task-paint-detail.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 import { RequirePaintMasterService } from "../../../services/require-paint/require-paint-master.service";
+
 @Component({
     selector: "task-view",
     templateUrl: "./task-view.component.html",

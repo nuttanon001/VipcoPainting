@@ -31,6 +31,8 @@
     <None Remove="ClientApp\app\components\task-component\task.index.ts" />
     <None Remove="ClientApp\app\models\base.model.ts" />
     <None Remove="ClientApp\app\models\dictionary\idictionary.model.ts" />
+    <None Remove="ClientApp\app\models\paint-task\paint-task-detail.model.ts" />
+    <None Remove="ClientApp\app\models\paint-task\paint-task-master.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
@@ -48,6 +50,8 @@
     <TypeScriptCompile Include="ClientApp\app\components\task-component\task.index.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\base.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\dictionary\idictionary.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\paint-task\paint-task-detail.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\paint-task\paint-task-master.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />

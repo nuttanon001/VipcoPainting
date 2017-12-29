@@ -1,0 +1,73 @@
+﻿<div *ngIf="paintTaskMaster;else TemplateBlock">
+    <mat-tab-group>
+        <mat-tab *ngIf="intBlastWorks">
+            <ng-template mat-tab-label>
+                <b>Internal Blast</b>
+            </ng-template>
+            <div class="edit-container">
+                <!--<div *ngFor="let intBlast of intBlastWorks;let i = index">
+                    </div>-->
+                <paint-task-detail-blast [(paintTaskDetail)]="intBlastWorks[0]" [ReadOnly]="ReadOnly"
+                                         (hasChange)="onHasChange($event)"></paint-task-detail-blast>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="extBlastWorks">
+            <ng-template mat-tab-label>
+                <b>External Blast</b>
+            </ng-template>
+            <div class="edit-container">
+                <paint-task-detail-blast [(paintTaskDetail)]="extBlastWorks[0]" [ReadOnly]="ReadOnly"
+                                         (hasChange)="onHasChange($event)"></paint-task-detail-blast>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="intPaintWorks">
+            <ng-template mat-tab-label>
+                <b>Internal Paint <i class="text-danger mx-1">{{intPaintWorks?.length || 0}}</i> Layer</b>
+            </ng-template>
+            <div class="edit-center-content bottom-container-45vh">
+                <div *ngIf="intPaintWorks[0]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[0]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+                <div *ngIf="intPaintWorks[1]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[1]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+                <div *ngIf="intPaintWorks[2]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[2]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+                <div *ngIf="intPaintWorks[3]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[3]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="extPaintWorks">
+            <ng-template mat-tab-label>
+                <b>External Paint <i class="text-danger mx-1">{{extPaintWorks?.length || 0}}</i> Layer</b>
+            </ng-template>
+            <div class="edit-center-content bottom-container-45vh">
+                <div *ngIf="extPaintWorks[0]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[0]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+                <div *ngIf="extPaintWorks[1]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[1]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+                <div *ngIf="extPaintWorks[2]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[2]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+                <div *ngIf="extPaintWorks[3]">
+                    <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[3]" [ReadOnly]="ReadOnly"
+                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+<ng-template #TemplateBlock>
+    No Data
+</ng-template>

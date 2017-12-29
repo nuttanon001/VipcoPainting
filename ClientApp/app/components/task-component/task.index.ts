@@ -17,3 +17,12 @@ export { TaskScheduleComponent } from "./task-master/task-schedule.component";
 // TaskPaint
 export { TaskBlastEditComponent } from "./task-paint/task-blast-edit.component";
 export { TaskPaintEditComponent } from "./task-paint/task-paint-edit.component";
+// PaintTaskMaster
+export { PaintTaskCenterComponent } from "./paint-task-master/paint-task-center.component";
+export { PaintTaskEditComponent } from "./paint-task-master/paint-task-edit.component";
+export { PaintTaskMasterComponent } from "./paint-task-master/paint-task-master.component";
+export { PaintTaskViewComponent } from "./paint-task-master/paint-task-view.component";
+// PaintTaskDetail
+export { PaintTaskDetailBlastComponent } from "./paint-task-detail/paint-task-detail-blast.component";
+export { PaintTaskDetailListComponent } from "./paint-task-detail/paint-task-detail-list.component";
+export { PaintTaskDetailPaintComponent } from "./paint-task-detail/paint-task-detail-paint.component";

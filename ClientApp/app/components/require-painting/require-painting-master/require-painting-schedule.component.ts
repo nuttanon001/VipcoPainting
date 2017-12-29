@@ -109,8 +109,8 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
                 this.totalRecords = dbDataSchedule.TotalRow;
                 this.columns = new Array;
 
-                let ColJobNumberWidth: string = "290px";
-                let ColDateWidth: string = "200px";
+                let ColJobNumberWidth: string = "150px";
+                let ColDateWidth: string = "250px";
                 // column Main
                 this.columns = new Array;
                 this.columns.push({
@@ -201,7 +201,7 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
                     if (RequirePaintListId) {
                         // Debug here
                         // console.log("RequirePaintListId is:", RequirePaintListId);
-                        this.router.navigate(["task/task-master/", RequirePaintListId]);
+                        this.router.navigate(["paint-task/paint-task-master/", RequirePaintListId]);
                     }
                 });
         }

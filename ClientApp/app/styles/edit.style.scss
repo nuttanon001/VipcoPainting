@@ -47,6 +47,11 @@
     height: 60vh;
 }
 
+.bottom-container-45vh {
+    @extend .base-bottom-container;
+    height: 45vh;
+}
+
 .bottom-container-40vh {
     @extend .base-bottom-container;
     height: 40vh;

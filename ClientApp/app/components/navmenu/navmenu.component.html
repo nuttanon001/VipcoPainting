@@ -22,7 +22,7 @@
                    (onMenuOpen)="menuOnCloseMenu1()" (mouseover)="menuOnOpenMenu1()"
                    class="nav-link" [routerLink]="['/require-painting']" routerLinkActive="active">
                     <i class="fa fa-flag" aria-hidden="true"></i>
-                    RequestPainting
+                    <span></span> RequestPainting
                 </a>
                 <mat-menu #menu1="matMenu" [overlapTrigger]="false">
                     <button mat-menu-item [routerLink]="['/require-painting']" routerLinkActive="active">
@@ -44,7 +44,7 @@
                             <i class="fa fa-history" aria-hidden="true"></i>
                             <span>RequestPaint Waiting</span>
                         </button>
-                        <button mat-menu-item [routerLink]="['/task/task-master-schedule','2']"  routerLinkActive="active">
+                        <button mat-menu-item [routerLink]="['/task/task-master-schedule','2']" routerLinkActive="active">
                             <i class="fa fa-tasks" aria-hidden="true"></i>
                             <span>PaintTask(Processing)</span>
                         </button>
@@ -52,7 +52,11 @@
                             <i class="fa fa-paint-brush" aria-hidden="true"></i>
                             <span>PaintTask</span>
                         </button>
-
+                        
+                        <button mat-menu-item [routerLink]="['/paint-task']" routerLinkActive="active">
+                            <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                            <span>PaintTaskMaster</span>
+                        </button>
                         <hr />
                         <button mat-menu-item [routerLink]="['/color-item']" routerLinkActive="active">
                             <i class="fa fa-tint" aria-hidden="true"></i>
