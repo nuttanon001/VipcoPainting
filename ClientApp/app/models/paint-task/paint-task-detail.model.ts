@@ -29,4 +29,5 @@ export interface PaintTaskDetail extends BaseModel {
     BlastRoomString?: string;
     BlastWorkItem?: BlastWorkItem;
     PaintWorkItem?: PaintWorkItem;
+    isValid?: boolean;
 }

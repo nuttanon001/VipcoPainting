@@ -104,21 +104,36 @@ h4 {
     font-size: 20px;
 }
 
+$col-height: 20px;
+.my-border {
+    border-bottom: solid 1px black;
+}
+
 .plan-col {
     background-color: forestgreen;
     color: forestgreen;
-    border-bottom:solid 1px black;
+    height: $col-height;
+}
+
+.plan2-col {
+    background-color: limegreen;
+    color: limegreen;
+    height: $col-height;
 }
 
 .actual-col {
     background-color: steelblue;
     color: steelblue;
+    height: $col-height;
     /*border-top: solid 1px black;*/
 }
 
 .empty-col {
     background-color: transparent;
     color: transparent;
+    height: $col-height;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px transparent;
 }
 
 :host /deep/ .chart {

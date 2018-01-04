@@ -112,23 +112,54 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
             // TaskBlastDetail
             if (value.PaintTaskDetails) {
                 value.PaintTaskDetails.forEach((item, index) => {
-                    if (item.CreateDate !== null) {
+                    if (item.CreateDate !== null && item.CreateDate !== undefined) {
                         item.CreateDate = moment.tz(item.CreateDate, zone).toDate();
                     }
-                    if (item.ModifyDate !== null) {
+                    if (item.ModifyDate !== null && item.ModifyDate !== undefined) {
                         item.ModifyDate = moment.tz(item.ModifyDate, zone).toDate();
                     }
-                    if (item.ActualEDate !== null) {
+                    if (item.ActualEDate !== null && item.ActualEDate !== undefined) {
                         item.ActualEDate = moment.tz(item.ActualEDate, zone).toDate();
                     }
-                    if (item.ActualSDate !== null) {
+                    if (item.ActualSDate !== null && item.ActualSDate !== undefined) {
                         item.ActualSDate = moment.tz(item.ActualSDate, zone).toDate();
                     }
-                    if (item.PlanEDate !== null) {
+                    if (item.PlanEDate !== null && item.PlanEDate !== undefined) {
                         item.PlanEDate = moment.tz(item.PlanEDate, zone).toDate();
                     }
-                    if (item.PlanSDate !== null) {
+                    if (item.PlanSDate !== null && item.PlanSDate !== undefined) {
                         item.PlanSDate = moment.tz(item.PlanSDate, zone).toDate();
+                    }
+
+                    if (value.PaintTaskDetails) {
+                        let newData: PaintTaskDetail = {
+                            PaintTaskDetailId: item.PaintTaskDetailId,
+                            Remark: item.Remark,
+                            PaintTaskDetailStatus: item.PaintTaskDetailStatus,
+                            PaintTaskDetailType: item.PaintTaskDetailType,
+                            PaintTaskDetailLayer: item.PaintTaskDetailLayer,
+                            PlanSDate: item.PlanSDate,
+                            PlanEDate: item.PlanEDate,
+                            ActualSDate: item.ActualSDate,
+                            ActualEDate: item.ActualEDate,
+                            TaskDetailProgress: item.TaskDetailProgress,
+                            //BaseModel
+                            Creator: item.Creator,
+                            CreateDate: item.CreateDate,
+                            Modifyer: item.Modifyer,
+                            ModifyDate: item.ModifyDate,
+                            //FK
+                            PaintTaskMasterId: item.PaintTaskMasterId,
+                            //PaintTeam
+                            PaintTeamId: item.PaintTeamId,
+                            //BlastRoom
+                            BlastRoomId: item.BlastRoomId,
+                            //PaintWorkItem
+                            PaintWorkItemId: item.PaintWorkItemId,
+                            //BlastWorkItem
+                            BlastWorkItemId: item.BlastWorkItemId,
+                        };
+                        value.PaintTaskDetails[index] = newData;
                     }
                 });
             }
@@ -142,6 +173,7 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
             value.Creator = this.serverAuth.getAuth.UserName || "";
         }
         // change timezone
+        console.log("Befor Value is:", JSON.stringify(value));
         value = this.changeTimezone(value);
         console.log("Value is:", JSON.stringify(value));
 

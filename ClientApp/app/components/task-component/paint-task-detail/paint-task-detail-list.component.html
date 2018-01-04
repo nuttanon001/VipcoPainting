@@ -8,7 +8,7 @@
                 <!--<div *ngFor="let intBlast of intBlastWorks;let i = index">
                     </div>-->
                 <paint-task-detail-blast [(paintTaskDetail)]="intBlastWorks[0]" [ReadOnly]="ReadOnly"
-                                         (hasChange)="onHasChange($event)"></paint-task-detail-blast>
+                                         (hasChange)="onHasChange($event)" [blastRooms]="blastRooms"></paint-task-detail-blast>
             </div>
         </mat-tab>
         <mat-tab *ngIf="extBlastWorks">
@@ -17,7 +17,7 @@
             </ng-template>
             <div class="edit-container">
                 <paint-task-detail-blast [(paintTaskDetail)]="extBlastWorks[0]" [ReadOnly]="ReadOnly"
-                                         (hasChange)="onHasChange($event)"></paint-task-detail-blast>
+                                         (hasChange)="onHasChange($event)" [blastRooms]="blastRooms"></paint-task-detail-blast>
             </div>
         </mat-tab>
         <mat-tab *ngIf="intPaintWorks">
@@ -27,19 +27,19 @@
             <div class="edit-center-content bottom-container-45vh">
                 <div *ngIf="intPaintWorks[0]">
                     <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[0]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
                 <div *ngIf="intPaintWorks[1]">
                     <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[1]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
                 <div *ngIf="intPaintWorks[2]">
                     <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[2]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
                 <div *ngIf="intPaintWorks[3]">
                     <paint-task-detail-paint [(paintTaskDetail)]="intPaintWorks[3]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
             </div>
         </mat-tab>
@@ -50,19 +50,19 @@
             <div class="edit-center-content bottom-container-45vh">
                 <div *ngIf="extPaintWorks[0]">
                     <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[0]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
                 <div *ngIf="extPaintWorks[1]">
                     <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[1]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
                 <div *ngIf="extPaintWorks[2]">
                     <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[2]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
                 <div *ngIf="extPaintWorks[3]">
                     <paint-task-detail-paint [(paintTaskDetail)]="extPaintWorks[3]" [ReadOnly]="ReadOnly"
-                                             (hasChange)="onHasChange($event)"></paint-task-detail-paint>
+                                             (hasChange)="onHasChange($event)" [paintTeams]="paintTeams"></paint-task-detail-paint>
                 </div>
             </div>
         </mat-tab>

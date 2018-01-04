@@ -9,6 +9,9 @@ import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { PaintTaskDetailService } from "../../../services/paint-task/paint-task-detail.service";
 import { PaintWorkitemService } from "../../../services/require-paint/paint-workitem.service";
 import { BlastWorkitemService } from "../../../services/require-paint/blast-workitem.service";
+import { SelectItem } from "primeng/primeng";
+import { BlastRoomService } from "../../../services/task/blast-room.service";
+import { PaintTeamService } from "../../../services/task/paint-team.service";
 
 @Component({
     selector: "paint-task-detail-list",
@@ -20,6 +23,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
     /** paint-task-detail-list ctor */
     constructor(
         private service: PaintTaskDetailService,
+        private serviceBlastRoom: BlastRoomService,
+        private servicePaintTeam: PaintTeamService,
         private servicePaintWork: PaintWorkitemService,
         private serviceBlastWork: BlastWorkitemService,
     ) { }
@@ -31,6 +36,9 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
     //BlastWork
     intBlastWorks: Array<PaintTaskDetail> | undefined;
     extBlastWorks: Array<PaintTaskDetail> | undefined;
+    // SelectedItem
+    blastRooms: Array<SelectItem>;
+    paintTeams: Array<SelectItem>;
 
     @Input() ReadOnly: boolean = false;
     @Output("onChange") onChange = new EventEmitter<Array<PaintTaskDetail>>();
@@ -38,6 +46,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
 
     // on Init
     ngOnInit(): void {
+        this.getBlastRoomCombobox();
+        this.getPaintTeamCombobox();
         if (this.paintTaskMaster) {
             if (this.paintTaskMaster.PaintTaskMasterId) {
                 this.service.getByMasterId(this.paintTaskMaster.PaintTaskMasterId)
@@ -80,6 +90,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                                         TaskDetailProgress:0,
                                         PlanSDate: new Date(),
                                         PlanEDate: new Date(),
+                                        ActualEDate: undefined,
+                                        ActualSDate: undefined,
                                         //FK
                                         PaintTaskMasterId: this.paintTaskMaster.PaintTaskMasterId,
                                         BlastWorkItemId: item.BlastWorkItemId,
@@ -98,6 +110,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                                         this.onChoosePushToArray(newPaintTaskDetail);
                                     }
                                 });
+
+                                this.onHasChange(true);
                             }
                         });
 
@@ -132,6 +146,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                                         this.onChoosePushToArray(newPaintTaskDetail);
                                     }
                                 });
+
+                                this.onHasChange(true);
                             }
                         });
                 }
@@ -144,6 +160,34 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
         this.extBlastWorks = undefined;
         this.intPaintWorks = undefined;
         this.extPaintWorks = undefined;
+    }
+
+    // get BlastRoom Array
+    getBlastRoomCombobox(): void {
+        if (!this.blastRooms) {
+            // BlastRoom ComboBox
+            this.serviceBlastRoom.getAll()
+                .subscribe(dbPatinTeam => {
+                    this.blastRooms = new Array;
+                    for (let item of dbPatinTeam) {
+                        this.blastRooms.push({ label: `${(item.BlastRoomName || "")}/${(item.TeamBlastString || "")}`, value: item.BlastRoomId });
+                    }
+                }, error => console.error(error));
+        }
+    }
+
+    // get PaintTeam Array
+    getPaintTeamCombobox(): void {
+        if (!this.paintTeams) {
+            // paintTeam ComboBox
+            this.servicePaintTeam.getAll()
+                .subscribe(dbPatinTeam => {
+                    this.paintTeams = new Array;
+                    for (let item of dbPatinTeam) {
+                        this.paintTeams.push({ label: `${(item.TeamName || "")}`, value: item.PaintTeamId });
+                    }
+                }, error => console.error(error));
+        }
     }
 
     // on add item to array

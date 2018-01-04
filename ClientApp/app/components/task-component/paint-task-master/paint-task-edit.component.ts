@@ -43,9 +43,8 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
     // Parameter
     requirePaintList: RequirePaintList;
     requirePaintMaster: RequirePaintMaster;
-
     maxDate: Date = new Date;
-   
+
     // on get data by key
     onGetDataByKey(value?: PaintTaskMaster): void {
         if (value) {
@@ -121,11 +120,54 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
         this.onValueChanged();
     }
 
+    // on PaintTaskDetailList
     onPaintTaskDetailsChange(paintTaskDetails?: Array<PaintTaskDetail>): void {
         if (paintTaskDetails) {
+            //Calc Progress
+            //Blast
+            let blastPro: number | undefined;
+            let paintPro: number | undefined;
+            let blasts = paintTaskDetails
+                .filter((value, index, array) => value.PaintTaskDetailType === 1)
+                .map(item => item.TaskDetailProgress);
+
+            if (blasts && blasts.length > 0) {
+                blastPro = 0;
+                blasts.forEach(value => blastPro = (blastPro || 0) + (value || 0));
+                blastPro = (blastPro / blasts.length);
+            } else {
+                blastPro = 0;
+            }
+            //Paint
+            let paints = paintTaskDetails
+                .filter((value, index, array) => value.PaintTaskDetailType === 2)
+                .map(item => item.TaskDetailProgress);
+            if (paints && paints.length > 0) {
+                paintPro = 0;
+                paints.forEach(value => paintPro = (paintPro || 0) + (value || 0));
+                paintPro = (paintPro / paints.length);
+            } else {
+                paintPro = 0;
+            }
+
             this.editValueForm.patchValue({
                 PaintTaskDetails: paintTaskDetails,
+                MainProgress: ((blastPro * (paints.length > 0 ? 0.4 : 1)) + (paintPro * (blasts.length > 0 ? 0.6 : 1)))
             });
         }
+    }
+
+    //OverRide
+    // on valid data
+    onFormValid(isValid: boolean): void {
+        this.editValue = this.editValueForm.value;
+
+        if (this.editValue.PaintTaskDetails) {
+            if (this.editValue.PaintTaskDetails.findIndex(item => item.isValid === false) > -1) {
+                isValid = false;
+            }
+        }
+
+        this.communicateService.toParent([this.editValue, isValid]);
     }
 }

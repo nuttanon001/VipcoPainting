@@ -4,9 +4,10 @@ import { Routes, RouterModule } from "@angular/router";
 import {
     BlastRoomCenterComponent, BlastRoomMasterComponent,
     PaintTeamCenterComponent, PaintTeamMasterComponent,
-    TaskCenterComponent, TaskMasterComponent,
+    //TaskCenterComponent, TaskMasterComponent,
     TaskScheduleComponent,
-    PaintTaskCenterComponent,PaintTaskMasterComponent
+    PaintTaskCenterComponent, PaintTaskMasterComponent,
+    PaintTaskScheduleComponent
 } from "../../components/task-component/task.index";
 // service
 import { AuthGuard } from "../../services/auth/auth-guard.service";
@@ -35,30 +36,30 @@ const blastRoomRoutes: Routes = [
             }
         ],
     },
-    {
-        path: "task",
-        component: TaskCenterComponent,
-        children: [
-            {
-                path: "task-master/:condition",
-                component: TaskMasterComponent,
-                canActivate: [AuthGuard],
-            },
-            {
-                path: "task-master-schedule",
-                component: TaskScheduleComponent,
-            },
-            {
-                path: "task-master-schedule/:condition",
-                component: TaskScheduleComponent,
-            },
-            {
-                path: "",
-                component: TaskMasterComponent,
-                canActivate: [AuthGuard],
-            }
-        ]
-    },
+    //{
+    //    path: "task",
+    //    component: TaskCenterComponent,
+    //    children: [
+    //        {
+    //            path: "task-master/:condition",
+    //            component: TaskMasterComponent,
+    //            canActivate: [AuthGuard],
+    //        },
+    //        {
+    //            path: "task-master-schedule",
+    //            component: TaskScheduleComponent,
+    //        },
+    //        {
+    //            path: "task-master-schedule/:condition",
+    //            component: TaskScheduleComponent,
+    //        },
+    //        {
+    //            path: "",
+    //            component: TaskMasterComponent,
+    //            canActivate: [AuthGuard],
+    //        }
+    //    ]
+    //},
     {
         path: "paint-task",
         component: PaintTaskCenterComponent,
@@ -67,6 +68,14 @@ const blastRoomRoutes: Routes = [
                 path: "paint-task-master/:condition",
                 component: PaintTaskMasterComponent,
                 canActivate: [AuthGuard],
+            },
+            {
+                path: "paint-task-master-schedule",
+                component: PaintTaskScheduleComponent,
+            },
+            {
+                path: "paint-task-master-schedule/:condition",
+                component: PaintTaskScheduleComponent,
             },
             {
                 path: "",

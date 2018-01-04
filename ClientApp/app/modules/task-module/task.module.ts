@@ -9,14 +9,14 @@ import {
     BlastRoomMasterComponent, BlastRoomViewComponent,
     PaintTeamCenterComponent, PaintTeamEditComponent,
     PaintTeamMasterComponent, PaintTeamViewComponent,
-    TaskBlastEditComponent, TaskPaintEditComponent,
-    TaskEditComponent, TaskMasterComponent,
-    TaskCenterComponent, TaskViewComponent,
+    //TaskBlastEditComponent, TaskPaintEditComponent,
+    //TaskEditComponent, TaskMasterComponent,
+    //TaskCenterComponent, TaskViewComponent,
     TaskScheduleComponent,
     PaintTaskCenterComponent, PaintTaskDetailBlastComponent,
     PaintTaskDetailListComponent, PaintTaskDetailPaintComponent,
     PaintTaskEditComponent, PaintTaskMasterComponent,
-    PaintTaskViewComponent
+    PaintTaskViewComponent, PaintTaskScheduleComponent
 } from "../../components/task-component/task.index";
 // modules
 import { TaskRoutingModule } from "./task-routing.module";
@@ -44,12 +44,12 @@ import { PaintTaskMasterService,PaintTaskMasterServiceCommunicate } from "../../
         PaintTeamEditComponent,
         PaintTeamMasterComponent,
         PaintTeamViewComponent,
-        TaskBlastEditComponent,
-        TaskPaintEditComponent,
-        TaskEditComponent,
-        TaskMasterComponent,
-        TaskCenterComponent,
-        TaskViewComponent,
+        //TaskBlastEditComponent,
+        //TaskPaintEditComponent,
+        //TaskEditComponent,
+        //TaskMasterComponent,
+        //TaskCenterComponent,
+        //TaskViewComponent,
         TaskScheduleComponent,
         PaintTaskCenterComponent,
         PaintTaskDetailBlastComponent,
@@ -57,7 +57,8 @@ import { PaintTaskMasterService,PaintTaskMasterServiceCommunicate } from "../../
         PaintTaskDetailPaintComponent,
         PaintTaskEditComponent,
         PaintTaskMasterComponent,
-        PaintTaskViewComponent
+        PaintTaskViewComponent,
+        PaintTaskScheduleComponent
     ],
     imports: [
         // angular

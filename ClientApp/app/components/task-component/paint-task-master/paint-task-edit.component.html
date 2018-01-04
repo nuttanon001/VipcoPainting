@@ -53,7 +53,14 @@
             <div class="my-form">
                 <label for="MainProgress" class="my-label">Progress:</label>
                 <div class="col-sm-4">
-                    <span style="margin-top:auto;margin-bottom:auto;">{{editValueForm.controls.MainProgress.value}}%</span>
+                    <input type="text" class="my-input-read-only" readonly
+                           [value]="(editValueForm.controls.MainProgress.value|number) + '%'">
+                </div>
+
+                <label for="Plan1" class="my-label">Plan1:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="my-input-read-only" readonly
+                           [value]="(requirePaintList?.PlanStart|date:'dd/MM/yyyy') + ' To ' + (requirePaintList?.PlanEnd|date:'dd/MM/yyyy')">
                 </div>
             </div>
         </form>

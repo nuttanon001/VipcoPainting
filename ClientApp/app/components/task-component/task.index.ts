@@ -22,6 +22,7 @@ export { PaintTaskCenterComponent } from "./paint-task-master/paint-task-center.
 export { PaintTaskEditComponent } from "./paint-task-master/paint-task-edit.component";
 export { PaintTaskMasterComponent } from "./paint-task-master/paint-task-master.component";
 export { PaintTaskViewComponent } from "./paint-task-master/paint-task-view.component";
+export { PaintTaskScheduleComponent } from "./paint-task-master/paint-task-schedule.component";
 // PaintTaskDetail
 export { PaintTaskDetailBlastComponent } from "./paint-task-detail/paint-task-detail-blast.component";
 export { PaintTaskDetailListComponent } from "./paint-task-detail/paint-task-detail-list.component";

@@ -46,24 +46,10 @@ export class PaintTaskDetailPaintComponent implements OnInit {
     minProgress: number;
     maxDate: Date = new Date();
     // ComboBox
-    paintTeams: Array<SelectItem>;
+    @Input() paintTeams: Array<SelectItem>;
     // OnInit
     ngOnInit(): void {
         this.buildForm();
-        this.getPaintTeamCombobox();
-    }
-    // get PaintTeam Array
-    getPaintTeamCombobox(): void {
-        if (!this.paintTeams) {
-            // paintTeam ComboBox
-            this.service.getAll()
-                .subscribe(dbPatinTeam => {
-                    this.paintTeams = new Array;
-                    for (let item of dbPatinTeam) {
-                        this.paintTeams.push({ label: `${(item.TeamName || "")}`, value: item.PaintTeamId });
-                    }
-                }, error => console.error(error));
-        }
     }
     // build Form
     buildForm(): void {
@@ -115,12 +101,13 @@ export class PaintTaskDetailPaintComponent implements OnInit {
             //ViewModel
             PaintTeamString: [this.paintTaskDetail.PaintTeamString],
             PaintWorkItem: [this.paintTaskDetail.PaintWorkItem],
+            isValid: [this.paintTaskDetail.isValid],
         });
         this.paintTaskDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
 
         const ControlPro: AbstractControl | null = this.paintTaskDetailForm.get("TaskDetailProgress");
         if (ControlPro) {
-            ControlPro.valueChanges.subscribe((Progress: number) => {
+            ControlPro.valueChanges.distinctUntilChanged().subscribe((Progress: number) => {
                 const controlSD: AbstractControl | null = this.paintTaskDetailForm.get("ActualSDate");
                 const controlED: AbstractControl | null = this.paintTaskDetailForm.get("ActualEDate");
 
@@ -131,9 +118,6 @@ export class PaintTaskDetailPaintComponent implements OnInit {
                         }
                         if (!controlED.value) {
                             this.patchGroupFormValue("e");
-                        }
-                        if (Progress > 100) {
-                            this.patchGroupFormValue("p");
                         }
                     } else {
                         if (controlED.value) {
@@ -151,7 +135,7 @@ export class PaintTaskDetailPaintComponent implements OnInit {
 
         const ControlED: AbstractControl | null = this.paintTaskDetailForm.get("ActualEDate");
         if (ControlED) {
-            ControlED.valueChanges.subscribe((EndDate: Date) => {
+            ControlED.valueChanges.distinctUntilChanged().subscribe((EndDate: Date) => {
                 const controlSD: AbstractControl | null = this.paintTaskDetailForm.get("ActualSDate");
                 const controlPro: AbstractControl | null = this.paintTaskDetailForm.get("TaskDetailProgress");
 
@@ -178,7 +162,7 @@ export class PaintTaskDetailPaintComponent implements OnInit {
 
         const ControlSD: AbstractControl | null = this.paintTaskDetailForm.get("ActualSDate");
         if (ControlSD) {
-            ControlSD.valueChanges.subscribe((StartDate: Date) => {
+            ControlSD.valueChanges.distinctUntilChanged().subscribe((StartDate: Date) => {
                 if (!StartDate) {
                     this.paintTaskDetailForm.patchValue({
                         TaskDetailProgress: 0,
@@ -192,12 +176,12 @@ export class PaintTaskDetailPaintComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.paintTaskDetailForm) { return; }
         const form = this.paintTaskDetailForm;
-        this.hasChange.emit(form.valid);
-        if (form.valid) {
-            this.paintTaskDetail = form.value;
-        }
-    }
 
+        this.paintTaskDetail = form.value;
+        this.paintTaskDetail.isValid = form.valid;
+
+        this.hasChange.emit(this.paintTaskDetail.isValid);
+    }
     // on patch Date
     patchGroupFormValue(mode: string, value?: Date): void {
         if (!this.paintTaskDetailForm) { return; }

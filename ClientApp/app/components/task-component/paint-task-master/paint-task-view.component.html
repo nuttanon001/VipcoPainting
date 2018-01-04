@@ -1,4 +1,4 @@
-﻿<div *ngIf="displayValue && requirePaintMaster && requirePaintList,else elseBlock">
+﻿<div *ngIf="displayValue && requirePaintMaster && requirePaintList;else elseBlock">
     <div class="view-container">
         <div class="row my-1">
             <div class="my-label">
@@ -56,15 +56,19 @@
             <div class="my-value">
                 {{displayValue?.MainProgress || "0"}} %
             </div>
+
+            <div class="my-label">
+                Plan1 :
+            </div>
+            <div class="my-value">
+                {{(requirePaintList?.PlanStart|date:'dd/MM/yyyy') + ' To ' + (requirePaintList?.PlanEnd|date:'dd/MM/yyyy')}}
+            </div>
         </div>
     </div>
     <!-- Detail -->
-    <div *ngIf="newValue;else NoData">
+    <div *ngIf="newValue">
         <paint-task-detail-list [paintTaskMaster]="newValue" [ReadOnly]="true"></paint-task-detail-list>
     </div>
-    <ng-template>
-        <span class="text-danger">No Data</span>
-    </ng-template>
 </div>
 
 <ng-template #elseBlock>

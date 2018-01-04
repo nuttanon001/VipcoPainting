@@ -11,7 +11,8 @@ import {
     EmployeeDialogComponent,
     ProjectDialogComponent,
     RequirePaintingDialogComponent,
-    RequirePaintingViewDialogComponent
+    RequirePaintingViewDialogComponent,
+    ScheduleDialogComponent
 } from "../../components/dialog/dialog.index";
 // models
 import {
@@ -181,6 +182,20 @@ export class DialogsService {
 
         // open dialog
         dialogRef = this.dialog.open(RequirePaintingViewDialogComponent, config);
+        return dialogRef.afterClosed();
+    }
+
+    public dialogTaskPaintMasterScheduleView(viewContainerRef: ViewContainerRef, MasterId: number): Observable<boolean> {
+        let dialogRef: MatDialogRef<ScheduleDialogComponent>;
+        let config: MatDialogConfig = new MatDialogConfig();
+
+        // config
+        config.viewContainerRef = viewContainerRef;
+        config.data = MasterId;
+        config.hasBackdrop = true;
+
+        // open dialog
+        dialogRef = this.dialog.open(ScheduleDialogComponent, config);
         return dialogRef.afterClosed();
     }
 }

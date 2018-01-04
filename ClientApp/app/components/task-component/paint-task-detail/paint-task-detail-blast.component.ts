@@ -46,25 +46,12 @@ export class PaintTaskDetailBlastComponent implements OnInit {
     minProgress: number;
     maxDate: Date = new Date();
     // ComboBox
-    blastRooms: Array<SelectItem>;
+    @Input() blastRooms: Array<SelectItem>;
     // OnInit
     ngOnInit(): void {
         this.buildForm();
-        this.getBlastRoomCombobox();
     }
-    // get BlastRoom Array
-    getBlastRoomCombobox(): void {
-        if (!this.blastRooms) {
-            // BlastRoom ComboBox
-            this.service.getAll()
-                .subscribe(dbPatinTeam => {
-                    this.blastRooms = new Array;
-                    for (let item of dbPatinTeam) {
-                        this.blastRooms.push({ label: `${(item.BlastRoomName || "")}/${(item.TeamBlastString || "")}`, value: item.BlastRoomId });
-                    }
-                }, error => console.error(error));
-        }
-    }
+
     // build Form
     buildForm(): void {
         this.minProgress = this.paintTaskDetail.TaskDetailProgress || 0;
@@ -115,12 +102,13 @@ export class PaintTaskDetailBlastComponent implements OnInit {
             //ViewModel
             BlastRoomString: [this.paintTaskDetail.BlastRoomString],
             BlastWorkItem: [this.paintTaskDetail.BlastWorkItem],
+            isValid:[this.paintTaskDetail.isValid],
         });
         this.paintTaskDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
 
         const ControlPro: AbstractControl | null = this.paintTaskDetailForm.get("TaskDetailProgress");
         if (ControlPro) {
-            ControlPro.valueChanges.subscribe((Progress: number) => {
+            ControlPro.valueChanges.distinctUntilChanged().subscribe((Progress: number) => {
                 const controlSD: AbstractControl | null = this.paintTaskDetailForm.get("ActualSDate");
                 const controlED: AbstractControl | null = this.paintTaskDetailForm.get("ActualEDate");
 
@@ -131,9 +119,6 @@ export class PaintTaskDetailBlastComponent implements OnInit {
                         }
                         if (!controlED.value) {
                             this.patchGroupFormValue("e");
-                        }
-                        if (Progress > 100) {
-                            this.patchGroupFormValue("p");
                         }
                     } else {
                         if (controlED.value) {
@@ -151,7 +136,7 @@ export class PaintTaskDetailBlastComponent implements OnInit {
 
         const ControlED: AbstractControl | null = this.paintTaskDetailForm.get("ActualEDate");
         if (ControlED) {
-            ControlED.valueChanges.subscribe((EndDate: Date) => {
+            ControlED.valueChanges.distinctUntilChanged().subscribe((EndDate: Date) => {
                 const controlSD: AbstractControl | null = this.paintTaskDetailForm.get("ActualSDate");
                 const controlPro: AbstractControl | null = this.paintTaskDetailForm.get("TaskDetailProgress");
 
@@ -178,7 +163,7 @@ export class PaintTaskDetailBlastComponent implements OnInit {
 
         const ControlSD: AbstractControl | null = this.paintTaskDetailForm.get("ActualSDate");
         if (ControlSD) {
-            ControlSD.valueChanges.subscribe((StartDate: Date) => {
+            ControlSD.valueChanges.distinctUntilChanged().subscribe((StartDate: Date) => {
                 if (!StartDate) {
                     this.paintTaskDetailForm.patchValue({
                         TaskDetailProgress: 0,
@@ -188,14 +173,16 @@ export class PaintTaskDetailBlastComponent implements OnInit {
             });
         }
     }
+
     // on value of form change
     onValueChanged(data?: any): void {
         if (!this.paintTaskDetailForm) { return; }
         const form = this.paintTaskDetailForm;
-        this.hasChange.emit(form.valid);
-        if (form.valid) {
-            this.paintTaskDetail = form.value;
-        }
+
+        this.paintTaskDetail = form.value;
+        this.paintTaskDetail.isValid = form.valid;
+
+        this.hasChange.emit(this.paintTaskDetail.isValid);
     }
 
     // on patch Date

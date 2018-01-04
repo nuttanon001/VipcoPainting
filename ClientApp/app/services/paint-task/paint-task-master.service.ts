@@ -17,6 +17,12 @@ export class PaintTaskMasterService extends BaseRestService<PaintTaskMaster> {
         return this.http.post(url, JSON.stringify(option), this.getRequestOption())
             .map(this.extractData).catch(this.handleError);
     }
+    // get OnlyMaster Schedule
+    getOnlyMasterSchedule(option: OptionTaskMasterSchedule): Observable<any> {
+        let url: string = `${this.actionUrl}OnlyMasterSchedule/`;
+        return this.http.post(url, JSON.stringify(option), this.getRequestOption())
+            .map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

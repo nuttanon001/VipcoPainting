@@ -4,7 +4,7 @@
 
         <div class="child-row-container my-1">
             <div class="plan-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan-1
-            <div class="plan2-col" style="margin-right:5px;">|||||</div> Plan-2
+            <div class="plan2-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan-2
             <div class="ml-1 actual-col" style="margin-right:5px;">|||||</div> Actual
         </div>
         <hr class="w-100 bg-info m-0" />
@@ -40,11 +40,11 @@
 
         </form>
     </div>
-    <div class="bottom-container my-2">
+    <div class="bottom-container m-2">
         <p-dataTable [value]="taskMasters" rowGroupMode="rowspan"
                      [lazy]="true" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,20]"
                      [totalRecords]="totalRecords" (onLazyLoad)="loadDataLazy($event)"
-                     scrollable="true" scrollWidth="94vw">
+                     scrollable="true" scrollWidth="94vw" scrollHeight="50vh">
             <p-headerColumnGroup>
                 <p-row>
                     <p-column *ngFor="let colup of columnsUpper" [header]="colup.header"
@@ -64,87 +64,67 @@
                         <!-- 1 -->
                         <div *ngSwitchCase="1">
                             <div class="plan-col">
-                                |
                             </div>
                             <div class="empty-col">
-                                |
                             </div>
                             <div class="empty-col">
-                                |
                             </div>
                         </div>
                         <!-- 2 -->
                         <div *ngSwitchCase="2">
                             <div class="empty-col">
-                                |
                             </div>
                             <div class="plan2-col">
-                                |
                             </div>
                             <div class="empty-col">
-                                |
                             </div>
                         </div>
                         <!-- 3 -->
                         <div *ngSwitchCase="3">
-                            <div class="plan-col">
-                                |
+                            <div class="plan-col my-border">
                             </div>
                             <div class="plan2-col">
-                                |
                             </div>
                             <div class="empty-col">
-                                |
                             </div>
                         </div>
                         <!-- 4 -->
                         <div *ngSwitchCase="4">
                             <div class="empty-col">
-                                |
                             </div>
                             <div class="empty-col">
-                                |
                             </div>
                             <div class="actual-col">
-                                |
                             </div>
                         </div>
                         <!-- 5 -->
                         <div *ngSwitchCase="5">
-                            <div class="plan-col">
-                                |
+                            <div class="plan-col my-border">
                             </div>
                             <div class="empty-col">
-                                |
                             </div>
                             <div class="actual-col">
-                                |
                             </div>
                         </div>
                         <!-- 6 -->
                         <div *ngSwitchCase="6">
                             <div class="empty-col">
-                                |
                             </div>
-                            <div class="plan2-col">
-                                |
+                            <div class="plan2-col my-border">
                             </div>
                             <div class="actual-col">
-                                |
                             </div>
                         </div>
                         <!-- 7 -->
                         <div *ngSwitchCase="7">
-                            <div class="plan-col">
-                                |
+                            <div class="plan-col my-border">
                             </div>
-                            <div class="plan2-col">
-                                |
+                            <div class="plan2-col my-border">
                             </div>
                             <div class="actual-col">
-                                |
                             </div>
                         </div>
+                        <!-- Default -->
                         <div *ngSwitchDefault>
                             -
                         </div>
@@ -152,7 +132,7 @@
                 </ng-template>
                 <ng-template *ngIf="column.isLink" let-col let-data1="rowData" pTemplate="body">
                     <div *ngIf="data1[col.field]">
-                        <i (click)="onSelectTaskMasterId(data1['TaskMasterId'])" style="cursor:pointer;color:red;">
+                        <i (click)="onSelectTaskMasterId(data1['PaintTaskMasterId'])" style="cursor:pointer;color:steelblue;">
                             {{data1[col.field]}}
                         </i>
                     </div>

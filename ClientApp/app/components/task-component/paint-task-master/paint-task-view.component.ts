@@ -29,10 +29,12 @@ export class PaintTaskViewComponent extends BaseViewComponent<PaintTaskMaster>{
     newValue: PaintTaskMaster | undefined;
     // load more data
     onLoadMoreData(value: PaintTaskMaster) {
-        this.newValue = undefined;
-        setTimeout(() => {
-            this.newValue = value;
-        }, 50);
+        if (this.newValue !== value) {
+            this.newValue = undefined;
+            setTimeout(() => {
+                this.newValue = value;
+            }, 50);
+        }
 
         if (value.RequirePaintingListId) {
             this.serviceRequirePaintList.getOneKeyNumber(value.RequirePaintingListId)
@@ -43,14 +45,14 @@ export class PaintTaskViewComponent extends BaseViewComponent<PaintTaskMaster>{
                         this.serviceRequirePaintMaster.getOneKeyNumber(this.requirePaintList.RequirePaintingMasterId)
                             .subscribe(dbRequirePaintingMaster => {
                                 this.requirePaintMaster = dbRequirePaintingMaster;
+                                // User get detail in paint task detail list
+                                //this.servicePaintTaskDetail.getByMasterId(value.PaintTaskMasterId)
+                                //    .subscribe(dbPaintTaskDetails => {
+                                //        this.displayValue.PaintTaskDetails = dbPaintTaskDetails.slice();
+                                //    });
                             });
                     }
                 });
         }
-
-        this.servicePaintTaskDetail.getByMasterId(value.PaintTaskMasterId)
-            .subscribe(dbPaintTaskDetails => {
-                this.displayValue.PaintTaskDetails = dbPaintTaskDetails.slice();
-            });
     }
 }

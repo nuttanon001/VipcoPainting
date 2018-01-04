@@ -133,6 +133,13 @@ label {
     @extend .col-sm-1;
 }
 
+.my-label-col1-right {
+    @extend .my-label-col-1;
+    text-align: right;
+    margin-right:0px;
+    padding-right:0px;
+}
+
 
 .my-label-col-3 {
     @extend .base-label;

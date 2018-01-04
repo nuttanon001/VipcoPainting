@@ -17,7 +17,6 @@ import { DatatableComponent, TableColumn } from "@swimlane/ngx-datatable";
 // pipes
 import { DateOnlyPipe } from "../../pipes/date-only.pipe";
 
-
 @Component({
     selector: "project-dialog",
     templateUrl: "./project-dialog.component.html",
@@ -29,8 +28,17 @@ import { DateOnlyPipe } from "../../pipes/date-only.pipe";
     ]
 })
 // project-dialog component*/
-export class ProjectDialogComponent
-    implements OnInit, OnDestroy {
+export class ProjectDialogComponent implements OnInit, OnDestroy {
+    /** project-dialog ctor */
+    constructor(
+        private serviceMaster: ProjectMasterService,
+        private serviceDetail: ProjectSubService,
+        private serviceDataTable: DataTableServiceCommunicate<ProjectMaster>,
+        public dialogRef: MatDialogRef<ProjectDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public mode: number
+    ) { }
+
+    //@param
     master: ProjectMaster;
     details: Array<ProjectSub>;
     templates: Array<ProjectSub>;
@@ -41,7 +49,7 @@ export class ProjectDialogComponent
     subscription: Subscription;
     @ViewChild(DatatableComponent) table: DatatableComponent;
     // column
-    columns:Array<TableColumn> = [
+    columns: Array<TableColumn> = [
         { prop: "ProjectCode", name: "Code", flexGrow: 1 },
         { prop: "ProjectName", name: "Description", flexGrow: 1 },
         { prop: "StartDate", name: "Date", pipe: this.datePipe, flexGrow: 1 },
@@ -54,15 +62,6 @@ export class ProjectDialogComponent
     get CanSelected(): boolean {
         return this.selectedDetails !== undefined;
     }
-
-    /** project-dialog ctor */
-    constructor(
-        private serviceMaster: ProjectMasterService,
-        private serviceDetail: ProjectSubService,
-        private serviceDataTable: DataTableServiceCommunicate<ProjectMaster>,
-        public dialogRef: MatDialogRef<ProjectDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public mode: number
-    ) { }
 
     /** Called by Angular after project-dialog component initialized */
     ngOnInit(): void {

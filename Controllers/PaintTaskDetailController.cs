@@ -82,7 +82,7 @@ namespace VipcoPainting.Controllers
                                 .Include(x => x.PaintWorkItem.ExtColorItem)
                                 .Include(x => x.BlastRoom)
                                 .Include(x => x.BlastWorkItem.SurfaceTypeInt)
-                                .Include(x => x.BlastWorkItem.SurfaceTypeInt);
+                                .Include(x => x.BlastWorkItem.SurfaceTypeExt);
 
             var GetData = this.ConvertTable.ConverterTableToViewModel<PaintTaskDetailViewModel, PaintTaskDetail>
                             (await QueryData.AsNoTracking().ToListAsync());
