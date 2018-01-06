@@ -4,3 +4,4 @@ export { ValidationModule } from "./validation/validation.module";
 export { RequirePaintingModule } from "./require-painting/require-painting.module";
 export { OtherModule } from "./other-module/other.module";
 export { TaskModule } from "./task-module/task.module";
+export { StockModule } from "./stock/stock.module";

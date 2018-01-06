@@ -1,0 +1,62 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Paint Finished-Goods</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="ColorNameString" class="my-label">Paint Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose paint name here."
+                                   (click)="onOpenDialogBox('Color')"
+                                   id="ColorNameString" formControlName="ColorNameString" required readonly>
+                            <validation-messages [control]="editValueForm.controls.ColorNameString"></validation-messages>
+                        </div>
+
+                        <label for="ReceiveByString" class="my-label">ReceiveBy:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose employee who receive paint-item here."
+                                   (click)="onOpenDialogBox('Employee')"
+                                   id="ReceiveByString" formControlName="ReceiveByString" required readonly>
+                            <validation-messages [control]="editValueForm.controls.ReceiveByString"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="FinishedGoodsDate" class="my-label">Date:</label>
+                        <div class="col-sm-4 edit-form-content">
+                            <p-calendar formControlName="FinishedGoodsDate" [showIcon]="true"
+                                        id="FinishedGoodsDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
+                                        appendTo="body">
+                            </p-calendar>
+                        </div>
+
+                        <label for="Quantity" class="my-label">Quantity:</label>
+                        <div class="col-sm-4">
+                            <input type="number" class="my-input" placeholder="Insert quantity here."
+                                   min="0"
+                                   id="Quantity" formControlName="Quantity">
+                            <validation-messages [control]="editValueForm.controls.Quantity"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="Remark" class="my-label">Remark:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert remark here"
+                                   id="Remark" formControlName="Remark">
+                            <validation-messages [control]="editValueForm.controls.Remark"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

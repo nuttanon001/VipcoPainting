@@ -260,7 +260,13 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
     resetFilter(): void {
         this.taskMasters = new Array;
         this.buildForm();
-        this.onGetTaskMasterSchedule(this.schedule);
+
+        this.reportForm.patchValue({
+            Skip: 0,
+            Take: 5,
+        });
+
+        this.onGetTaskMasterSchedule(this.reportForm.value);
     }
 
     // load Data Lazy

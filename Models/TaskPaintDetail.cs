@@ -24,7 +24,5 @@ namespace VipcoPainting.Models
         //PaintWorkItem 
         public int? PaintWorkItemId { get; set; }
         public PaintWorkItem PaintWorkItem { get; set; }
-        //RequisitionMaster 
-        public ICollection<RequisitionMaster> RequisitionMasters { get; set; }
     }
 }

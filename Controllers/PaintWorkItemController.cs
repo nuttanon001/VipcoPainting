@@ -23,6 +23,7 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
         // Repository
         private IRepositoryPainting<PaintWorkItem> repository;
+        private IRepositoryPainting<BlastWorkItem> repositoryBlast;
         // Mapper
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
@@ -33,10 +34,13 @@ namespace VipcoPainting.Controllers
         #region Constructor
 
         public PaintWorkItemController(
-            IRepositoryPainting<PaintWorkItem> repo, IMapper map)
+            IRepositoryPainting<PaintWorkItem> repo,
+            IRepositoryPainting<BlastWorkItem> repoBlast, 
+            IMapper map)
         {
             // Repository
             this.repository = repo;
+            this.repositoryBlast = repoBlast;
             // Mapper
             this.mapper = map;
             // Json
@@ -69,7 +73,7 @@ namespace VipcoPainting.Controllers
             var Includes = new List<string> { "StandradTimeInt", "StandradTimeExt", "ExtColorItem", "IntColorItem" };
 
             return new JsonResult(this.mapper.Map<PaintWorkItem, PaintWorkItemViewModel>
-                                 (await this.repository.GetAsynvWithIncludes(key, "BlastWorkItemId", Includes)),
+                                 (await this.repository.GetAsynvWithIncludes(key, "PaintWorkItemId", Includes)),
                                   this.DefaultJsonSettings);
         }
 
@@ -105,19 +109,27 @@ namespace VipcoPainting.Controllers
             //                    (await QueryData.AsNoTracking().ToListAsync());
 
             var GetData = await QueryData.AsNoTracking().ToListAsync();
+            var BlastWorkItem = await this.repositoryBlast.GetAllAsQueryable()
+                                          .Where(x => x.RequirePaintingListId == MasterId)
+                                          .Include(x => x.StandradTimeExt)
+                                          .Include(x => x.StandradTimeInt).FirstOrDefaultAsync();
 
             foreach (var item in GetData)
             {
+                var hasChange = false;
+
                 if (item.IntCalcColorUsage == null)
                 {
                     if (item.IntArea != null)
                     {
-                        var loss = (item.StandradTimeInt.PercentLoss ?? 0) / 100;
+                        var loss = (BlastWorkItem?.StandradTimeInt?.PercentLoss ?? 0) / 100;
+                        //var loss = (item.StandradTimeInt.PercentLoss ?? 0) / 100;
                         var area = item.IntArea;
                         var vs = (item.IntColorItem.VolumeSolids ?? 0)/100;
                         double[] thicks = { item.IntDFTMin ?? 0, item.IntDFTMax ?? 0 };
                         var thick = thicks.Average();
                         item.IntCalcColorUsage = (area * thick) / (vs * 10 * (1 - loss));
+                        hasChange = true;
                     }
                 }
              
@@ -125,14 +137,20 @@ namespace VipcoPainting.Controllers
                 {
                     if (item.ExtArea != null)
                     {
-                        var loss = (item.StandradTimeExt.PercentLoss ?? 0) / 100;
+                        var loss = (BlastWorkItem?.StandradTimeExt?.PercentLoss ?? 0) / 100;
+                        //var loss = (item.StandradTimeExt.PercentLoss ?? 0) / 100;
                         var area = item.ExtArea;
                         var vs = (item.ExtColorItem.VolumeSolids ?? 0) / 100;
                         double[] thicks = { item.ExtDFTMin ?? 0, item.ExtDFTMax ?? 0 };
                         var thick = thicks.Average();
                         item.ExtCalcColorUsage = (area * thick) / (vs * 10 * (1 - loss));
+                        hasChange = true;
                     }
                 }
+
+                // update
+                if (hasChange)
+                    await this.repository.UpdateAsync(item, item.PaintWorkItemId);
             }
 
             return new JsonResult(

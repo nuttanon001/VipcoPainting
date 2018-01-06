@@ -1,0 +1,58 @@
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Paint Finished-Goods</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        Paint Name :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.ColorNameString || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        ReceiveBy :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.ReceiveByString || "-"}}
+                    </div>
+                  
+
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Date :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue?.FinishedGoodsDate|date:'dd/MM/yyyy') || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Quantity :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue?.Quantity | number) || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Remark :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.Remark || "-"}}
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

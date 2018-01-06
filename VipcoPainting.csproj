@@ -28,6 +28,7 @@
   <ItemGroup>
     <None Remove="ClientApp\app\components\other-component\orther.index.ts" />
     <None Remove="ClientApp\app\components\require-painting\require.index.ts" />
+    <None Remove="ClientApp\app\components\stock\stock.index.ts" />
     <None Remove="ClientApp\app\components\task-component\task.index.ts" />
     <None Remove="ClientApp\app\models\base.model.ts" />
     <None Remove="ClientApp\app\models\dictionary\idictionary.model.ts" />
@@ -36,6 +37,10 @@
     <None Remove="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
+    <None Remove="ClientApp\app\models\stock\color-movement-stock.model.ts" />
+    <None Remove="ClientApp\app\models\stock\finished-goods-master.model.ts" />
+    <None Remove="ClientApp\app\models\stock\movement-stock-status.model.ts" />
+    <None Remove="ClientApp\app\models\stock\requisition-master.model.ts" />
     <None Remove="ClientApp\app\models\task\blast-room.model.ts" />
     <None Remove="ClientApp\app\models\task\option-taskmaster-schedule.model.ts" />
     <None Remove="ClientApp\app\models\task\paint-team.model.ts" />
@@ -47,6 +52,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\components\other-component\orther.index.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\require-painting\require.index.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\stock\stock.index.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\task-component\task.index.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\base.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\dictionary\idictionary.model.ts" />
@@ -55,6 +61,10 @@
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\stock\color-movement-stock.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\stock\finished-goods-master.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\stock\movement-stock-status.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\stock\requisition-master.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\blast-room.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\option-taskmaster-schedule.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\paint-team.model.ts" />

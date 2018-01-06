@@ -115,7 +115,7 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                             }
                         });
 
-                    this.servicePaintWork.getByMasterId(this.paintTaskMaster.RequirePaintingListId)
+                    this.servicePaintWork.getByMasterId(this.paintTaskMaster.RequirePaintingListId,"GetByMasterCalculate/")
                         .subscribe(dbPaintWork => {
                             if (dbPaintWork) {
                                 dbPaintWork.forEach(item => {

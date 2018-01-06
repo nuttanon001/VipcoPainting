@@ -74,6 +74,61 @@ namespace VipcoPainting.Data
 
                 Context.SaveChanges();
             }
+
+            if (!Context.MovementStockStatuses.Any())
+            {
+                Context.MovementStockStatuses
+                  .Add(new MovementStockStatus
+                  {
+                      CreateDate= DateTime.Now,
+                      Creator="Admin",
+                      StatusMovement = StatusMovement.Stock,
+                      StatusName = "Stock",
+                      TypeStatusMovement = TypeStatusMovement.Increased
+                  });
+
+                Context.MovementStockStatuses
+                  .Add(new MovementStockStatus
+                  {
+                      CreateDate = DateTime.Now,
+                      Creator = "Admin",
+                      StatusMovement = StatusMovement.Requsition,
+                      StatusName = "Requsition",
+                      TypeStatusMovement = TypeStatusMovement.Decreased
+                  });
+
+                Context.MovementStockStatuses
+                  .Add(new MovementStockStatus
+                  {
+                      CreateDate = DateTime.Now,
+                      Creator = "Admin",
+                      StatusMovement = StatusMovement.AdjustIncreased,
+                      StatusName = "AdjustIncreased",
+                      TypeStatusMovement = TypeStatusMovement.Increased
+                  });
+
+                Context.MovementStockStatuses
+                  .Add(new MovementStockStatus
+                  {
+                      CreateDate = DateTime.Now,
+                      Creator = "Admin",
+                      StatusMovement = StatusMovement.AdjustDecreased,
+                      StatusName = "AdjustDecreased",
+                      TypeStatusMovement = TypeStatusMovement.Decreased
+                  });
+
+                Context.MovementStockStatuses
+                  .Add(new MovementStockStatus
+                  {
+                      CreateDate = DateTime.Now,
+                      Creator = "Admin",
+                      StatusMovement = StatusMovement.Cancel,
+                      StatusName = "Cancel",
+                      TypeStatusMovement = TypeStatusMovement.Decreased
+                  });
+
+                Context.SaveChanges();
+            }
         }
     }
 }

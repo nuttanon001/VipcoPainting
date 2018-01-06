@@ -1,0 +1,44 @@
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Movement Status</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="StatusName" class="my-label">Status Name:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert status name here"
+                                   id="StatusName" formControlName="StatusName" required>
+                            <validation-messages [control]="editValueForm.controls.StatusName"></validation-messages>
+                        </div>
+
+                        <label for="StatusMovement" class="my-label">Status:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="movementStatus" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="StatusMovement" formControlName="StatusMovement" required>
+                            </p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="TypeStatusMovement" class="my-label">Type:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="typeMovementStatus" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="TypeStatusMovement" formControlName="TypeStatusMovement" required>
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

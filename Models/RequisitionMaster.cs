@@ -14,13 +14,18 @@ namespace VipcoPainting.Models
         [StringLength(50)]
         public string RequisitionBy { get; set; }
         public double? Quantity { get; set; }
+        [StringLength(200)]
+        public string Remark { get; set; }
 
         //FK
         //ColorItem
         public int? ColorItemId { get; set; }
         public ColorItem ColorItem { get; set; }
-        //TaskPaintDetail
-        public int? TaskPaintDetailId { get; set; }
-        public TaskPaintDetail TaskPaintDetail { get; set; }
+        //PaintTaskDetail
+        public int? PaintTaskDetailId { get; set; }
+        public PaintTaskDetail PaintTaskDetail { get; set; }
+        //ColorMovementStock
+        public int? ColorMovementStockId { get; set; }
+        public ColorMovementStock ColorMovementStock { get; set; }
     }
 }

@@ -171,6 +171,32 @@ namespace VipcoPainting.Helpers
                             o => o.MapFrom(s => s.PaintTeam == null ? "-" : $"{s.PaintTeam.TeamName}"))
                 .ForMember(x => x.PaintTeam, o => o.Ignore());
             #endregion
+
+            #region ColorMovementStock
+
+            CreateMap<ColorMovementStock, ColorMovementStockViewModel>()
+                .ForMember(x => x.StatusNameString,
+                            o => o.MapFrom(s => s.MovementStockStatus == null ? "-" : $"{s.MovementStockStatus.StatusName}"))
+                .ForMember(x => x.ColorNameString,
+                            o => o.MapFrom(s => s.ColorItem == null ? "-" : $"{s.ColorItem.ColorName}"));
+
+            #endregion
+
+            #region FinishedGoodsMaster
+
+            CreateMap<FinishedGoodsMaster, FinishedGoodsMasterViewModel>()
+                .ForMember(x => x.ColorNameString,
+                            o => o.MapFrom(s => s.ColorItem == null ? "-" : $"{s.ColorItem.ColorName}"));
+
+            #endregion
+
+            #region RequisitionMaster
+
+            CreateMap<RequisitionMaster, RequisitionMasterViewModel>()
+                .ForMember(x => x.ColorNameString,
+                            o => o.MapFrom(s => s.ColorItem == null ? "-" : $"{s.ColorItem.ColorName}"));
+
+            #endregion
         }
     }
 }

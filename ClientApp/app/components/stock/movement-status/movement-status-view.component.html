@@ -1,0 +1,31 @@
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Movement Status</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        Status Name :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.StatusName || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Type :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue?.TypeStatusMovement === 1 ? 'Increased' : 'Decreased') || "-"}}
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

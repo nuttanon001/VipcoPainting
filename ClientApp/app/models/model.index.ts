@@ -25,3 +25,8 @@ export { OptionTaskMasterSchedule } from "./task/option-taskmaster-schedule.mode
 // PaintTask
 export { PaintTaskMaster } from "./paint-task/paint-task-master.model";
 export { PaintTaskDetail } from "./paint-task/paint-task-detail.model";
+// Stock
+export { ColorMovementStock } from "./stock/color-movement-stock.model";
+export { FinishedGoodsMaster } from "./stock/finished-goods-master.model";
+export { MovementStockStatus } from "./stock/movement-stock-status.model";
+export { RequisitionMaster } from "./stock/requisition-master.model";

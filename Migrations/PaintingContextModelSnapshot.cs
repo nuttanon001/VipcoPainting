@@ -128,6 +128,105 @@ namespace VipcoPainting.Migrations
                     b.ToTable("ColorItem");
                 });
 
+            modelBuilder.Entity("VipcoPainting.Models.ColorMovementStock", b =>
+                {
+                    b.Property<int>("ColortMovementStockId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ColorItemId");
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("MovementStockDate");
+
+                    b.Property<int?>("MovementStockStatusId");
+
+                    b.Property<double>("Quantity");
+
+                    b.HasKey("ColortMovementStockId");
+
+                    b.HasIndex("ColorItemId");
+
+                    b.HasIndex("MovementStockStatusId");
+
+                    b.ToTable("ColorMovementStock");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.FinishedGoodsMaster", b =>
+                {
+                    b.Property<int>("FinishedGoodsMasterId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ColorItemId");
+
+                    b.Property<int?>("ColorMovementStockId");
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("FinishedGoodsDate");
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<double?>("Quantity");
+
+                    b.Property<string>("ReceiveBy")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(200);
+
+                    b.HasKey("FinishedGoodsMasterId");
+
+                    b.HasIndex("ColorItemId");
+
+                    b.HasIndex("ColorMovementStockId")
+                        .IsUnique()
+                        .HasFilter("[ColorMovementStockId] IS NOT NULL");
+
+                    b.ToTable("FinishedGoodsMaster");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.MovementStockStatus", b =>
+                {
+                    b.Property<int>("MovementStockStatusId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("StatusMovement");
+
+                    b.Property<string>("StatusName")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("TypeStatusMovement");
+
+                    b.HasKey("MovementStockStatusId");
+
+                    b.ToTable("MovementStockStatus");
+                });
+
             modelBuilder.Entity("VipcoPainting.Models.PaintTaskDetail", b =>
                 {
                     b.Property<int>("PaintTaskDetailId")
@@ -453,6 +552,8 @@ namespace VipcoPainting.Migrations
 
                     b.Property<int?>("ColorItemId");
 
+                    b.Property<int?>("ColorMovementStockId");
+
                     b.Property<DateTime?>("CreateDate");
 
                     b.Property<string>("Creator")
@@ -467,20 +568,23 @@ namespace VipcoPainting.Migrations
 
                     b.Property<double?>("Quantity");
 
+                    b.Property<string>("Remark")
+                        .HasMaxLength(200);
+
                     b.Property<string>("RequisitionBy")
                         .HasMaxLength(50);
 
                     b.Property<DateTime?>("RequisitionDate");
 
-                    b.Property<int?>("TaskPaintDetailId");
-
                     b.HasKey("RequisitionMasterId");
 
                     b.HasIndex("ColorItemId");
 
-                    b.HasIndex("PaintTaskDetailId");
+                    b.HasIndex("ColorMovementStockId")
+                        .IsUnique()
+                        .HasFilter("[ColorMovementStockId] IS NOT NULL");
 
-                    b.HasIndex("TaskPaintDetailId");
+                    b.HasIndex("PaintTaskDetailId");
 
                     b.ToTable("RequisitionMaster");
                 });
@@ -687,6 +791,28 @@ namespace VipcoPainting.Migrations
                         .HasForeignKey("SurfaceTypeIntId");
                 });
 
+            modelBuilder.Entity("VipcoPainting.Models.ColorMovementStock", b =>
+                {
+                    b.HasOne("VipcoPainting.Models.ColorItem", "ColorItem")
+                        .WithMany()
+                        .HasForeignKey("ColorItemId");
+
+                    b.HasOne("VipcoPainting.Models.MovementStockStatus", "MovementStockStatus")
+                        .WithMany("ColorMovementStocks")
+                        .HasForeignKey("MovementStockStatusId");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.FinishedGoodsMaster", b =>
+                {
+                    b.HasOne("VipcoPainting.Models.ColorItem", "ColorItem")
+                        .WithMany()
+                        .HasForeignKey("ColorItemId");
+
+                    b.HasOne("VipcoPainting.Models.ColorMovementStock", "ColorMovementStock")
+                        .WithOne("FinishedGoodsMaster")
+                        .HasForeignKey("VipcoPainting.Models.FinishedGoodsMaster", "ColorMovementStockId");
+                });
+
             modelBuilder.Entity("VipcoPainting.Models.PaintTaskDetail", b =>
                 {
                     b.HasOne("VipcoPainting.Models.BlastRoom", "BlastRoom")
@@ -767,19 +893,19 @@ namespace VipcoPainting.Migrations
                         .WithMany("RequisitionMasters")
                         .HasForeignKey("ColorItemId");
 
-                    b.HasOne("VipcoPainting.Models.PaintTaskDetail")
+                    b.HasOne("VipcoPainting.Models.ColorMovementStock", "ColorMovementStock")
+                        .WithOne("RequisitionMaster")
+                        .HasForeignKey("VipcoPainting.Models.RequisitionMaster", "ColorMovementStockId");
+
+                    b.HasOne("VipcoPainting.Models.PaintTaskDetail", "PaintTaskDetail")
                         .WithMany("RequisitionMasters")
                         .HasForeignKey("PaintTaskDetailId");
-
-                    b.HasOne("VipcoPainting.Models.TaskPaintDetail", "TaskPaintDetail")
-                        .WithMany("RequisitionMasters")
-                        .HasForeignKey("TaskPaintDetailId");
                 });
 
             modelBuilder.Entity("VipcoPainting.Models.TaskBlastDetail", b =>
                 {
                     b.HasOne("VipcoPainting.Models.BlastRoom", "BlastRoom")
-                        .WithMany("TaskBlastDetails")
+                        .WithMany()
                         .HasForeignKey("BlastRoomId");
 
                     b.HasOne("VipcoPainting.Models.BlastWorkItem", "BlastWorkItem")
@@ -801,7 +927,7 @@ namespace VipcoPainting.Migrations
             modelBuilder.Entity("VipcoPainting.Models.TaskPaintDetail", b =>
                 {
                     b.HasOne("VipcoPainting.Models.PaintTeam", "PaintTeam")
-                        .WithMany("TaskPaintDetails")
+                        .WithMany()
                         .HasForeignKey("PaintTeamId");
 
                     b.HasOne("VipcoPainting.Models.PaintWorkItem", "PaintWorkItem")

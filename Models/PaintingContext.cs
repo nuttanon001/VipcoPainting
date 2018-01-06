@@ -16,6 +16,9 @@ namespace VipcoPainting.Models
             modelBuilder.Entity<BlastRoom>().ToTable("BlastRoom");
             modelBuilder.Entity<BlastWorkItem>().ToTable("BlastWorkItem");
             modelBuilder.Entity<ColorItem>().ToTable("ColorItem");
+            modelBuilder.Entity<ColorMovementStock>().ToTable("ColorMovementStock");
+            modelBuilder.Entity<FinishedGoodsMaster>().ToTable("FinishedGoodsMaster");
+            modelBuilder.Entity<MovementStockStatus>().ToTable("MovementStockStatus");
             modelBuilder.Entity<PaintTaskDetail>().ToTable("PaintTaskDetail");
             modelBuilder.Entity<PaintTaskMaster>().ToTable("PaintTaskMaster");
             modelBuilder.Entity<PaintTeam>().ToTable("PaintTeam");
@@ -34,6 +37,9 @@ namespace VipcoPainting.Models
         public DbSet<BlastRoom> BlastRooms { get; set; }
         public DbSet<BlastWorkItem> BlastWorkItems { get; set; }
         public DbSet<ColorItem> ColorItems { get; set; }
+        public DbSet<ColorMovementStock> ColorMovementStocks { get; set; }
+        public DbSet<FinishedGoodsMaster> FinishedGoodsMasters { get; set; }
+        public DbSet<MovementStockStatus> MovementStockStatuses { get; set; }
         public DbSet<PaintTaskDetail> PaintTaskDetails { get; set; }
         public DbSet<PaintTaskMaster> PaintTaskMasters { get; set; }
         public DbSet<PaintTeam> PaintTeams { get; set; }

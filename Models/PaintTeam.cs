@@ -18,8 +18,6 @@ namespace VipcoPainting.Models
         //FK
         // BlastRoom
         public ICollection<BlastRoom> BlastRooms { get; set; }
-        // TaskPaintDetail
-        public ICollection<TaskPaintDetail> TaskPaintDetails { get; set; }
         // PaintTaskDetail
         public ICollection<PaintTaskDetail> PaintTaskDetails { get; set; }
     }

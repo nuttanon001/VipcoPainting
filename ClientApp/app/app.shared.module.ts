@@ -14,12 +14,11 @@ import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import {
     CustomMaterialModule, ValidationModule,
     DialogsModule, RequirePaintingModule,
-    OtherModule, TaskModule
+    OtherModule, TaskModule, StockModule
 } from "./modules/module.index";
 // services
 import { AuthGuard } from "./services/auth/auth-guard.service";
 import { AuthService } from "./services/auth/auth.service";
-
 // 3rd party
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import "hammerjs";
@@ -55,6 +54,7 @@ import "popper.js";
         RequirePaintingModule,
         OtherModule,
         TaskModule,
+        StockModule
         // 3rd party
         // mark NgxDatatableModule,
     ],

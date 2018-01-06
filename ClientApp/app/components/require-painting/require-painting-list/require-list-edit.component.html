@@ -18,7 +18,7 @@
                 <form [formGroup]="RequirePaintListForm">
                     <div class="my-form">
                         <label for="PlanStart" class="my-label">DatePlan:</label>
-                        <div class="edit-form-content col-sm-10">
+                        <div class="edit-form-content col-sm-5">
                             <p-calendar formControlName="PlanStart" [showIcon]="true"
                                         id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
                                         appendTo="body"
@@ -44,9 +44,13 @@
 
                         <label for="MarkNo" class="my-label">MarkNo:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert mark-no of work item."
-                                   required
-                                   id="MarkNo" formControlName="MarkNo">
+                            <!--
+                                <input type="text" class="my-input" placeholder="Insert mark-no of work item."
+                                        required id="MarkNo" formControlName="MarkNo">
+                            -->
+                             <textarea class="my-input" placeholder="Insert mark-no of work item here."
+                                      id="MarkNo" formControlName="MarkNo" rows="4">
+                            </textarea>
                             <validation-messages [control]="RequirePaintListForm.controls.MarkNo"></validation-messages>
                         </div>
                     </div>
