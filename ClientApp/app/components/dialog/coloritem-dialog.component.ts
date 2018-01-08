@@ -41,6 +41,7 @@ export class ColorItemDialogComponent
             { prop: "ColorCode", name: "Code", flexGrow: 1 },
             { prop: "ColorName", name: "Name", flexGrow: 1 },
             { prop: "VolumeSolids", name: "VolumeSolids", flexGrow: 1 },
+            { prop: "OnhandVolumn",name : "Onhand",flexGrow: 1},
         ];
     }
 
@@ -54,7 +55,7 @@ export class ColorItemDialogComponent
         if (this.mode) {
             scroll.Where = this.mode.toString();
         }
-        this.service.getAllWithScroll(scroll)
+        this.service.getAllWithScroll(scroll,"GetScrollOnhand/")
             .subscribe(scrollData => {
                 if (scrollData) {
                     this.serviceDataTable.toChild(scrollData);

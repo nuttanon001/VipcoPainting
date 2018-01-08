@@ -71,6 +71,30 @@ namespace VipcoPainting.Controllers
                                   this.DefaultJsonSettings);
         }
 
+        [HttpGet("WithCustom/{key}")]
+        public async Task<IActionResult> GetWithCustom(int key)
+        {
+            // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            var Includes = new List<string> { "PaintWorkItem", "PaintTaskMaster" };
+            var HasData = this.mapper.Map<PaintTaskDetail, PaintTaskDetailViewModel>
+                                 (await this.repository.GetAsynvWithIncludes(key, "PaintTaskDetailId", Includes));
+            
+            if (HasData != null)
+            {
+                HasData.CommonText = HasData?.PaintTaskMaster?.TaskPaintNo;
+                HasData.CommonText += " | " + (HasData.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? "Internal" : "External");
+                if (HasData.PaintWorkItem != null)
+                {
+                    HasData.CommonText =  " | " + (HasData.PaintWorkItem.PaintLevel == PaintLevel.PrimerCoat ? "PrimerCoat" :
+                                         (HasData.PaintWorkItem.PaintLevel == PaintLevel.MidCoat ? "MidCoat" :
+                                         (HasData.PaintWorkItem.PaintLevel == PaintLevel.IntermediateCoat ? "IntermediateCoat" : "TopCoat")));
+                }
+
+                return new JsonResult(HasData, this.DefaultJsonSettings);
+            }
+            return NotFound(new { Error = "" });
+        }
+
         // GET: api/PaintTaskDetail/GetByMaster/5
         [HttpGet("GetByMaster/{MasterId}")]
         public async Task<IActionResult> GetByMaster(int MasterId)

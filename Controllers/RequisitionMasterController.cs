@@ -69,7 +69,7 @@ namespace VipcoPainting.Controllers
             return new JsonResult(await this.repository.GetAllAsync(), this.DefaultJsonSettings);
 
             //var Includes = new List<string> { "RequisitionMaster" };
-            //return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastRoomViewModel, RequisitionMaster>
+            //return new JsonResult(this.ConvertTable.ConverterTableToViewModel<RequisitionMasterViewModel, RequisitionMaster>
             //                     (await this.repository.GetAllWithInclude2Async(Includes)),
             //                      this.DefaultJsonSettings);
         }
@@ -88,9 +88,19 @@ namespace VipcoPainting.Controllers
             if (requisitionMaster != null)
                 requisitionMaster.RequisitionByString = (await this.repositoryEmp.GetAsync(requisitionMaster.RequisitionBy))?.NameThai ?? "-";
 
-
             return new JsonResult(requisitionMaster, this.DefaultJsonSettings);
+        }
 
+        // GET: api/PaintTaskDetail/GetByMaster/5
+        [HttpGet("GetByMaster/{MasterId}")]
+        public async Task<IActionResult> GetByMaster(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Where(x => x.PaintTaskDetailId == MasterId)
+                                .Include(x => x.ColorItem);
+
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<RequisitionMasterViewModel, RequisitionMaster>
+                                    (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
         }
 
         #endregion GET

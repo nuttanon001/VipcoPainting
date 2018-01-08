@@ -29,6 +29,10 @@ namespace VipcoPainting.Controllers
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
 
+        Func<double, double, double, double, double> CalcPaintPlan = 
+            (area, thick, vs, loss) => (area * thick) / (vs * 10 * (1 - loss));
+
+
         #endregion PrivateMenbers
 
         #region Constructor
@@ -122,13 +126,8 @@ namespace VipcoPainting.Controllers
                 {
                     if (item.IntArea != null)
                     {
-                        var loss = (BlastWorkItem?.StandradTimeInt?.PercentLoss ?? 0) / 100;
-                        //var loss = (item.StandradTimeInt.PercentLoss ?? 0) / 100;
-                        var area = item.IntArea;
-                        var vs = (item.IntColorItem.VolumeSolids ?? 0)/100;
                         double[] thicks = { item.IntDFTMin ?? 0, item.IntDFTMax ?? 0 };
-                        var thick = thicks.Average();
-                        item.IntCalcColorUsage = (area * thick) / (vs * 10 * (1 - loss));
+                        item.IntCalcColorUsage = this.CalcPaintPlan(item.IntArea ?? 0, thicks.Average(), (item.IntColorItem.VolumeSolids ?? 0), (BlastWorkItem?.StandradTimeInt?.PercentLoss ?? 0) / 100);
                         hasChange = true;
                     }
                 }
@@ -137,13 +136,8 @@ namespace VipcoPainting.Controllers
                 {
                     if (item.ExtArea != null)
                     {
-                        var loss = (BlastWorkItem?.StandradTimeExt?.PercentLoss ?? 0) / 100;
-                        //var loss = (item.StandradTimeExt.PercentLoss ?? 0) / 100;
-                        var area = item.ExtArea;
-                        var vs = (item.ExtColorItem.VolumeSolids ?? 0) / 100;
                         double[] thicks = { item.ExtDFTMin ?? 0, item.ExtDFTMax ?? 0 };
-                        var thick = thicks.Average();
-                        item.ExtCalcColorUsage = (area * thick) / (vs * 10 * (1 - loss));
+                        item.ExtCalcColorUsage = this.CalcPaintPlan(item.ExtArea ?? 0, thicks.Average(), (item.ExtColorItem.VolumeSolids ?? 0) , (BlastWorkItem?.StandradTimeExt?.PercentLoss ?? 0) / 100);
                         hasChange = true;
                     }
                 }

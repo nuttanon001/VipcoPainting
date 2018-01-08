@@ -9,5 +9,6 @@ namespace VipcoPainting.ViewModels
     public class ColorItemViewModel:ColorItem
     {
         public string VolumeSolidsString { get; set; }
+        public double OnhandVolumn { get; set; }
     }
 }

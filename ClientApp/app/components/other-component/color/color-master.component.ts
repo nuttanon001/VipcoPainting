@@ -26,8 +26,9 @@ export class ColorMasterComponent
     extends BaseMasterComponent<Color, ColorService> {
     columns: Array<TableColumn> = [
         { prop: "ColorCode", name: "Code", flexGrow: 1 },
-        { prop: "ColorName", name: "Name", flexGrow: 2 },
+        { prop: "ColorName", name: "Name", flexGrow: 1 },
         { prop: "VolumeSolidsString", name: "V/S", flexGrow: 1 },
+        { prop: "OnhandVolumn", name: "Onhand", flexGrow: 1 },
 
     ];
 
@@ -59,7 +60,7 @@ export class ColorMasterComponent
         }
 
         this.scroll = scroll;
-        this.service.getAllWithScroll(scroll)
+        this.service.getAllWithScroll(scroll,"GetScrollOnhand/")
             .subscribe((scrollData: ScrollData<Color>) => {
                 // console.log(scrollData);
 

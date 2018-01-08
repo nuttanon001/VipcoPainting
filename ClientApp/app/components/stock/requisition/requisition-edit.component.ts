@@ -2,7 +2,7 @@
 import { Component, ViewContainerRef } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 // models
-import { RequisitionMaster } from "../../../models/model.index";
+import { RequisitionMaster, PaintTaskDetail } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // 3rd party
@@ -11,12 +11,14 @@ import { SelectItem } from "primeng/primeng";
 import { AuthService } from "../../../services/auth/auth.service";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { PaintTeamService } from "../../../services/task/paint-team.service";
+import { PaintTaskDetailService } from "../../../services/paint-task/paint-task-detail.service";
 import { RequisitionMasterService,RequisitionMasterServiceCommunicate } from "../../../services/stock/requisition-master.service";
 
 @Component({
     selector: "requisition-edit",
     templateUrl: "./requisition-edit.component.html",
     styleUrls: ["../../../styles/edit.style.scss"],
+    providers: [PaintTaskDetailService]
 })
 /** requisition-edit component*/
 export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaster, RequisitionMasterService> {
@@ -24,6 +26,7 @@ export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaste
     constructor(
         service: RequisitionMasterService,
         serviceCom: RequisitionMasterServiceCommunicate,
+        private servicePaintTaskDetail:PaintTaskDetailService,
         private serviceAuth: AuthService,
         private serviceDialog: DialogsService,
         private viewContainerRef: ViewContainerRef,
@@ -37,7 +40,7 @@ export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaste
     }
 
     // Parameter
-
+    paintTaskDetail: PaintTaskDetail;
     // on get data by key
     onGetDataByKey(value?: RequisitionMaster): void {
         if (value) {
@@ -45,6 +48,10 @@ export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaste
                 .subscribe(dbData => {
                     this.editValue = dbData;
                     // set Date
+                    if (this.editValue.PaintTaskDetailId) {
+                        this.servicePaintTaskDetail.getOneKeyNumberWithCustom(this.editValue.PaintTaskDetailId)
+                            .subscribe(dbData => this.paintTaskDetail = dbData);
+                    }
                 }, error => console.error(error), () => this.defineData());
         } else {
             this.editValue = {
@@ -91,6 +98,7 @@ export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaste
             Modifyer: [this.editValue.Modifyer],
             ModifyDate: [this.editValue.ModifyDate],
             //FK
+            PaintTaskDetailId: [this.editValue.PaintTaskDetailId],
             ColorItemId: [this.editValue.ColorItemId,
                 [
                     Validators.required

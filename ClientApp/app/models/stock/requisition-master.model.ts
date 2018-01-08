@@ -16,4 +16,6 @@ export interface RequisitionMaster extends BaseModel {
     //ViewModel
     ColorNameString?: string;
     RequisitionByString?: string;
+    // Index
+    [key: string]: string | number | Date | undefined;
 }

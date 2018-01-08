@@ -33,6 +33,8 @@ export class BlastWorkitemEditComponent implements OnInit {
         this._blastWorkItem = data;
         this.blastWorkItemChange.emit(this._blastWorkItem);
     }
+    // Output
+    @Output() hasChange = new EventEmitter<boolean>();
     // FormGroup
     blastWorkForm: FormGroup;
     
@@ -64,30 +66,31 @@ export class BlastWorkitemEditComponent implements OnInit {
             ExtSurfaceTypeString: [this.blastWorkItem.ExtSurfaceTypeString],
             IntStandradTimeString: [this.blastWorkItem.IntStandradTimeString],
             ExtStandradTimeString: [this.blastWorkItem.ExtStandradTimeString],
+            IsValid:[this.blastWorkItem.IsValid]
         });
         this.blastWorkForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
-
+        this.onValueChanged();
         // change validity control
         const IntAreaControl: AbstractControl | null = this.blastWorkForm.get("IntArea");
         if (IntAreaControl) {
             IntAreaControl.valueChanges.subscribe((IntArea: number) => {
                 const IntSurfaceControl: AbstractControl | null = this.blastWorkForm.get("IntSurfaceTypeString");
-                const IntStandradControl: AbstractControl | null = this.blastWorkForm.get("IntStandradTimeString");
+                const INtStandradControl: AbstractControl | null = this.blastWorkForm.get("IntStandradTimeString");
 
-                if (IntSurfaceControl && IntStandradControl) {
+                if (IntSurfaceControl && INtStandradControl) {
                     if (IntArea) {
                         IntSurfaceControl.setValidators([
                             Validators.required,
                         ]);
-                        IntStandradControl.setValidators([
+                        INtStandradControl.setValidators([
                             Validators.required,
                         ]);
                     } else {
                         IntSurfaceControl.setValidators([]);
-                        IntStandradControl.setValidators([]);
+                        INtStandradControl.setValidators([]);
                     }
                     IntSurfaceControl.updateValueAndValidity();
-                    IntStandradControl.updateValueAndValidity();
+                    INtStandradControl.updateValueAndValidity();
                 }
             });
         }
@@ -121,10 +124,11 @@ export class BlastWorkitemEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.blastWorkForm) { return; }
         const form = this.blastWorkForm;
-        if (form.valid) {
-            this.blastWorkItem = form.value;
-        }
+
+        this.blastWorkItem = form.value;
         this.blastWorkItem.IsValid = form.valid;
+
+        this.hasChange.emit(this.blastWorkItem.IsValid);
     }
 
     // on OpenDialogBox

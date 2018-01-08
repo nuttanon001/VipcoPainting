@@ -214,6 +214,8 @@ export class RequirePaintingEditComponent
             this.indexListItem = -1;
         }
         this.newRequirePaintList = listItem;
+        // set save buttom diable
+        this.onValueChanged();
     }
 
     // edit list item
@@ -233,6 +235,7 @@ export class RequirePaintingEditComponent
         }
         this.newRequirePaintList = undefined;
         this.selectedIndex = 2;
+        this.onValueChanged();
     }
 
     // on valid data
@@ -240,6 +243,8 @@ export class RequirePaintingEditComponent
         if (!this.requirePaintLists) {
             isValid = false;
         } else if (this.requirePaintLists.length < 1) {
+            isValid = false;
+        } else if (this.newRequirePaintList) {
             isValid = false;
         }
 

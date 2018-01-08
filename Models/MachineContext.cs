@@ -6,13 +6,14 @@ namespace VipcoPainting.Models
 {
     public partial class MachineContext : DbContext
     {
-        public MachineContext(DbContextOptions<MachineContext> options) : base(options) { }
-
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<EmployeeGroup> EmployeeGroup { get; set; }
         public virtual DbSet<EmployeeGroupMis> EmployeeGroupMis { get; set; }
+        public virtual DbSet<ProjectCodeDetail> ProjectCodeDetail { get; set; }
         public virtual DbSet<ProjectCodeMaster> ProjectCodeMaster { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public MachineContext(DbContextOptions<MachineContext> options) : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>(entity =>
@@ -69,6 +70,21 @@ namespace VipcoPainting.Models
                 entity.Property(e => e.GroupDesc).HasMaxLength(250);
 
                 entity.Property(e => e.Remark).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<ProjectCodeDetail>(entity =>
+            {
+                entity.HasIndex(e => e.ProjectCodeMasterId);
+
+                entity.Property(e => e.Description).HasMaxLength(200);
+
+                entity.Property(e => e.ProjectCodeDetailCode)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.ProjectCodeMaster)
+                    .WithMany(p => p.ProjectCodeDetail)
+                    .HasForeignKey(d => d.ProjectCodeMasterId);
             });
 
             modelBuilder.Entity<ProjectCodeMaster>(entity =>

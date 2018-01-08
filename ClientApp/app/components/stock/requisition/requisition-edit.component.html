@@ -7,6 +7,14 @@
             <div class="edit-container">
                 <form [formGroup]="editValueForm">
                     <div class="my-form">
+                        <label for="CommonText" class="my-label">PaintTaskNo:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-read-only" [value]="paintTaskDetail?.CommonText || '-'"
+                                   id="CommonText" readonly>
+                        </div>
+                    </div>
+                    <hr class="w-100"/>
+                    <div class="my-form">
                         <label for="ColorNameString" class="my-label">Paint Name:</label>
                         <div class="col-sm-4">
                             <input type="text" class="my-input-click" placeholder="Choose paint name here."

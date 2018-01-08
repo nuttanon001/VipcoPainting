@@ -9,4 +9,5 @@
     ModifyDate?: Date;
     // view model
     VolumeSolidsString?: string;
+    OnhandVolumn?: number;
 }

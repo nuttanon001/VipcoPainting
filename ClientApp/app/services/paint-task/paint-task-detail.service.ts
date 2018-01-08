@@ -10,6 +10,12 @@ import { BaseRestService, BaseCommunicateService } from "../base-service/base.in
 @Injectable()
 export class PaintTaskDetailService extends BaseRestService<PaintTaskDetail> {
     constructor(http: Http) { super(http, "api/PaintTaskDetail/"); }
+
+    // get one with key number
+    getOneKeyNumberWithCustom(key: number): Observable<PaintTaskDetail> {
+        return this.http.get(this.actionUrl + "WithCustom/" + key + "/")
+            .map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

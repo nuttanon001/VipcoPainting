@@ -33,6 +33,7 @@ export class PaintWorkItemEditComponent implements OnInit {
         this.paintWorkItemChange.emit(this._paintWorkItem);
     }
     // Output
+    @Output() hasChange = new EventEmitter<boolean>();
     //@Output() intAreaChange = new EventEmitter<number | undefined>();
     //@Output() ExtAreaChange = new EventEmitter<number | undefined>();
     // FormGroup
@@ -45,6 +46,9 @@ export class PaintWorkItemEditComponent implements OnInit {
 
     // build Form
     buildForm(): void {
+        //debug here
+        //console.log("PaintWorkItem: BuildForm");
+
         this.paintWorkForm = this.fb.group({
             PaintWorkItemId: [this.paintWorkItem.PaintWorkItemId],
             PaintLevel: [this.paintWorkItem.PaintLevel],
@@ -78,7 +82,7 @@ export class PaintWorkItemEditComponent implements OnInit {
             IsValid: [this.paintWorkItem.IsValid],
         });
         this.paintWorkForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
-
+        this.onValueChanged();
         // change validity control
         const IntAreaControl: AbstractControl | null = this.paintWorkForm.get("IntArea");
         if (IntAreaControl) {
@@ -165,10 +169,11 @@ export class PaintWorkItemEditComponent implements OnInit {
     onValueChanged(data?: any): void {
         if (!this.paintWorkForm) { return; }
         const form = this.paintWorkForm;
-        if (form.valid) {
-            this.paintWorkItem = form.value;
-        }
+
+        this.paintWorkItem = form.value;
         this.paintWorkItem.IsValid = form.valid;
+
+        this.hasChange.emit(this.paintWorkItem.IsValid);
     }
 
     // on OpenDialogBox

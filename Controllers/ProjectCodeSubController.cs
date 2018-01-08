@@ -22,6 +22,7 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
 
         private IRepositoryPainting<ProjectCodeSub> repository;
+        private IRepositoryMachine<ProjectCodeDetail> repositoryDetail;
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
@@ -31,9 +32,13 @@ namespace VipcoPainting.Controllers
 
         #region Constructor
 
-        public ProjectCodeSubController(IRepositoryPainting<ProjectCodeSub> repo, IMapper map)
+        public ProjectCodeSubController(
+            IRepositoryPainting<ProjectCodeSub> repo, 
+            IRepositoryMachine<ProjectCodeDetail> repoDetail,
+            IMapper map)
         {
             this.repository = repo;
+            this.repositoryDetail = repoDetail;
             this.mapper = map;
             this.helpers = new HelpersClass<ProjectCodeSub>();
             // Json
@@ -70,10 +75,34 @@ namespace VipcoPainting.Controllers
         [HttpGet("GetByMaster/{MasterId}")]
         public async Task<IActionResult> GetByMaster(int MasterId)
         {
-            var QueryData = this.repository.GetAllAsQueryable()
-                                .Where(x => x.ProjectCodeMasterId == MasterId);
+            var QueryData = await this.repository.GetAllAsQueryable()
+                                        .Where(x => x.ProjectCodeMasterId == MasterId).ToListAsync();
 
-            return new JsonResult(await QueryData.AsNoTracking().ToListAsync(), this.DefaultJsonSettings);
+            var QueryDetailMiss = await this.repositoryDetail.GetAllAsQueryable()
+                                            .Where(x => x.ProjectCodeMasterId == MasterId &&
+                                                        !QueryData.Select(z => z.Code).Contains(x.ProjectCodeDetailCode))
+                                            .ToListAsync();
+            
+            if (QueryDetailMiss.Any())
+            {
+                foreach(var item in QueryDetailMiss)
+                {
+                    var nProjectCodeSub = new ProjectCodeSub
+                    {
+                        CreateDate = DateTime.Now,
+                        Creator = "ByCoding",
+                        ProjectCodeMasterId = MasterId,
+                        Code = item.ProjectCodeDetailCode,
+                        Name = item.Description,
+                    };
+                    await this.repository.AddAsync(nProjectCodeSub);
+                }
+
+                QueryData = await this.repository.GetAllAsQueryable()
+                                        .Where(x => x.ProjectCodeMasterId == MasterId).ToListAsync();
+            }
+
+            return new JsonResult(QueryData, this.DefaultJsonSettings);
         }
 
         // GET: api/ProjectCodeSub/GetAutoComplate/

@@ -148,6 +148,16 @@ export class ProjectEditComponent
         this.communicateService.toParent([this.editValueForm.value, false]);
     }
 
+    // remove Detail
+    onRemoveDetail(projectSub?: ProjectSub): void {
+        if (projectSub) {
+            if (this.editValue.ProjectSubs) {
+                let index = this.editValue.ProjectSubs.indexOf(projectSub);
+                this.editValue.ProjectSubs.splice(index, 1);
+            }
+        }
+    }
+
     // on Complate or Cancel ProjectSub
     onProjectSubComplate(projectSub?: ProjectSub): void {
         if (projectSub && this.editValue.ProjectSubs) {

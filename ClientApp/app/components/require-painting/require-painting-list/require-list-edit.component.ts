@@ -1,6 +1,6 @@
 ﻿// angular
 import { Component, ViewContainerRef, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { FormBuilder, FormControl, Validators, FormGroup } from "@angular/forms";
+import { FormBuilder, FormControl, Validators, FormGroup, AbstractControl } from "@angular/forms";
 // models
 import {
     RequirePaintMaster, RequirePaintList,
@@ -42,22 +42,21 @@ export class RequireListEditComponent implements OnInit {
     @Input("RequirePaintList") RequirePaintList: RequirePaintList;
     // isCheckForm
     get isCheckForm(): boolean {
-        if (this.RequirePaintListForm.valid) {
-            if (this.blastWorkItem && this.blastWork) {
-                if (this.blastWorkItem.IsValid) {
-                    return true;
-                }
-            } else if (this.paintWorks.length && this.listBoxs.findIndex(item => item === true) > -1) {
-                if (this.paintWorks.findIndex(item => item.IsValid === true) > -1) {
-                    // console.log("paintWorks", this.paintWorks.filter(item => item.IsValid));
-                    return true;
+        if (this.blastWork) {
+            if (this.blastWorkItem) {
+                if (this.blastWorkItem.ExtArea || this.blastWorkItem.IntArea) {
+                    return this.blastWorkItem.IsValid || false;
                 }
             }
         }
         return false;
     }
+    isPaintValid: boolean;
+
     // on Init
     ngOnInit(): void {
+        this.isPaintValid = true;
+
         if (!this.levelPaints) {
             this.levelPaints = new Array;
         }
@@ -128,6 +127,7 @@ export class RequireListEditComponent implements OnInit {
             ],
             MarkNo: [this.RequirePaintList.MarkNo,
                 [
+                    Validators.required,
                     Validators.maxLength(150)
                 ]
             ],
@@ -146,24 +146,9 @@ export class RequireListEditComponent implements OnInit {
             FieldWeld: [this.RequirePaintList.FieldWeld],
             Insulation: [this.RequirePaintList.Insulation],
             ITP: [this.RequirePaintList.ITP],
-            SizeL: [this.RequirePaintList.SizeL,
-                [
-                    Validators.required,
-                    Validators.min(1)
-                ]
-            ],
-            SizeW: [this.RequirePaintList.SizeW,
-                [
-                    Validators.required,
-                    Validators.min(1)
-                ]
-            ],
-            SizeH: [this.RequirePaintList.SizeH,
-                [
-                    Validators.required,
-                    Validators.min(1)
-                ]
-            ],
+            SizeL: [this.RequirePaintList.SizeL],
+            SizeW: [this.RequirePaintList.SizeW],
+            SizeH: [this.RequirePaintList.SizeH],
             Weight: [this.RequirePaintList.Weight,
                 [
                     Validators.required,
@@ -189,6 +174,40 @@ export class RequireListEditComponent implements OnInit {
             BlastWorkItems: [this.RequirePaintList.BlastWorkItems],
             PaintWorkItems: [this.RequirePaintList.PaintWorkItems]
         });
+
+        // change validity control
+        const QuantityControl: AbstractControl | null = this.RequirePaintListForm.get("Quantity");
+        if (QuantityControl) {
+            QuantityControl.valueChanges.subscribe((Qty: number) => {
+                const SizeLControl: AbstractControl | null = this.RequirePaintListForm.get("SizeL");
+                const SizeWControl: AbstractControl | null = this.RequirePaintListForm.get("SizeW");
+                const SizeHControl: AbstractControl | null = this.RequirePaintListForm.get("SizeH");
+
+                if (SizeLControl && SizeWControl && SizeHControl) {
+                    if (Qty <= 1) {
+                        SizeLControl.setValidators([
+                            Validators.required,
+                            Validators.min(1)
+                        ]);
+                        SizeWControl.setValidators([
+                            Validators.required,
+                            Validators.min(1)
+                        ]);
+                        SizeHControl.setValidators([
+                            Validators.required,
+                            Validators.min(1)
+                        ]);
+                    } else {
+                        SizeLControl.setValidators([]);
+                        SizeWControl.setValidators([]);
+                        SizeHControl.setValidators([]);
+                    }
+                    SizeLControl.updateValueAndValidity();
+                    SizeWControl.updateValueAndValidity();
+                    SizeHControl.updateValueAndValidity();
+                }
+            });
+        }
     }
 
     // on New/Update
@@ -220,53 +239,59 @@ export class RequireListEditComponent implements OnInit {
         this.ComplateOrCancel.emit(undefined);
     }
 
+    // on Add level of paint
+    onShowOrDidNotLevelOfPaint(checkBox:boolean,index:number,paintWorkItem:PaintWorkItem) {
+        this.paintWorks[index] = this.paintWorks[index] ? (checkBox ? this.paintWorks[index] : paintWorkItem) : paintWorkItem;
+        this.listBoxs[index] = checkBox;
+    }
+
     // on Change
     checkBoxChage(isChange?: boolean, levelPaint?: string): void {
         if (isChange !== undefined && levelPaint) {
+
+            let paintWorkItem: PaintWorkItem = {
+                PaintWorkItemId: 0
+            };
+
             if (levelPaint.indexOf("PrimerCoat") !== -1) {
-                if (!this.paintWorks[0]) {
-                    this.paintWorks[0] = {
-                        PaintWorkItemId: 0,
-                        PaintLevel: 1,
-                        PaintLevelString: "PrimerCoat"
-                    };
-                }
-                this.listBoxs[0] = isChange;
+                paintWorkItem.PaintLevel = 1;
+                paintWorkItem.PaintLevelString = "PrimerCoat";
+
+                this.onShowOrDidNotLevelOfPaint(isChange, 0, paintWorkItem);
             } else if (levelPaint.indexOf("MidCoat") !== -1) {
-                if (!this.paintWorks[1]) {
-                    this.paintWorks[1] = {
-                        PaintWorkItemId: 0,
-                        PaintLevel: 2,
-                        PaintLevelString: "MidCoat"
-                    };
-                }
-                this.listBoxs[1] = isChange;
+                paintWorkItem.PaintLevel = 2;
+                paintWorkItem.PaintLevelString = "MidCoat";
+
+                this.onShowOrDidNotLevelOfPaint(isChange, 1, paintWorkItem);
             } else if (levelPaint.indexOf("IntermediateCoat") !== -1) {
-                if (!this.paintWorks[2]) {
-                    this.paintWorks[2] = {
-                        PaintWorkItemId: 0,
-                        PaintLevel: 3,
-                        PaintLevelString: "IntermediateCoat"
-                    };
-                }
-                this.listBoxs[2] = isChange;
+                paintWorkItem.PaintLevel = 3;
+                paintWorkItem.PaintLevelString = "IntermediateCoat";
+
+                this.onShowOrDidNotLevelOfPaint(isChange, 2, paintWorkItem);
 
             } else if (levelPaint.indexOf("TopCoat") !== -1) {
-                if (!this.paintWorks[3]) {
-                    this.paintWorks[3] = {
-                        PaintWorkItemId: 0,
-                        PaintLevel: 4,
-                        PaintLevelString: "TopCoat"
-                    };
-                }
-                this.listBoxs[3] = isChange;
+                paintWorkItem.PaintLevel = 4;
+                paintWorkItem.PaintLevelString = "TopCoat";
+
+                this.onShowOrDidNotLevelOfPaint(isChange, 3, paintWorkItem);
             } else if (levelPaint.indexOf("BlastWork") !== -1) {
-                if (!this.blastWorkItem) {
+                if (!this.blastWorkItem || isChange === false) {
                     this.blastWorkItem = {
                         BlastWorkItemId: 0,
                     };
                 }
                 this.blastWork = isChange;
+            }
+        }
+    }
+
+    //onHasChange
+    onHasChange(hasChange: boolean) {
+        if (this.paintWorks) {
+            if (this.paintWorks.findIndex(item => item.IsValid === false) > -1) {
+                this.isPaintValid = false;
+            } else {
+                this.isPaintValid = true;
             }
         }
     }

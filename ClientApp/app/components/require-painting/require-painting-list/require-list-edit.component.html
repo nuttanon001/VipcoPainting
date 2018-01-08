@@ -1,7 +1,7 @@
 ﻿<div *ngIf="RequirePaintList; else elseBlock">
     <div>
         <button type="button" mat-icon-button color="primary" (click)="onNewOrUpdateClick()"
-                [disabled]="!isCheckForm" matTooltip="New/Update">
+                [disabled]="!isCheckForm || !isPaintValid" matTooltip="New/Update">
             <i class="fa fa-2x fa-plus-square-o" aria-hidden="true"></i>
         </button>
         <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
@@ -30,28 +30,6 @@
                                         appendTo="body"
                                         [minDate]="RequirePaintListForm.controls.PlanStart.value">
                             </p-calendar>
-                        </div>
-                    </div>
-
-                    <div class="my-form">
-                        <label for="Description" class="my-label">Description:</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert description of work item."
-                                   required
-                                   id="Description" formControlName="Description">
-                            <validation-messages [control]="RequirePaintListForm.controls.Description"></validation-messages>
-                        </div>
-
-                        <label for="MarkNo" class="my-label">MarkNo:</label>
-                        <div class="col-sm-4">
-                            <!--
-                                <input type="text" class="my-input" placeholder="Insert mark-no of work item."
-                                        required id="MarkNo" formControlName="MarkNo">
-                            -->
-                             <textarea class="my-input" placeholder="Insert mark-no of work item here."
-                                      id="MarkNo" formControlName="MarkNo" rows="4">
-                            </textarea>
-                            <validation-messages [control]="RequirePaintListForm.controls.MarkNo"></validation-messages>
                         </div>
                     </div>
 
@@ -92,42 +70,37 @@
 
                     <div class="my-form">
                         <label class="my-label">Dimension L x W x H (mm):</label>
-                        <div class="edit-form-content col-sm-10">
-                            <input type="number" min="1" class="my-input" placeholder="Insert length work item."
-                                   required
+                        <div class="edit-form-content col-sm-6">
+                            <input type="number" min="1" class="my-input" placeholder="length work item."
                                    id="SizeL" formControlName="SizeL">
                             <span class="mx-1">X</span>
-                            <input type="number" min="1" class="my-input" placeholder="Insert width work iitem."
-                                   required
+                            <input type="number" min="1" class="my-input" placeholder="width work iitem."
                                    id="SizeW" formControlName="SizeW">
                             <span class="mx-1">X</span>
-                            <input type="number" min="1" class="my-input" placeholder="Insert height work item."
-                                   required
+                            <input type="number" min="1" class="my-input" placeholder="height work item."
                                    id="SizeH" formControlName="SizeH">
                         </div>
                     </div>
 
+                    <div class="my-form">
+                        <label for="Description" class="my-label">Description:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert description of work item."
+                                   required
+                                   id="Description" formControlName="Description">
+                            <validation-messages [control]="RequirePaintListForm.controls.Description"></validation-messages>
+                        </div>
+
+                        <label for="MarkNo" class="my-label">MarkNo:</label>
+                        <div class="col-sm-4">
+                            <textarea class="my-input" placeholder="Insert mark-no of work item here."
+                                      id="MarkNo" formControlName="MarkNo" rows="4" required>
+                            </textarea>
+                            <validation-messages [control]="RequirePaintListForm.controls.MarkNo"></validation-messages>
+                        </div>
+                    </div>
+
                     <hr />
-                    <!--<div class="my-form">
-        <label class="my-label">Option:</label>
-        <div class="edit-form-content col-sm-10">
-            <div class="form-check mx-1 mt-1">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" id="FieldWeld" formControlName="FieldWeld"> FieldWeld
-                </label>
-            </div>
-            <div class="form-check mx-1 mt-1">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" id="Insulation" formControlName="Insulation"> Insulation
-                </label>
-            </div>
-            <div class="form-check mx-1 mt-1">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" id="ITP" formControlName="ITP"> ITP
-                </label>
-            </div>
-        </div>
-    </div>-->
 
                     <div class="my-form">
                         <label class="my-label">Option-1:</label>
@@ -197,16 +170,16 @@
                 </div>-->
                 <div class="bottom-container-60vh">
                     <div *ngIf="listBoxs[0]">
-                        <paint-workitem-edit #pc1 [(paintWorkItem)]="paintWorks[0]"></paint-workitem-edit>
+                        <paint-workitem-edit #pc1 [(paintWorkItem)]="paintWorks[0]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
                     </div>
                     <div *ngIf="listBoxs[1]">
-                        <paint-workitem-edit #mc1 [(paintWorkItem)]="paintWorks[1]"></paint-workitem-edit>
+                        <paint-workitem-edit #mc1 [(paintWorkItem)]="paintWorks[1]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
                     </div>
                     <div *ngIf="listBoxs[2]">
-                        <paint-workitem-edit #ic1 [(paintWorkItem)]="paintWorks[2]"></paint-workitem-edit>
+                        <paint-workitem-edit #ic1 [(paintWorkItem)]="paintWorks[2]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
                     </div>
                     <div *ngIf="listBoxs[3]">
-                        <paint-workitem-edit #tc1 [(paintWorkItem)]="paintWorks[3]"></paint-workitem-edit>
+                        <paint-workitem-edit #tc1 [(paintWorkItem)]="paintWorks[3]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
                     </div>
                 </div>
             </div>
