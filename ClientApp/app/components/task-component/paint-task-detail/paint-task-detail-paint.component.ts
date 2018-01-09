@@ -9,6 +9,7 @@ import { SelectItem } from "primeng/primeng";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { PaintTeamService } from "../../../services/task/paint-team.service";
 import { PaintWorkitemService } from "../../../services/require-paint/paint-workitem.service";
+import { PaintTaskDetailService } from "../../../services/paint-task/paint-task-detail.service";
 
 @Component({
     selector: "paint-task-detail-paint",
@@ -20,7 +21,9 @@ export class PaintTaskDetailPaintComponent implements OnInit {
     /** paint-task-detail-paint ctor */
     constructor(
         private service: PaintTeamService,
+        private servicePaintTaskDetail: PaintTaskDetailService,
         private servicePaintWork: PaintWorkitemService,
+        private serviceDialogs: DialogsService,
         private fb: FormBuilder,
         private dialogService: DialogsService,
         private viewContainerRef: ViewContainerRef
@@ -102,6 +105,8 @@ export class PaintTaskDetailPaintComponent implements OnInit {
             PaintTeamString: [this.paintTaskDetail.PaintTeamString],
             PaintWorkItem: [this.paintTaskDetail.PaintWorkItem],
             isValid: [this.paintTaskDetail.isValid],
+            CommonText: [this.paintTaskDetail.CommonText],
+            SummaryActual: [this.paintTaskDetail.SummaryActual]
         });
         this.paintTaskDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
 
@@ -224,6 +229,32 @@ export class PaintTaskDetailPaintComponent implements OnInit {
             form.patchValue({
                 TaskDetailProgress: this.minProgress,
             });
+        }
+    }
+
+    // open dialog
+    openDialog(type?: string): void {
+        if (type) {
+            if (type === "SummaryActual") {
+                if (!this.paintTaskDetail.PaintTaskDetailId) {
+                    this.serviceDialogs.context("WarningMessage",
+                        "Please save this task befor add requisition !!!", this.viewContainerRef);
+                    return;
+                }
+
+                let temp: PaintTaskDetail = this.paintTaskDetailForm.value;
+                this.serviceDialogs.dialogRequisitionListAddOrUpdate(this.viewContainerRef, temp)
+                    .subscribe(Complate => {
+                        if (Complate) {
+                            this.servicePaintTaskDetail.getGetRequisitionSumByKeyNumber(temp.PaintTaskDetailId)
+                                .subscribe(data => {
+                                    this.paintTaskDetailForm.patchValue({
+                                        SummaryActual: data.TotalSummary,
+                                    });
+                                });
+                        }
+                    });
+            }
         }
     }
 }

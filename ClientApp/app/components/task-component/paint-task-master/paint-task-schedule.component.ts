@@ -138,7 +138,7 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
         });
 
         this.reportForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
-        this.onValueChanged();
+        // this.onValueChanged();
     }
 
     // on value change

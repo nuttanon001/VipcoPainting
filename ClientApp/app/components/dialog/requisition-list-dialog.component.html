@@ -1,1 +1,76 @@
-﻿<div style="border: 1px solid red">requisition-list-dialog Component</div>
+﻿<div class="master-dialog-vh">
+    <H5 style="color:cadetblue">Paint Requisition</H5>
+    <div class="child-container">
+        <div class="center-content">
+            <split direction="horizontal"
+                   [gutterSize]="4"
+                   [visibleTransition]="true">
+                <split-area [size]="35" [order]="1">
+                    <div class="center-content" style="margin-top:50px;">
+                        <div class="form-group col-sm-12">
+                            <label for="CommonText" >Information:</label>
+                            <input type="text" class="my-input-read-only"
+                                    [value]="paintTaskDetail.PaintWorkItem?.PaintLevelString"
+                                    id="CommonText" readonly>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="ColorString" >PaintName:</label>
+                            <input type="text" class="my-input-read-only" [value]="colorItem.ColorName"
+                                    id="ColorString" readonly>
+                        </div>
+                    </div>
+                </split-area>
+                <split-area [size]="65" [order]="2">
+                    <div class="edit-container">
+                        <div class="edit-form-content">
+                            <button type="button" mat-icon-button color="primary" (click)="onAddNewRequisition()"
+                                    style="float:left">
+                                    <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <ngx-datatable class="material"
+                                       [rows]="requisitionMasters"
+                                       [columnMode]="'flex'"
+                                       [headerHeight]="50"
+                                       [footerHeight]="0"
+                                       [rowHeight]="50"
+                                       [scrollbarV]="true"
+                                       [style.height]="'55vh'">
+                            <ngx-datatable-column name="Date" prop="RequisitionDate" [flexGrow]="1">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                    <p-calendar [showIcon]="true" autofocus (onSelect)="updateValueForPrimeNgComponent($event, 'RequisitionDate', rowIndex)"
+                                                name="RequisitionDate" dateFormat="dd/mm/yy"
+                                                appendTo="body" [(ngModel)]="requisitionMasters[rowIndex].RequisitionDate">
+                                    </p-calendar>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Quantity" prop="Quantity" [flexGrow]="1">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                    <input autofocus (blur)="updateValue($event, 'Quantity', rowIndex)"
+                                           type="number" min="0"
+                                           name="Quantity" class="my-input"
+                                           [value]="value" />
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column [flexGrow]="1" [sortable]="false">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <button mat-button (click)="onRemoveRequisition(row)" color="warn">Remove</button>
+                                </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+                    </div>
+                </split-area>
+            </split>
+        </div>
+        <div class="right-content">
+            <button type="button" mat-icon-button color="primary" (click)="onUpdateClick()"
+                    matTooltip="Save/Update" matTooltipPosition="left">
+                <i class="fa fa-2x fa-save" aria-hidden="true"></i>
+            </button>
+            <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
+                    matTooltip="Cancel" matTooltipPosition="left">
+                <i class="fa fa-2x fa-close" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>

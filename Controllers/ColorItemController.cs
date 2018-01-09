@@ -122,7 +122,7 @@ namespace VipcoPainting.Controllers
             {
                 item.OnhandVolumn = await this.repositoryMovement.GetAllAsQueryable()
                                             .Include(x => x.MovementStockStatus)
-                                            .Where(x => x.ColorItemId == item.ColorItemId)
+                                            .Where(x => x.ColorItemId == item.ColorItemId && x.MovementStockStatus.StatusMovement != StatusMovement.Cancel)
                                             .SumAsync(x => x.MovementStockStatus.TypeStatusMovement == TypeStatusMovement.Increased ? x.Quantity : (x.Quantity * -1));
             }
 

@@ -235,13 +235,13 @@ namespace VipcoPainting.Controllers
                     List<DateTime?> ListDate = new List<DateTime?>()
                     {
                         //START Date
-                        GetData.Select(x => x.PaintTaskDetails.Min(z => z.ActualSDate)).OrderBy(x => x).FirstOrDefault(),
+                        GetData.Select(x => x.PaintTaskDetails.Min(z => z.ActualSDate)).OrderBy(x => x).FirstOrDefault() ?? null,
                         GetData.Select(x => x.PaintTaskDetails.Min(z => z.PlanSDate)).OrderBy(x => x).FirstOrDefault(),
-                        GetData.Min(x => x.RequirePaintingList.PlanStart),
+                        GetData.Min(x => x.RequirePaintingList.PlanStart) ?? null,
                         //END Date
-                        GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualEDate)).OrderByDescending(x => x).FirstOrDefault(),
+                        GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualEDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
                         GetData.Select(x => x.PaintTaskDetails.Max(z => z.PlanEDate)).OrderByDescending(x => x).FirstOrDefault(),
-                        GetData.Max(x => x.RequirePaintingList.PlanEnd)
+                        GetData.Max(x => x.RequirePaintingList.PlanEnd) ?? null
                     };
 
                     //var Plan2Start = GetData.Select(x => x.PaintTaskDetails.Min(z => z.PlanSDate)).FirstOrDefault();
@@ -342,7 +342,14 @@ namespace VipcoPainting.Controllers
                         var DetailActualStart = Data.PaintTaskDetails.Min(x => x.ActualSDate);
                         if (DetailActualStart != null)
                         {
-                            var EndDate = Data.PaintTaskDetails.Max(x => x.ActualEDate) ?? (MaxDate > DateTime.Today ? DateTime.Today : MaxDate);
+                            var EndDate = Data.PaintTaskDetails.Max(x => x.ActualEDate);
+                            var LastDate = (MaxDate > DateTime.Today ? DateTime.Today : MaxDate);
+
+                            if (Data.PaintTaskDetails.Any(x => x.ActualEDate == null))
+                                EndDate = LastDate;
+                            else if (EndDate == null)
+                                EndDate = LastDate;
+                            
 
                             foreach (DateTime day in EachDay(DetailActualStart.Value, EndDate.Value))
                             {

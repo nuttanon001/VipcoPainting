@@ -24,6 +24,7 @@ namespace VipcoPainting.Controllers
         #region PrivateMembers
         // Repository
         private IRepositoryPainting<PaintTaskDetail> repository;
+        private IRepositoryPainting<RequisitionMaster> repositoryRequisition;
         // Mapper
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
@@ -31,10 +32,14 @@ namespace VipcoPainting.Controllers
         #endregion PrivateMenbers
 
         #region Constructor
-        public PaintTaskDetailController(IRepositoryPainting<PaintTaskDetail> repo, IMapper map)
+        public PaintTaskDetailController(
+            IRepositoryPainting<PaintTaskDetail> repo, 
+            IRepositoryPainting<RequisitionMaster> repoRequisition,
+            IMapper map)
         {
             // Repository
             this.repository = repo;
+            this.repositoryRequisition = repoRequisition;
             // Mapper
             this.mapper = map;
             // Json
@@ -71,6 +76,7 @@ namespace VipcoPainting.Controllers
                                   this.DefaultJsonSettings);
         }
 
+        // GET: api/PaintTaskDetail/WithCustom/5
         [HttpGet("WithCustom/{key}")]
         public async Task<IActionResult> GetWithCustom(int key)
         {
@@ -106,7 +112,8 @@ namespace VipcoPainting.Controllers
                                 .Include(x => x.PaintWorkItem.ExtColorItem)
                                 .Include(x => x.BlastRoom)
                                 .Include(x => x.BlastWorkItem.SurfaceTypeInt)
-                                .Include(x => x.BlastWorkItem.SurfaceTypeExt);
+                                .Include(x => x.BlastWorkItem.SurfaceTypeExt)
+                                .Include(x => x.RequisitionMasters);
 
             var GetData = this.ConvertTable.ConverterTableToViewModel<PaintTaskDetailViewModel, PaintTaskDetail>
                             (await QueryData.AsNoTracking().ToListAsync());
@@ -114,6 +121,8 @@ namespace VipcoPainting.Controllers
             {
                 item.PaintWorkItem = this.mapper.Map<PaintWorkItemViewModel>(item.PaintWorkItem);
                 item.BlastWorkItem = this.mapper.Map<BlastWorkItemViewModel>(item.BlastWorkItem);
+                item.SummaryActual = item?.RequisitionMasters.Sum(x => x.Quantity ?? 0) ?? 0;
+                item.RequisitionMasters = null;
             }
             if (GetData.Any())
                 return new JsonResult(GetData, this.DefaultJsonSettings);
@@ -121,6 +130,15 @@ namespace VipcoPainting.Controllers
                 return NotFound(new { Error = "Paint task detail not been found." });
         }
 
+        // GET: api/PaintTaskDetail/GetRequisitionSum/5
+        [HttpGet("GetRequisitionSum/{key}")]
+        public async Task<IActionResult> GetRequisitionSum(int key)
+        {
+            var QueryData = this.repositoryRequisition.GetAllAsQueryable()
+                               .Where(x => x.PaintTaskDetailId == key);
+
+            return new JsonResult(new { TotalSummary = await QueryData.SumAsync(x => x.Quantity ?? 0) }, this.DefaultJsonSettings);
+        }
         #endregion GET
 
         #region POST

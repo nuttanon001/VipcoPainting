@@ -16,6 +16,12 @@ export class PaintTaskDetailService extends BaseRestService<PaintTaskDetail> {
         return this.http.get(this.actionUrl + "WithCustom/" + key + "/")
             .map(this.extractData).catch(this.handleError);
     }
+
+    // get one with key number
+    getGetRequisitionSumByKeyNumber(key: number): Observable<any> {
+        return this.http.get(this.actionUrl + "GetRequisitionSum/" + key + "/")
+            .map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

@@ -11,7 +11,7 @@ namespace VipcoPainting.ViewModels
         public string PaintTeamString { get; set; }
         public string BlastRoomString { get; set; }
         public string CommonText { get; set; }
-
+        public double SummaryActual { get; set; }
 
     }
 }

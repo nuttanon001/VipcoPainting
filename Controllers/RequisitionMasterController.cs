@@ -97,6 +97,7 @@ namespace VipcoPainting.Controllers
         {
             var QueryData = this.repository.GetAllAsQueryable()
                                 .Where(x => x.PaintTaskDetailId == MasterId)
+                                .OrderBy(x => x.RequisitionDate)
                                 .Include(x => x.ColorItem);
 
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<RequisitionMasterViewModel, RequisitionMaster>
@@ -246,9 +247,23 @@ namespace VipcoPainting.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return new JsonResult(await this.repository.DeleteAsync(id), this.DefaultJsonSettings);
-        }
+            var deleteRequisition = await this.repository.GetAsync(id);
+            if (deleteRequisition != null)
+            {
+                var statusMovemet = await this.repositoryMoveStatus.GetAllAsQueryable().FirstOrDefaultAsync(x => x.StatusMovement == StatusMovement.Cancel);
+                var updateMovementStock = await this.repositoryMovement.GetAllAsQueryable()
+                                               .FirstOrDefaultAsync(x => x.ColortMovementStockId == deleteRequisition.ColorMovementStockId);
+                if (statusMovemet != null && updateMovementStock != null)
+                {
+                    updateMovementStock.ModifyDate = DateTime.Now;
+                    updateMovementStock.MovementStockStatusId = statusMovemet.MovementStockStatusId;
 
+                    await this.repositoryMovement.UpdateAsync(updateMovementStock, updateMovementStock.ColortMovementStockId);
+                    return new JsonResult(await this.repository.DeleteAsync(id), this.DefaultJsonSettings);
+                }
+            }
+            return NotFound(new { Error = "Not been found data." });
+        }
         #endregion DELETE
     }
 }

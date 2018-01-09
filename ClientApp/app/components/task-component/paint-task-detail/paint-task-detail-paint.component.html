@@ -55,10 +55,17 @@
         <div class="my-form">
             <label for="TaskDetailProgress" class="my-label-col1-right">Progress:</label>
             <div class="col-sm-5">
-                <input type="number" min="minProgress" max="100" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input' " 
+                <input type="number" min="minProgress" max="100" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input' "
                        placeholder="Insert progress paintwork here."
                        [readonly]="ReadOnly"
                        formControlName="TaskDetailProgress">
+            </div>
+
+            <label for="SummaryActual" class="my-label-col1-right">PaintActual:</label>
+            <div class="col-sm-5">
+                <input type="text" class="my-input-click" placeholder="Add Requisition of Paint."
+                       (click)="openDialog('SummaryActual')"
+                       id="SummaryActual" formControlName="SummaryActual" readonly>
             </div>
         </div>
 

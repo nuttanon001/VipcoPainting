@@ -31,4 +31,5 @@ export interface PaintTaskDetail extends BaseModel {
     PaintWorkItem?: PaintWorkItem;
     isValid?: boolean;
     CommonText?: string;
+    SummaryActual?: number;
 }

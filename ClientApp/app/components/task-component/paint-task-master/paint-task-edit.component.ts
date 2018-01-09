@@ -170,4 +170,22 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
 
         this.communicateService.toParent([this.editValue, isValid]);
     }
+
+    // open dialog
+    openDialog(type?: string): void {
+        if (type) {
+            if (type === "Employee") {
+                this.serviceDialogs.dialogSelectEmployee(this.viewContainerRef)
+                    .subscribe(emp => {
+                        console.log(emp);
+                        if (emp) {
+                            this.editValueForm.patchValue({
+                                AssignBy: emp.EmpCode,
+                                AssignByString: `คุณ${emp.NameThai}`,
+                            });
+                        }
+                    });
+            } 
+        }
+    }
 }

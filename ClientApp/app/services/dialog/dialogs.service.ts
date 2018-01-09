@@ -12,13 +12,15 @@ import {
     ProjectDialogComponent,
     RequirePaintingDialogComponent,
     RequirePaintingViewDialogComponent,
-    ScheduleDialogComponent
+    ScheduleDialogComponent,
+    RequisitionListDialogComponent
 } from "../../components/dialog/dialog.index";
 // models
 import {
     Color, StandradTime,
     SurfaceType, Employee,
     ProjectSub,
+    PaintTaskDetail,
 } from "../../models/model.index";
 
 @Injectable()
@@ -196,6 +198,20 @@ export class DialogsService {
 
         // open dialog
         dialogRef = this.dialog.open(ScheduleDialogComponent, config);
+        return dialogRef.afterClosed();
+    }
+
+    public dialogRequisitionListAddOrUpdate(viewContainerRef: ViewContainerRef, paintTaskDetail: PaintTaskDetail): Observable<boolean> {
+        let dialogRef: MatDialogRef<RequisitionListDialogComponent>;
+        let config: MatDialogConfig = new MatDialogConfig();
+
+        // config
+        config.viewContainerRef = viewContainerRef;
+        config.data = paintTaskDetail;
+        config.hasBackdrop = true;
+
+        // open dialog
+        dialogRef = this.dialog.open(RequisitionListDialogComponent, config);
         return dialogRef.afterClosed();
     }
 }
