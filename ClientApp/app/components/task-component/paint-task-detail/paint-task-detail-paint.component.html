@@ -1,136 +1,143 @@
-﻿<div class="edit-container border border-info" *ngIf="paintTaskDetail">
-    <form [formGroup]="paintTaskDetailForm" class="m-1">
-        <h5 class="alert-info mx-1">&nbsp;&nbsp;Level:{{paintTaskDetail.PaintWorkItem?.PaintLevelString || "-"}}</h5>
-        <div *ngIf="paintTaskDetail.PaintTaskDetailLayer === 1;else ElseBlock">
-            <div class="my-form">
-                <label class="my-label-col1-right">Internal:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntArea || 0)| number) + ' m²'" readonly>
+﻿<div class="edit-container-row border border-info" *ngIf="paintTaskDetail">
+    <div class="edit-left-content" *ngIf="paintTaskDetail?.PaintTaskDetailId > 0">
+        <button type="button" mat-icon-button color="primary" (click)="showReportPaintMethod()"
+                style="margin:4px;">
+            <i class="fa fa-2x fa-print" aria-hidden="true" style="margin:0px;"></i>
+        </button>
+    </div>
+    <div class="edit-center-content">
+        <form [formGroup]="paintTaskDetailForm" class="m-1">
+            <h5 class="alert-info mx-1">&nbsp;&nbsp;Level:{{paintTaskDetail.PaintWorkItem?.PaintLevelString || "-"}}</h5>
+            <div *ngIf="paintTaskDetail.PaintTaskDetailLayer === 1;else ElseBlock">
+                <div class="my-form">
+                    <label class="my-label-col1-right">Internal:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntArea || 0)| number) + ' m²'" readonly>
+                    </div>
+                    <label class="my-label-col1-right">DFT:</label>
+                    <div class="edit-form-content col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntDFTMin || 0)| number)" readonly>
+                        <span class="mx-1">/</span>
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntDFTMax || 0)| number)" readonly>
+                    </div>
                 </div>
-                <label class="my-label-col1-right">DFT:</label>
-                <div class="edit-form-content col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntDFTMin || 0)| number)" readonly>
-                    <span class="mx-1">/</span>
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntDFTMax || 0)| number)" readonly>
-                </div>
-            </div>
 
-            <div class="my-form">
-                <label class="my-label-col1-right">PaintName:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="paintTaskDetail.PaintWorkItem?.IntColorString || '-'" readonly>
-                </div>
-                <label class="my-label-col1-right">PlanUse:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntCalcColorUsage || 0)| number) + ' l.'" readonly>
-                </div>
-            </div>
-        </div>
-        <ng-template #ElseBlock>
-            <div class="my-form">
-                <label class="my-label-col1-right">External:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtArea || 0)| number) + ' m²'" readonly>
-                </div>
-                <label class="my-label-col1-right">DFT:</label>
-                <div class="edit-form-content col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtDFTMin || 0)| number)" readonly>
-                    <span class="mx-1">/</span>
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtDFTMax || 0)| number)" readonly>
+                <div class="my-form">
+                    <label class="my-label-col1-right">PaintName:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="paintTaskDetail.PaintWorkItem?.IntColorString || '-'" readonly>
+                    </div>
+                    <label class="my-label-col1-right">PlanUse:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.IntCalcColorUsage || 0)| number) + ' l.'" readonly>
+                    </div>
                 </div>
             </div>
+            <ng-template #ElseBlock>
+                <div class="my-form">
+                    <label class="my-label-col1-right">External:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtArea || 0)| number) + ' m²'" readonly>
+                    </div>
+                    <label class="my-label-col1-right">DFT:</label>
+                    <div class="edit-form-content col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtDFTMin || 0)| number)" readonly>
+                        <span class="mx-1">/</span>
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtDFTMax || 0)| number)" readonly>
+                    </div>
+                </div>
 
-            <div class="my-form">
-                <label class="my-label-col1-right">PaintName:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="paintTaskDetail.PaintWorkItem?.ExtColorString || '-'" readonly>
-                </div>
-                <label class="my-label-col1-right">PlanUse:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtCalcColorUsage || 0)| number) + ' l.'" readonly>
-                </div>
-            </div>
-        </ng-template>
-        <hr />
-        <div class="my-form">
-            <label for="TaskDetailProgress" class="my-label-col1-right">Progress:</label>
-            <div class="col-sm-5">
-                <input type="number" min="minProgress" max="100" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input' "
-                       placeholder="Insert progress paintwork here."
-                       [readonly]="ReadOnly"
-                       formControlName="TaskDetailProgress">
-            </div>
-
-            <label for="SummaryActual" class="my-label-col1-right">PaintActual:</label>
-            <div class="col-sm-5">
-                <input type="text" class="my-input-click" placeholder="Add Requisition of Paint."
-                       (click)="openDialog('SummaryActual')"
-                       id="SummaryActual" formControlName="SummaryActual" readonly>
-            </div>
-        </div>
-
-        <div class="my-form">
-            <label for="PlanSDate" class="my-label-col1-right">Plan:</label>
-            <div *ngIf="!ReadOnly;else ElsePlan" class="edit-form-content col-sm-5">
-                <p-calendar formControlName="PlanSDate" [showIcon]="true"
-                            dateFormat="dd/mm/yy" placeholder="  Start actual date"
-                            appendTo="body"
-                            [maxDate]="paintTaskDetailForm.controls.PlanEDate.value">
-                </p-calendar>
-                <span style="margin-left:6px;margin-right:7px;">|</span>
-                <p-calendar formControlName="PlanEDate" [showIcon]="true"
-                            dateFormat="dd/mm/yy" placeholder="  End actual date"
-                            appendTo="body"
-                            [minDate]="paintTaskDetailForm.controls.PlanSDate.value">
-                </p-calendar>
-            </div>
-            <ng-template #ElsePlan>
-                <div class="edit-form-content col-sm-5">
-                    {{(paintTaskDetailForm.controls.PlanSDate.value | date:'dd/MM/yyyy') || ''}}
-                    <span class="mx-3">|</span>
-                    {{(paintTaskDetailForm.controls.PlanEDate.value | date:'dd/MM/yyyy') || ''}}
+                <div class="my-form">
+                    <label class="my-label-col1-right">PaintName:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="paintTaskDetail.PaintWorkItem?.ExtColorString || '-'" readonly>
+                    </div>
+                    <label class="my-label-col1-right">PlanUse:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="my-input-read-only" [value]="((paintTaskDetail.PaintWorkItem?.ExtCalcColorUsage || 0)| number) + ' l.'" readonly>
+                    </div>
                 </div>
             </ng-template>
-
-            <label for="ActualSDate" class="my-label-col1-right">Actual:</label>
-            <div *ngIf="!ReadOnly;else ElseActual" class="edit-form-content col-sm-5">
-                <p-calendar formControlName="ActualSDate" [showIcon]="true"
-                            dateFormat="dd/mm/yy" placeholder="  Start actual date"
-                            appendTo="body"
-                            [maxDate]="paintTaskDetailForm.controls.ActualEDate.value || maxDate">
-                </p-calendar>
-                <span style="margin-left:6px;margin-right:7px;">|</span>
-                <p-calendar formControlName="ActualEDate" [showIcon]="true"
-                            dateFormat="dd/mm/yy" placeholder="  End actual date"
-                            appendTo="body"
-                            [minDate]="paintTaskDetailForm.controls.ActualSDate.value"
-                            [maxDate]="maxDate">
-                </p-calendar>
-            </div>
-            <ng-template #ElseActual>
-                <div class="edit-form-content col-sm-5">
-                    {{(paintTaskDetailForm.controls.ActualSDate.value | date:'dd/MM/yyyy') || '-'}}
-                    <span class="mx-3">|</span>
-                    {{(paintTaskDetailForm.controls.ActualEDate.value | date:'dd/MM/yyyy') || '-'}}
+            <hr />
+            <div class="my-form">
+                <label for="TaskDetailProgress" class="my-label-col1-right">Progress:</label>
+                <div class="col-sm-5">
+                    <input type="number" min="minProgress" max="100" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input' "
+                           placeholder="Insert progress paintwork here."
+                           [readonly]="ReadOnly"
+                           formControlName="TaskDetailProgress">
                 </div>
-            </ng-template>
-        </div>
 
-        <div class="my-form">
-            <label for="PaintTeamId" class="my-label-col1-right">Room:</label>
-            <div class="col-sm-5">
-                <p-dropdown class="my-input-combobox" [options]="paintTeams" [style]="{'width':'100%'}"
-                            appendTo="body" [readonly]="ReadOnly"
-                            formControlName="PaintTeamId" required>
-                </p-dropdown>
+                <label for="SummaryActual" class="my-label-col1-right">PaintActual:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="my-input-click" placeholder="Add Requisition of Paint."
+                           (click)="openDialog('SummaryActual')"
+                           id="SummaryActual" formControlName="SummaryActual" readonly>
+                </div>
             </div>
 
-            <label for="Remark" class="my-label-col1-right">Remark:</label>
-            <div class="col-sm-5">
-                <input type="text" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input' " placeholder="Insert remark here."
-                       [readonly]="ReadOnly"
-                       formControlName="Remark">
+            <div class="my-form">
+                <label for="PlanSDate" class="my-label-col1-right">Plan:</label>
+                <div *ngIf="!ReadOnly;else ElsePlan" class="edit-form-content col-sm-5">
+                    <p-calendar formControlName="PlanSDate" [showIcon]="true"
+                                dateFormat="dd/mm/yy" placeholder="  Start actual date"
+                                appendTo="body"
+                                [maxDate]="paintTaskDetailForm.controls.PlanEDate.value">
+                    </p-calendar>
+                    <span style="margin-left:6px;margin-right:7px;">|</span>
+                    <p-calendar formControlName="PlanEDate" [showIcon]="true"
+                                dateFormat="dd/mm/yy" placeholder="  End actual date"
+                                appendTo="body"
+                                [minDate]="paintTaskDetailForm.controls.PlanSDate.value">
+                    </p-calendar>
+                </div>
+                <ng-template #ElsePlan>
+                    <div class="edit-form-content col-sm-5">
+                        {{(paintTaskDetailForm.controls.PlanSDate.value | date:'dd/MM/yyyy') || ''}}
+                        <span class="mx-3">|</span>
+                        {{(paintTaskDetailForm.controls.PlanEDate.value | date:'dd/MM/yyyy') || ''}}
+                    </div>
+                </ng-template>
+
+                <label for="ActualSDate" class="my-label-col1-right">Actual:</label>
+                <div *ngIf="!ReadOnly;else ElseActual" class="edit-form-content col-sm-5">
+                    <p-calendar formControlName="ActualSDate" [showIcon]="true"
+                                dateFormat="dd/mm/yy" placeholder="  Start actual date"
+                                appendTo="body"
+                                [maxDate]="paintTaskDetailForm.controls.ActualEDate.value || maxDate">
+                    </p-calendar>
+                    <span style="margin-left:6px;margin-right:7px;">|</span>
+                    <p-calendar formControlName="ActualEDate" [showIcon]="true"
+                                dateFormat="dd/mm/yy" placeholder="  End actual date"
+                                appendTo="body"
+                                [minDate]="paintTaskDetailForm.controls.ActualSDate.value"
+                                [maxDate]="maxDate">
+                    </p-calendar>
+                </div>
+                <ng-template #ElseActual>
+                    <div class="edit-form-content col-sm-5">
+                        {{(paintTaskDetailForm.controls.ActualSDate.value | date:'dd/MM/yyyy') || '-'}}
+                        <span class="mx-3">|</span>
+                        {{(paintTaskDetailForm.controls.ActualEDate.value | date:'dd/MM/yyyy') || '-'}}
+                    </div>
+                </ng-template>
             </div>
-        </div>
-    </form>
+            <div class="my-form">
+                <label for="PaintTeamId" class="my-label-col1-right">Room:</label>
+                <div class="col-sm-5">
+                    <p-dropdown class="my-input-combobox" [options]="paintTeams" [style]="{'width':'100%'}"
+                                appendTo="body" [readonly]="ReadOnly"
+                                formControlName="PaintTeamId" required>
+                    </p-dropdown>
+                </div>
+
+                <label for="Remark" class="my-label-col1-right">Remark:</label>
+                <div class="col-sm-5">
+                    <input type="text" [ngClass]="ReadOnly ? 'my-input-read-only' : 'my-input' " placeholder="Insert remark here."
+                           [readonly]="ReadOnly"
+                           formControlName="Remark">
+                </div>
+            </div>
+        </form>
+    </div>
 </div>

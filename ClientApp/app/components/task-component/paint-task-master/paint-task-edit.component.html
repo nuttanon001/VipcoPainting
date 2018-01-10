@@ -1,73 +1,75 @@
 ﻿<div class="edit-container" *ngIf="editValue && requirePaintList && requirePaintMaster; else elseBlock">
-        <form [formGroup]="editValueForm" class="m-0">
-            <div>
-                <div class="my-form">
-                    <label for="ProjectCodeSubString" class="my-label">Job-No:</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="my-input-read-only" [value]="requirePaintMaster.ProjectCodeSubString"
-                               id="ProjectCodeSubString" readonly>
-                    </div>
-
-                    <label for="Description" class="my-label">PartName:</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="my-input-read-only" [value]="requirePaintList.Description"
-                               id="Description" readonly>
-                    </div>
+    <form [formGroup]="editValueForm" class="m-0">
+        <div>
+            <div class="my-form">
+                <label for="ProjectCodeSubString" class="my-label">Job-No:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="my-input-read-only" [value]="requirePaintMaster.ProjectCodeSubString"
+                            id="ProjectCodeSubString" readonly>
                 </div>
 
-                <div class="my-form">
-                    <label for="MarkNo" class="my-label">MarkNo/Unit:</label>
-                    <div class="edit-form-content col-sm-4">
-                        <input type="text" class="my-input-read-only" [value]="requirePaintList.MarkNo"
-                               id="MarkNo" readonly>
-                        <span class="mx-1">/</span>
-                        <input type="text" class="my-input-read-only" [value]="requirePaintList.UnitNo"
-                               id="UnitNo" readonly>
-                    </div>
-
-                    <label for="Quantity" class="my-label">Quantity:</label>
-                    <div class="edit-form-content col-sm-4">
-                        <input type="text" class="my-input-read-only" [value]="requirePaintList.Quantity"
-                               id="Quantity" readonly>
-                    </div>
+                <label for="Description" class="my-label">PartName:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="my-input-read-only" [value]="requirePaintList.Description"
+                            id="Description" readonly>
                 </div>
             </div>
 
             <div class="my-form">
-                <label for="TaskPaintNo" class="my-label">TaskPaintNo:</label>
-                <div class="col-sm-4">
-                    <input type="text" class="my-input-read-only" placeholder="Code will automatically generated."
-                           id="TaskPaintNo" formControlName="TaskPaintNo" readonly>
-                    <validation-messages [control]="editValueForm.controls.TaskPaintNo"></validation-messages>
+                <label for="MarkNo" class="my-label">MarkNo/Unit:</label>
+                <div class="edit-form-content col-sm-4">
+                    <input type="text" class="my-input-read-only" [value]="requirePaintList.MarkNo"
+                            id="MarkNo" readonly>
+                    <span class="mx-1">/</span>
+                    <input type="text" class="my-input-read-only" [value]="requirePaintList.UnitNo"
+                            id="UnitNo" readonly>
                 </div>
 
-                <label for="AssignByString" class="my-label">AssignBy:</label>
-                <div class="col-sm-4">
-                    <input type="text" class="my-input-click" placeholder="Choose employee here" 
-                           (click)="openDialog('Employee')"
-                           id="AssignByString" formControlName="AssignByString" required readonly>
-                    <validation-messages [control]="editValueForm.controls.AssignByString"></validation-messages>
+                <label for="Quantity" class="my-label">Quantity:</label>
+                <div class="edit-form-content col-sm-4">
+                    <input type="text" class="my-input-read-only" [value]="requirePaintList.Quantity"
+                            id="Quantity" readonly>
                 </div>
             </div>
+        </div>
 
-            <div class="my-form">
-                <label for="MainProgress" class="my-label">Progress:</label>
-                <div class="col-sm-4">
-                    <input type="text" class="my-input-read-only" readonly
-                           [value]="(editValueForm.controls.MainProgress.value|number) + '%'">
-                </div>
-
-                <label for="Plan1" class="my-label">Plan1:</label>
-                <div class="col-sm-4">
-                    <input type="text" class="my-input-read-only" readonly
-                           [value]="(requirePaintList?.PlanStart|date:'dd/MM/yyyy') + ' To ' + (requirePaintList?.PlanEnd|date:'dd/MM/yyyy')">
-                </div>
+        <div class="my-form">
+            <label for="TaskPaintNo" class="my-label">TaskPaintNo:</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-read-only" placeholder="Code will automatically generated."
+                        id="TaskPaintNo" formControlName="TaskPaintNo" readonly>
+                <validation-messages [control]="editValueForm.controls.TaskPaintNo"></validation-messages>
             </div>
-        </form>
-        <!-- Detail -->
-       <paint-task-detail-list [paintTaskMaster]="editValue" 
-                               (onChange)="onPaintTaskDetailsChange($event)"></paint-task-detail-list>
-    </div>
+
+            <label for="AssignByString" class="my-label">AssignBy:</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-click" placeholder="Choose employee here"
+                        (click)="openDialog('Employee')"
+                        id="AssignByString" formControlName="AssignByString" required readonly>
+                <validation-messages [control]="editValueForm.controls.AssignByString"></validation-messages>
+            </div>
+        </div>
+
+        <div class="my-form">
+            <label for="MainProgress" class="my-label">Progress:</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-read-only" readonly
+                        [value]="(editValueForm.controls.MainProgress.value|number) + '%'">
+            </div>
+
+            <label for="Plan1" class="my-label">Plan1:</label>
+            <div class="col-sm-4">
+                <input type="text" class="my-input-read-only" readonly
+                        [value]="(requirePaintList?.PlanStart|date:'dd/MM/yyyy') + ' To ' + (requirePaintList?.PlanEnd|date:'dd/MM/yyyy')">
+            </div>
+        </div>
+    </form>
+    <!-- Detail -->
+    <paint-task-detail-list [paintTaskMaster]="editValue"
+                            (onChange)="onPaintTaskDetailsChange($event)"
+                            (showReportPaint)="onShowReportPaint($event,'Paint')"
+                            (showReportBlast)="onShowReportPaint($event,'Blast')"></paint-task-detail-list>
+</div>
 
 <ng-template #elseBlock>
     <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>

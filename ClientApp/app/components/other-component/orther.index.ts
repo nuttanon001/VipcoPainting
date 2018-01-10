@@ -3,6 +3,7 @@ export { ColorCenterComponent } from "./color/color-center.component";
 export { ColorEditComponent } from "./color/color-edit.component";
 export { ColorMasterComponent } from "./color/color-master.component";
 export { ColorViewComponent } from "./color/color-view.component";
+export { ColorEditExtendComponent } from "./color/color-edit-extend.component";
 // StandardTime
 export { StandardtimeCenterComponent } from "./standard-time/standardtime-center.component";
 export { StandardtimeEditComponent } from "./standard-time/standardtime-edit.component";
@@ -19,3 +20,4 @@ export { ProjectEditComponent } from "./project/project-edit.component";
 export { ProjectMasterComponent } from "./project/project-master.component";
 export { ProjectsubEditComponent } from "./project/projectsub-edit.component";
 export { ProjectViewComponent } from "./project/project-view.component";
+export { ProjectsubEditExtendComponent } from "./project/projectsub-edit-extend.component";

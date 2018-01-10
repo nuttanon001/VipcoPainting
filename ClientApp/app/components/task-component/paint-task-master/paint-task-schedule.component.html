@@ -143,13 +143,14 @@
 </div>
 
 <ng-template #EditBlock>
-    <div class="child-container">
+    <div class="child-container" *ngIf="!loadReportPaint;else LoadReportPaintBlock">
         <!--Center-->
         <div class="center-content-scroll">
             <div class="card-body">
                 <!--Component-->
                 <div *ngIf="taskMasterEdit">
-                    <paint-task-edit></paint-task-edit>
+                    <paint-task-edit (showReportPaint)="onShowReportPaint($event,'Paint')"
+                                     (showReportBlast)="onShowReportPaint($event,'Blast')"></paint-task-edit>
                 </div>
             </div>
         </div>
@@ -165,4 +166,16 @@
             </button>
         </div>
     </div>
+    <ng-template #LoadReportPaintBlock>
+        <div *ngIf="ReportType === 'Paint';else BlastBlock">
+            <paint-task-detail-paint-report [PaintTaskDetailId]="PaintTaskDetailId"
+                                            (Back)="onBack()">
+            </paint-task-detail-paint-report>
+        </div>
+        <ng-template #BlastBlock>
+            <paint-task-detail-blast-report [PaintTaskDetailId]="PaintTaskDetailId"
+                                            (Back)="onBack()">
+            </paint-task-detail-blast-report>
+        </ng-template>
+    </ng-template>
 </ng-template>

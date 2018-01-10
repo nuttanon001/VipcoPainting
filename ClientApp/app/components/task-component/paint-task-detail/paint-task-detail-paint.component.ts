@@ -44,6 +44,7 @@ export class PaintTaskDetailPaintComponent implements OnInit {
     // Value
     @Input() ReadOnly: boolean = false;
     @Output() hasChange = new EventEmitter<boolean>();
+    @Output() showReportPaint = new EventEmitter<number>();
     // FormGroup
     paintTaskDetailForm: FormGroup;
     minProgress: number;
@@ -106,7 +107,7 @@ export class PaintTaskDetailPaintComponent implements OnInit {
             PaintWorkItem: [this.paintTaskDetail.PaintWorkItem],
             isValid: [this.paintTaskDetail.isValid],
             CommonText: [this.paintTaskDetail.CommonText],
-            SummaryActual: [this.paintTaskDetail.SummaryActual]
+            SummaryActual: [this.paintTaskDetail.SummaryActual + " l."]
         });
         this.paintTaskDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
 
@@ -231,7 +232,6 @@ export class PaintTaskDetailPaintComponent implements OnInit {
             });
         }
     }
-
     // open dialog
     openDialog(type?: string): void {
         if (type) {
@@ -246,15 +246,23 @@ export class PaintTaskDetailPaintComponent implements OnInit {
                 this.serviceDialogs.dialogRequisitionListAddOrUpdate(this.viewContainerRef, temp)
                     .subscribe(Complate => {
                         if (Complate) {
-                            this.servicePaintTaskDetail.getGetRequisitionSumByKeyNumber(temp.PaintTaskDetailId)
-                                .subscribe(data => {
-                                    this.paintTaskDetailForm.patchValue({
-                                        SummaryActual: data.TotalSummary,
+                            setTimeout(() => {
+                                this.servicePaintTaskDetail.getGetRequisitionSumByKeyNumber(temp.PaintTaskDetailId)
+                                    .subscribe(data => {
+                                        this.paintTaskDetailForm.patchValue({
+                                            SummaryActual: data.TotalSummary + " l.",
+                                        });
                                     });
-                                });
+                            }, 1500);
                         }
                     });
             }
+        }
+    }
+    // on ShowReport
+    showReportPaintMethod(): void {
+        if (this.paintTaskDetail.PaintTaskDetailId) {
+            this.showReportPaint.emit(this.paintTaskDetail.PaintTaskDetailId);
         }
     }
 }

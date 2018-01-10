@@ -184,18 +184,33 @@ namespace VipcoPainting.Controllers
         {
             if (nProjectCodeSub != null)
             {
-                nProjectCodeSub = helpers.AddHourMethod(nProjectCodeSub);
+                var temp = await this.repository.GetAllAsQueryable()
+                                                .Where(x => x.ProjectCodeMasterId == nProjectCodeSub.ProjectCodeMasterId &&
+                                                            x.Code.ToLower().Trim().Equals(nProjectCodeSub.Code.ToLower().Trim()))
+                                                .FirstOrDefaultAsync();
+                if (temp == null)
+                {
+                    nProjectCodeSub = helpers.AddHourMethod(nProjectCodeSub);
 
-                nProjectCodeSub.CreateDate = DateTime.Now;
-                nProjectCodeSub.Creator = nProjectCodeSub.Creator ?? "Someone";
+                    nProjectCodeSub.CreateDate = DateTime.Now;
+                    nProjectCodeSub.Creator = nProjectCodeSub.Creator ?? "Someone";
+                    // Trim
+                    nProjectCodeSub.Code = nProjectCodeSub.Code.Trim();
 
-                //if (nProjectCodeSub.ProjectCodeMaster != null)
-                //    nProjectCodeSub.ProjectCodeMaster = null;
+                    //if (nProjectCodeSub.ProjectCodeMaster != null)
+                    //    nProjectCodeSub.ProjectCodeMaster = null;
 
-                if (nProjectCodeSub.ProjectSubParent != null)
-                    nProjectCodeSub.ProjectSubParent = null;
+                    if (nProjectCodeSub.ProjectSubParent != null)
+                        nProjectCodeSub.ProjectSubParent = null;
 
-                return new JsonResult(await this.repository.AddAsync(nProjectCodeSub), this.DefaultJsonSettings);
+                    return new JsonResult(await this.repository.AddAsync(nProjectCodeSub), this.DefaultJsonSettings);
+                }
+                else
+                {
+                    return new JsonResult(temp, this.DefaultJsonSettings);
+                }
+
+                
             }
             return NotFound(new { Error = "Not found ProjectCodeSub data !!!" });
         }

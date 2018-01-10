@@ -1,0 +1,478 @@
+﻿<div class="control-item">
+    <button type="button" mat-icon-button color="warn" (click)="onBackToMaster()"
+            style="margin:4px;">
+        <i class="fa fa-3x fa-chevron-circle-left" aria-hidden="true" style="margin:0px;"></i>
+    </button>
+
+    <button type="button" mat-icon-button color="primary" (click)="onPrintOverTimeMaster()"
+            style="margin:4px;">
+        <i class="fa fa-3x fa-print" aria-hidden="true" style="margin:0px;"></i>
+    </button>
+</div>
+<div *ngIf="BlastTask" class="report-box" id="printdiv">
+    <table border="0" cellpadding="0" cellspacing="0"
+           style="border-collapse:collapse;table-layout:fixed;">
+        <colgroup>
+            <col width="55"><!--1-->
+            <col width="55"><!--2-->
+            <col width="55"><!--3-->
+            <col width="55"><!--4-->
+            <col width="55"><!--5-->
+            <col width="55"><!--6-->
+            <col width="55"><!--7-->
+            <col width="55"><!--8-->
+            <col width="55"><!--9-->
+            <col width="55"><!--10-->
+            <col width="55"><!--11-->
+            <col width="55"><!--12-->
+            <col width="55"><!--13-->
+        </colgroup>
+        <!--Col13-->
+        <!--Header Table-->
+        <thead>
+            <tr height="25">
+                <td colspan="10" height="25" class="sub-title text-left">
+                    <b>Painting Requestion (Surface Preparation)</b>
+                </td>
+                <td colspan="3" rowspan="2" class="sub-title text-right column line-all">
+                    ส่วนที่ 1 ผู้ควบคุมงาน&nbsp;&nbsp;
+                </td>
+            </tr>
+            <tr height="25">
+                <td colspan="10" height="25" class="sub-title text-left">
+                    ใบแจ้งงานเตรียมผิว
+                </td>
+            </tr>
+            <tr height="18" class="line-top">
+                <td height="18" class="label text-right" colspan="2">Job no :</td>
+                <td class="value line-btm" colspan="4">
+                    {{BlastTask.JobNumber}}
+                </td>
+                <td class="label text-right" colspan="2">Date :</td>
+                <td class="value line-btm" colspan="5">
+                    {{BlastTask.PaintDate}}
+                </td>
+            </tr>
+            <tr height="18">
+                <td height="18" class="label text-right" colspan="2">Job Name :</td>
+                <td class="value line-btm" colspan="4">
+                    {{BlastTask.JobName}}
+                </td>
+                <td class="label text-right" colspan="2">Doc No :</td>
+                <td class="value line-btm" colspan="5">
+                    {{BlastTask.DocNo}}
+                </td>
+            </tr>
+            <tr height="25">
+                <td height="25" class="label text-right" colspan="2">Blasting Room:</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R1;else R1Block">
+                        R
+                    </div>
+                    <ng-template #R1Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R1Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R2;else R2Block">
+                        R
+                    </div>
+                    <ng-template #R2Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R2Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R3;else R3Block">
+                        R
+                    </div>
+                    <ng-template #R3Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R3Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R4;else R4Block">
+                        R
+                    </div>
+                    <ng-template #R4Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R4Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R5;else R5Block">
+                        R
+                    </div>
+                    <ng-template #R5Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R5Name}}</td>
+            </tr>
+            <!--RowHead1-->
+            <tr height="18">
+                <td height="18" colspan="1" class="column line-no-btm">
+                    Item
+                </td>
+                <td colspan="2" class="column line-no-btm">
+                    PartNo./MarkNo.
+                </td>
+                <td colspan="3" class="column line-no-btm">
+                    Part Name
+                </td>
+                <td colspan="1" rowspan="2" class="column line-all align-text-top">
+                    Unit
+                </td>
+                <td colspan="1" class="column line-no-btm">
+                    Q'ty
+                </td>
+                <td colspan="1" class="column line-no-btm">
+                    Weight
+                </td>
+                <td colspan="2" rowspan="2" class="column line-all  align-text-top">
+                    Degree of Cleaning
+                </td>
+                <td colspan="2" class="column line-all">
+                    Area/จำนวนสี
+                </td>
+            </tr>
+            <!--RowHead2-->
+            <tr height="18">
+                <td height="18" class="column line-no-top">
+                    รายการ
+                </td>
+                <td colspan="2" class="column line-no-top">
+                    หมายเลขชิ้นงาน
+                </td>
+                <td colspan="3" class="column line-no-top">
+                    ชื่อชิ้นงาน
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    จำนวน
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    น้ำหนัก
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    Internal
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    External
+                </td>
+            </tr>
+        </thead>
+        <!--Footer Table-->
+        <tfoot>
+            <tr height="18">
+                <td height="18" class="label line-top text-right" colspan="2">
+                    เอกสารอ้างอิง :
+                </td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.ITP;else ITPBlock">
+                        R
+                    </div>
+                    <ng-template #ITPBlock>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label" colspan="1">ITP</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.FieldWeld;else FieldWeldBlock">
+                        R
+                    </div>
+                    <ng-template #FieldWeldBlock>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label" colspan="2">Field Weld</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.Schedule;else ScheduleBlock">
+                        R
+                    </div>
+                    <ng-template #ScheduleBlock>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label" colspan="4">Painting Schedule or Paint Spec</td>
+            </tr>
+            <tr height="18">
+                <td height="18" class="label text-right" colspan="2">Estimate Time :</td>
+                <td class="value line-btm" colspan="4">
+                    {{BlastTask.EstimateTime}}
+                </td>
+                <td class="label text-right" colspan="2">Actual Time :</td>
+                <td class="value line-btm" colspan="5">
+                    {{BlastTask.ActualTime}}
+                </td>
+            </tr>
+
+        </tfoot>
+        <!--Body Table-->
+        <tbody>
+            <tr height="15" *ngFor="let item of BlastTask.Details">
+                <td height=15 class="item-row item-line line-left">
+                    {{item.RowNumber > 0 ? item.RowNumber : ''}}
+                </td>
+                <td class="item-row text-left item-line" colspan="2">
+                    &nbsp;{{item.PartNo}}
+                </td>
+                <td class="item-row item-line" colspan="3">
+                    {{item.PartName}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.UnitNo}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.Qty > 0 ? item.Qty : ''}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.Weight}}
+                </td>
+                <td class="item-row item-line" colspan="2">
+                    {{item.SurfaceName}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.AreaInt > 0 ? item.AreaInt : ''}}
+                </td>
+                <td class="item-row item-line line-right">
+                    {{item.AreaExt > 0 ? item.AreaExt : ''}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr class="w-100" />
+    <table border="0" cellpadding="0" cellspacing="0"
+           style="border-collapse:collapse;table-layout:fixed;">
+        <colgroup>
+            <col width="55"><!--1-->
+            <col width="55"><!--2-->
+            <col width="55"><!--3-->
+            <col width="55"><!--4-->
+            <col width="55"><!--5-->
+            <col width="55"><!--6-->
+            <col width="55"><!--7-->
+            <col width="55"><!--8-->
+            <col width="55"><!--9-->
+            <col width="55"><!--10-->
+            <col width="55"><!--11-->
+            <col width="55"><!--12-->
+            <col width="55"><!--13-->
+        </colgroup>
+        <!--Col13-->
+        <!--Header Table-->
+        <thead>
+            <tr height="25">
+                <td colspan="10" height="25" class="sub-title text-left">
+                    <b>Painting Requestion (Surface Preparation)</b>
+                </td>
+                <td colspan="3" rowspan="2" class="sub-title text-right column line-all">
+                    ส่วนที่ 2 ผู้ปฎิบัติงาน&nbsp;&nbsp;
+                </td>
+            </tr>
+            <tr height="25">
+                <td colspan="10" height="25" class="sub-title text-left">
+                    ใบแจ้งงานเตรียมผิว
+                </td>
+            </tr>
+            <tr height="18" class="line-top">
+                <td height="18" class="label text-right" colspan="2">Job no :</td>
+                <td class="value line-btm" colspan="4">
+                    {{BlastTask.JobNumber}}
+                </td>
+                <td class="label text-right" colspan="2">Date :</td>
+                <td class="value line-btm" colspan="5">
+                    {{BlastTask.PaintDate}}
+                </td>
+            </tr>
+            <tr height="18">
+                <td height="18" class="label text-right" colspan="2">Job Name :</td>
+                <td class="value line-btm" colspan="4">
+                    {{BlastTask.JobName}}
+                </td>
+                <td class="label text-right" colspan="2">Doc No :</td>
+                <td class="value line-btm" colspan="5">
+                    {{BlastTask.DocNo}}
+                </td>
+            </tr>
+            <tr height="25">
+                <td height="25" class="label text-right" colspan="2">Blasting Room:</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R1;else R1Block">
+                        R
+                    </div>
+                    <ng-template #R1Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R1Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R2;else R2Block">
+                        R
+                    </div>
+                    <ng-template #R2Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R2Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R3;else R3Block">
+                        R
+                    </div>
+                    <ng-template #R3Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R3Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R4;else R4Block">
+                        R
+                    </div>
+                    <ng-template #R4Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R4Name}}</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.R5;else R5Block">
+                        R
+                    </div>
+                    <ng-template #R5Block>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label-sm-font" colspan="1">{{BlastTask.R5Name}}</td>
+            </tr>
+            <!--RowHead1-->
+            <tr height="18">
+                <td height="18" colspan="1" class="column line-no-btm">
+                    Item
+                </td>
+                <td colspan="2" class="column line-no-btm">
+                    PartNo./MarkNo.
+                </td>
+                <td colspan="3" class="column line-no-btm">
+                    Part Name
+                </td>
+                <td colspan="1" rowspan="2" class="column line-all align-text-top">
+                    Unit
+                </td>
+                <td colspan="1" class="column line-no-btm">
+                    Q'ty
+                </td>
+                <td colspan="1" class="column line-no-btm">
+                    Weight
+                </td>
+                <td colspan="2" rowspan="2" class="column line-all  align-text-top">
+                    Degree of Cleaning
+                </td>
+                <td colspan="2" class="column line-all">
+                    Area/จำนวนสี
+                </td>
+            </tr>
+            <!--RowHead2-->
+            <tr height="18">
+                <td height="18" class="column line-no-top">
+                    รายการ
+                </td>
+                <td colspan="2" class="column line-no-top">
+                    หมายเลขชิ้นงาน
+                </td>
+                <td colspan="3" class="column line-no-top">
+                    ชื่อชิ้นงาน
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    จำนวน
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    น้ำหนัก
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    Internal
+                </td>
+                <td colspan="1" class="column line-no-top">
+                    External
+                </td>
+            </tr>
+        </thead>
+        <!--Footer Table-->
+        <tfoot>
+            <tr height="18">
+                <td height="18" class="label line-top text-right" colspan="2">
+                    เอกสารอ้างอิง :
+                </td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.ITP;else ITPBlock">
+                        R
+                    </div>
+                    <ng-template #ITPBlock>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label" colspan="1">ITP</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.FieldWeld;else FieldWeldBlock">
+                        R
+                    </div>
+                    <ng-template #FieldWeldBlock>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label" colspan="2">Field Weld</td>
+                <td class="value font-box text-right">
+                    <div *ngIf="BlastTask.Schedule;else ScheduleBlock">
+                        R
+                    </div>
+                    <ng-template #ScheduleBlock>
+                        &pound;
+                    </ng-template>
+                </td>
+                <td class="label" colspan="4">Painting Schedule or Paint Spec</td>
+            </tr>
+            <tr height="18">
+                <td height="18" class="label text-right" colspan="2">Estimate Time :</td>
+                <td class="value line-btm" colspan="4">
+                    {{BlastTask.EstimateTime}}
+                </td>
+                <td class="label text-right" colspan="2">Actual Time :</td>
+                <td class="value line-btm" colspan="5">
+                    {{BlastTask.ActualTime}}
+                </td>
+            </tr>
+
+        </tfoot>
+        <!--Body Table-->
+        <tbody>
+            <tr height="15" *ngFor="let item of BlastTask.Details">
+                <td height=15 class="item-row item-line line-left">
+                    {{item.RowNumber > 0 ? item.RowNumber : ''}}
+                </td>
+                <td class="item-row text-left item-line" colspan="2">
+                    &nbsp;{{item.PartNo}}
+                </td>
+                <td class="item-row item-line" colspan="3">
+                    {{item.PartName}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.UnitNo}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.Qty > 0 ? item.Qty : ''}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.Weight}}
+                </td>
+                <td class="item-row item-line" colspan="2">
+                    {{item.SurfaceName}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.AreaInt > 0 ? item.AreaInt : ''}}
+                </td>
+                <td class="item-row item-line line-right">
+                    {{item.AreaExt > 0 ? item.AreaExt : ''}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

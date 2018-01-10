@@ -15,7 +15,7 @@ export abstract class BaseCommunicateService<Model> {
         this.ParentSource.next(ValueFromEdit);
     }
 
-    toChildEdit(ValueToEdit: Model): void {
+    toChildEdit(ValueToEdit?: Model): void {
         this.EditChileSource.next(ValueToEdit);
     }
 }

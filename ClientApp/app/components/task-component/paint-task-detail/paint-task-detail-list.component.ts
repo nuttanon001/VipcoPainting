@@ -42,6 +42,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
 
     @Input() ReadOnly: boolean = false;
     @Output("onChange") onChange = new EventEmitter<Array<PaintTaskDetail>>();
+    @Output() showReportPaint = new EventEmitter<number>();
+    @Output() showReportBlast = new EventEmitter<number>();
     @Input() paintTaskMaster: PaintTaskMaster;
 
     // on Init
@@ -240,6 +242,20 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
 
         if (ListPaintTaskDetail) {
             this.onChange.emit(ListPaintTaskDetail)
+        }
+    }
+
+    //onReportClick
+    showReportPaintMethod(PaintTaskDetailId?: number, type?: string): void {
+        console.log("ListType", type);
+        if (PaintTaskDetailId && type) {
+            this.onHasChange(true);
+
+            if (type.indexOf("Paint") !== -1) {
+                this.showReportPaint.emit(PaintTaskDetailId);
+            } else {
+                this.showReportBlast.emit(PaintTaskDetailId);
+            }
         }
     }
 }

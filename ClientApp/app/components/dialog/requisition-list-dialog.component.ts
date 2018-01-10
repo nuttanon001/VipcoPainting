@@ -106,7 +106,8 @@ export class RequisitionListDialogComponent implements OnInit, OnDestroy {
         }
         if (this.removeRequisitionMasters) {
             this.removeRequisitionMasters.forEach(item => {
-                this.serviceRequisition.deleteKeyNumber(item.RequisitionMasterId);
+                this.serviceRequisition.deleteKeyNumber(item.RequisitionMasterId)
+                    .subscribe(complate => console.log(JSON.stringify(complate)));
             });
         }
         this.dialogRef.close(true);
@@ -139,7 +140,7 @@ export class RequisitionListDialogComponent implements OnInit, OnDestroy {
         // insert data
         this.serviceRequisition.post(value).subscribe(
             (complete: RequisitionMaster) => {
-                console.log("onInsertToDataBase");
+                // console.log("onInsertToDataBase");
             }
         );
     }
@@ -154,7 +155,7 @@ export class RequisitionListDialogComponent implements OnInit, OnDestroy {
         // update data
         this.serviceRequisition.putKeyNumber(value, value.RequisitionMasterId).subscribe(
             (complete: any) => {
-                console.log("onUpdateToDataBase");
+                // console.log("onUpdateToDataBase");
             });
     }
 

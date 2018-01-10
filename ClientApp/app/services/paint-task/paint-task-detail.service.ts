@@ -22,6 +22,13 @@ export class PaintTaskDetailService extends BaseRestService<PaintTaskDetail> {
         return this.http.get(this.actionUrl + "GetRequisitionSum/" + key + "/")
             .map(this.extractData).catch(this.handleError);
     }
+
+    // get report paint-task-detail-paint-workitem to pdf
+    getReportPaintTaskDetailWorkItemPdf(PaintTaskDetailId: number,PathString:string): Observable<any> {
+        let url: string = `${this.actionUrl}${PathString}${PaintTaskDetailId}/`;
+        return this.http.get(url).map(this.extractData).catch(this.handleError);
+    }
+
 }
 
 @Injectable()

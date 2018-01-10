@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VipcoPainting.Helpers;
@@ -68,6 +69,33 @@ namespace VipcoPainting.Controllers
                                         this.DefaultJsonSettings);
         }
 
+        // GET: api/ColorItem/GetAutoComplate/
+        [HttpGet("GetAutoComplate")]
+        public async Task<IActionResult> GetAutoComplate()
+        {
+            var Message = "";
+            try
+            {
+                var autoComplate = new List<string>();
+                var projectSubs = await this.repository.GetAllAsync();
+                if (projectSubs != null)
+                {
+                    foreach (var item in projectSubs.Select(x => x.ColorName)
+                                                    .Distinct())
+                    {
+                        autoComplate.Add(item);
+                    }
+                }
+
+                if (autoComplate.Any())
+                    return new JsonResult(autoComplate, this.DefaultJsonSettings);
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+        }
         #endregion GET
 
         #region POST
@@ -187,15 +215,23 @@ namespace VipcoPainting.Controllers
         {
             if (nColorItem != null)
             {
-                nColorItem = helpers.AddHourMethod(nColorItem);
+                var template = await this.repository.GetAllAsQueryable()
+                                                    .Where(x => x.ColorName.ToLower().Trim().Equals(nColorItem.ColorName.ToLower().Trim()))
+                                                    .FirstOrDefaultAsync();
 
-                nColorItem.CreateDate = DateTime.Now;
-                nColorItem.Creator = nColorItem.Creator ?? "Someone";
+                if (template == null)
+                {
+                    nColorItem.CreateDate = DateTime.Now;
+                    nColorItem.Creator = nColorItem.Creator ?? "Someone";
 
-                var Runing = await this.repository.GetAllAsQueryable().CountAsync(x => x.CreateDate.Value.Year == nColorItem.CreateDate.Value.Year) + 1;
-                nColorItem.ColorCode = $"{nColorItem.CreateDate.Value.ToString("yy")}/{Runing.ToString("0000")}";
+                    var Runing = await this.repository.GetAllAsQueryable().CountAsync(x => x.CreateDate.Value.Year == nColorItem.CreateDate.Value.Year) + 1;
+                    nColorItem.ColorCode = $"{nColorItem.CreateDate.Value.ToString("yy")}/{Runing.ToString("0000")}";
 
-                return new JsonResult(await this.repository.AddAsync(nColorItem), this.DefaultJsonSettings);
+                    return new JsonResult(await this.repository.AddAsync(nColorItem), this.DefaultJsonSettings);
+                }
+                else
+                    return new JsonResult(template, this.DefaultJsonSettings);
+               
             }
             return NotFound(new { Error = "Not found ColorItem data !!!" });
         }

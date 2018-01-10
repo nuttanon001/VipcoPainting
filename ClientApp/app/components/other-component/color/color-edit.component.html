@@ -16,9 +16,12 @@
 
                         <label for="ColorName" class="my-label">Color Name:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert color name here"
-                                   id="ColorName" formControlName="ColorName" required>
-                            <validation-messages [control]="editValueForm.controls.ColorName"></validation-messages>
+                            <p-autoComplete class="my-input-combobox" placeholder="Insert color name here"
+                                            (completeMethod)="onSearchAutoComplate($event)" required
+                                            appendTo="body"
+                                            [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [size]="30"
+                                            id="ColorName" formControlName="ColorName" [suggestions]="AutoComplates">
+                            </p-autoComplete>
                         </div>
                     </div>
 

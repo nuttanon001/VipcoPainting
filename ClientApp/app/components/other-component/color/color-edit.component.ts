@@ -34,6 +34,8 @@ export class ColorEditComponent
     }
 
     // Parameter
+    tempAutoComplates: Array<string>;
+    AutoComplates: Array<string>;
 
     // on get data by key
     onGetDataByKey(value?: Color): void {
@@ -49,6 +51,18 @@ export class ColorEditComponent
             };
            
             this.defineData();
+        }
+
+        // Get AutoComplate
+        if (!this.tempAutoComplates) {
+            this.tempAutoComplates = new Array;
+            this.service.getAutoComplate()
+                .subscribe(dbColorItem => {
+                    this.tempAutoComplates = dbColorItem;
+                });
+        }
+        if (!this.AutoComplates) {
+            this.AutoComplates = new Array;
         }
     }
 
@@ -74,8 +88,8 @@ export class ColorEditComponent
             ],
             VolumeSolids: [this.editValue.VolumeSolids,
                 [
-                    Validators.minLength(1),
-                    Validators.maxLength(100),
+                    Validators.min(1),
+                    Validators.max(100),
                     Validators.required
                 ]
             ],
@@ -89,5 +103,18 @@ export class ColorEditComponent
 
         this.editValueForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
         // this.onValueChanged();
+    }
+
+    // on search autocomplate
+    onSearchAutoComplate(event: any): void {
+        this.AutoComplates = new Array;
+
+        for (let i: number = 0; i < this.tempAutoComplates.length; i++) {
+            let autoComplate: string = this.tempAutoComplates[i];
+
+            if (autoComplate.toLowerCase().indexOf(event.query.toLowerCase()) === 0) {
+                this.AutoComplates.push(autoComplate);
+            }
+        }
     }
 }

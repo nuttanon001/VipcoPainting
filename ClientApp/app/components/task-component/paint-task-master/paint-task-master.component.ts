@@ -54,6 +54,10 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
         { prop: "AssignByString", name: "AssingBy", flexGrow: 1 },
 
     ];
+    // report
+    loadReportPaint: boolean;
+    PaintTaskDetailId?: number;
+    ReportType?: string;
 
     // on inti override
     ngOnInit(): void {
@@ -173,9 +177,9 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
             value.Creator = this.serverAuth.getAuth.UserName || "";
         }
         // change timezone
-        console.log("Befor Value is:", JSON.stringify(value));
+        // console.log("Befor Value is:", JSON.stringify(value));
         value = this.changeTimezone(value);
-        console.log("Value is:", JSON.stringify(value));
+        // console.log("Value is:", JSON.stringify(value));
 
         // insert data
         this.service.post(value).subscribe(
@@ -228,5 +232,25 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
         } else {
             this.displayValue = undefined;
         }
+    }
+
+    // on show report
+    onShowReportPaint(PaintTaskDetailId?: number, type?: string): void {
+        if (PaintTaskDetailId && type) {
+            this.PaintTaskDetailId = PaintTaskDetailId;
+            this.loadReportPaint = !this.loadReportPaint;
+            this.ReportType = type;
+        }
+    }
+
+    // on back from report
+    onBack(): void {
+        this.loadReportPaint = !this.loadReportPaint;
+        this.ReportType = "";
+        setTimeout(() => {
+            if (this.displayValue) {
+                this.serviceCom.toChildEdit(this.displayValue);
+            }
+        }, 500);
     }
 }

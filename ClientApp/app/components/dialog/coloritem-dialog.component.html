@@ -1,11 +1,24 @@
 ﻿<div class="master-dialog-vh">
     <H5 style="color:cadetblue">Selected Color-Item</H5>
-    <div class="child-container">
+    <div class="child-container" *ngIf="!newColorItem;else NewColorBlock">
         <div class="center-content ">
-            <data-table (selected)="onSelectedValue($event)"
-                        [columns]="columns"
-                        [height]="'55vh'">
-            </data-table>
+            <div class="edit-container">
+                <div class="top-container">
+                    <div class="edit-form-content" style="margin-top:-20px;">
+                        <button type="button" mat-icon-button color="warn" (click)="onNewColorItem()"
+                                matTooltip="New Paint" style="float:left">
+                            <i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i>
+                            Add More
+                        </button>
+                    </div>
+                </div>
+                <div class="base-bottom-container">
+                    <data-table (selected)="onSelectedValue($event)"
+                                [columns]="columns"
+                                [height]="'45vh'" autofocus>
+                    </data-table>
+                </div>
+            </div>
         </div>
         <div class="right-content">
             <button type="button" mat-icon-button color="primary" (click)="onSelectedClick()"
@@ -19,3 +32,21 @@
         </div>
     </div>
 </div>
+
+<ng-template #NewColorBlock>
+    <hr class="w-100" />
+    <p class="text-info text-sm-left">
+        Insert all require field.<br />When complate click "New" button.
+    </p>
+    <div>
+        <button type="button" mat-icon-button color="primary" (click)="onComplateOrCancel(true)"
+                [disabled]="!canSave" matTooltip="New">
+            <i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i>
+        </button>
+        <button type="button" mat-icon-button color="warn" (click)="onComplateOrCancel(false)"
+                matTooltip="Cancel">
+            <i class="fa fa-2x fa-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <color-edit-extend></color-edit-extend>
+</ng-template>

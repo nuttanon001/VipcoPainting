@@ -16,7 +16,8 @@ import {
     PaintTaskCenterComponent, PaintTaskDetailBlastComponent,
     PaintTaskDetailListComponent, PaintTaskDetailPaintComponent,
     PaintTaskEditComponent, PaintTaskMasterComponent,
-    PaintTaskViewComponent, PaintTaskScheduleComponent
+    PaintTaskViewComponent, PaintTaskScheduleComponent,
+    PaintTaskDetailPaintReportComponent,PaintTaskDetailBlastReportComponent
 } from "../../components/task-component/task.index";
 // modules
 import { TaskRoutingModule } from "./task-routing.module";
@@ -58,7 +59,9 @@ import { PaintTaskMasterService,PaintTaskMasterServiceCommunicate } from "../../
         PaintTaskEditComponent,
         PaintTaskMasterComponent,
         PaintTaskViewComponent,
-        PaintTaskScheduleComponent
+        PaintTaskScheduleComponent,
+        PaintTaskDetailPaintReportComponent,
+        PaintTaskDetailBlastReportComponent
     ],
     imports: [
         // angular

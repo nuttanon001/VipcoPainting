@@ -1,5 +1,5 @@
 ﻿// angular
-import { Component, ViewContainerRef } from "@angular/core";
+import { Component, ViewContainerRef, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormControl, Validators, AbstractControl } from "@angular/forms";
 // models
 import { PaintTaskMaster, RequirePaintList, RequirePaintMaster, PaintTaskDetail } from "../../../models/model.index";
@@ -44,7 +44,8 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
     requirePaintList: RequirePaintList;
     requirePaintMaster: RequirePaintMaster;
     maxDate: Date = new Date;
-
+    @Output() showReportPaint = new EventEmitter<number>();
+    @Output() showReportBlast = new EventEmitter<number>();
     // on get data by key
     onGetDataByKey(value?: PaintTaskMaster): void {
         if (value) {
@@ -186,6 +187,18 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
                         }
                     });
             } 
+        }
+    }
+
+    onShowReportPaint(PaintTaskDetailId?: number, type?: string): void {
+        console.log("EditType", type);
+
+        if (PaintTaskDetailId && type) {
+            if (type.indexOf("Paint") !== -1) {
+                this.showReportPaint.emit(PaintTaskDetailId);
+            } else {
+                this.showReportBlast.emit(PaintTaskDetailId);
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<div class="master-container">
+﻿<div class="master-container"  *ngIf="!loadReportPaint;else LoadReportPaintBlock">
     <split direction="horizontal" [gutterSize]="7" [visibleTransition]="true">
         <split-area [size]="30" [visible]="hideleft" [order]="1">
             <div class="child-left-container">
@@ -23,7 +23,8 @@
                                 <paint-task-view [displayValue]="displayValue"></paint-task-view>
                             </div>
                             <ng-template #detailEdit>
-                                <paint-task-edit></paint-task-edit>
+                                <paint-task-edit (showReportPaint)="onShowReportPaint($event,'Paint')"
+                                                 (showReportBlast)="onShowReportPaint($event,'Blast')"></paint-task-edit>
                             </ng-template>
                         </div>
                         <ng-template #elseBlock>
@@ -61,3 +62,16 @@
         </split-area>
     </split>
 </div>
+
+<ng-template #LoadReportPaintBlock>
+    <div *ngIf="ReportType === 'Paint';else BlastBlock">
+        <paint-task-detail-paint-report [PaintTaskDetailId]="PaintTaskDetailId"
+                                        (Back)="onBack()">
+        </paint-task-detail-paint-report>
+    </div>
+    <ng-template #BlastBlock>
+        <paint-task-detail-blast-report [PaintTaskDetailId]="PaintTaskDetailId"
+                                        (Back)="onBack()">
+        </paint-task-detail-blast-report>
+    </ng-template>
+</ng-template>

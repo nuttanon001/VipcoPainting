@@ -16,11 +16,12 @@ import { Subscription } from "rxjs/Subscription";
 import { DatatableComponent, TableColumn } from "@swimlane/ngx-datatable";
 // pipes
 import { DateOnlyPipe } from "../../pipes/date-only.pipe";
+import { AuthService } from "../../services/auth/auth.service";
 
 @Component({
     selector: "project-dialog",
     templateUrl: "./project-dialog.component.html",
-    styleUrls: ["../../styles/master.style.scss"],
+    styleUrls: ["../../styles/master.style.scss", "../../styles/edit.style.scss"],
     providers: [
         ProjectMasterService,
         ProjectSubService,
@@ -33,6 +34,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     constructor(
         private serviceMaster: ProjectMasterService,
         private serviceDetail: ProjectSubService,
+        private serviceAuth: AuthService,
         private serviceDataTable: DataTableServiceCommunicate<ProjectMaster>,
         public dialogRef: MatDialogRef<ProjectDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public mode: number
@@ -40,6 +42,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
     //@param
     master: ProjectMaster;
+    newProjectSub: ProjectSub | undefined;
     details: Array<ProjectSub>;
     templates: Array<ProjectSub>;
     // detail
@@ -140,5 +143,33 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
             this.selectedDetails.ProjectMasterString = this.master.ProjectCode;
         }
         this.dialogRef.close(this.selectedDetails);
+    }
+
+    // on new project sub
+    onNewProjectSub(master?:ProjectMaster): void {
+        if (master) {
+            this.newProjectSub = {
+                ProjectCodeMasterId: master.ProjectCodeMasterId,
+                ProjectMasterString: master.ProjectCode,
+                ProjectCodeSubId: 0,
+                Name:"-"
+            };
+        }
+    }
+
+    // on Complate or Cancel ProjectSub
+    onProjectSubComplate(projectSub?: ProjectSub): void {
+        if (projectSub) {
+            if (this.serviceAuth.getAuth) {
+                projectSub.Creator = this.serviceAuth.getAuth.UserName || "";
+            }
+
+            this.serviceDetail.post(projectSub)
+                .subscribe(insertComplate => {
+                    this.selectedDetails = insertComplate;
+                    this.onSelectedClick();
+                });
+        }
+        this.newProjectSub = undefined;
     }
 }

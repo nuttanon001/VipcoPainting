@@ -10,16 +10,29 @@
     @extend .mx-3;
 }
 
+.edit-container-row {
+    @extend .edit-container;
+    flex-direction: row;
+}
+
+.edit-left-content {
+    display: flex;
+    flex-grow: 0;
+    order: 1;
+    //align-content: flex-start | flex-end | center | space-between | space-around | stretch;
+    align-content: flex-start;
+}
+
 .chlid-edit-container {
     display: flex;
     flex-direction: row;
 }
 
 .edit-center-content {
-    order: 2;
     display: flex;
-    flex-grow: 1;
     flex-direction: column;
+    flex-grow: 1;
+    order: 2;
 }
 
 .top-container {

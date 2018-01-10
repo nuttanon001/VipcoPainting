@@ -303,7 +303,7 @@ namespace VipcoPainting.Controllers
                         rowData.Add("WorkItem", (Data.RequirePaintingList == null ? "" : Data.RequirePaintingList.Description) +
                                                (Data.RequirePaintingList == null ? "" : $" | {Data.RequirePaintingList.MarkNo}") +
                                                (Data.RequirePaintingList == null ? "" : $" | UnitNo({(Data.RequirePaintingList.UnitNo ?? 0).ToString("00")})"));
-                        rowData.Add("Progress", Progress.ToString("00.0") + "%");
+                        rowData.Add("Progress", Progress.ToString("0.0") + "%");
                         rowData.Add("PaintTaskMasterId", Data?.PaintTaskMasterId ?? 1);
 
                         // Data is 1:Plan1,2:Plan2,3:Plan1AndPlan2,
@@ -642,7 +642,7 @@ namespace VipcoPainting.Controllers
             var Message = "PaintTaskMaster not been found.";
             try
             {
-                if (nPaintTaskMaster != null)
+                if (nPaintTaskMaster != null && nPaintTaskMaster.PaintTaskDetails != null)
                 {
                     nPaintTaskMaster = helpers.AddHourMethod(nPaintTaskMaster);
 
@@ -721,7 +721,7 @@ namespace VipcoPainting.Controllers
         {
             var Message = "task master not been found.";
             // For Update
-            if (uPaintTaskMaster != null)
+            if (uPaintTaskMaster != null && uPaintTaskMaster.PaintTaskDetails != null)
             {
                 // add hour to DateTime to set Asia/Bangkok
                 uPaintTaskMaster = helpers.AddHourMethod(uPaintTaskMaster);

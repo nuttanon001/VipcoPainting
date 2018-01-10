@@ -24,7 +24,9 @@ namespace VipcoPainting.Controllers
         #region PrivateMembers
         // Repository
         private IRepositoryPainting<PaintTaskDetail> repository;
+        private IRepositoryPainting<BlastRoom> repositoryBlastRoom;
         private IRepositoryPainting<RequisitionMaster> repositoryRequisition;
+        private IRepositoryMachine<ProjectCodeMaster> repositoryProMaster;
         // Mapper
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
@@ -35,11 +37,15 @@ namespace VipcoPainting.Controllers
         public PaintTaskDetailController(
             IRepositoryPainting<PaintTaskDetail> repo, 
             IRepositoryPainting<RequisitionMaster> repoRequisition,
+            IRepositoryPainting<BlastRoom> repoBlastRoom,
+            IRepositoryMachine<ProjectCodeMaster> repoProMaster,
             IMapper map)
         {
             // Repository
             this.repository = repo;
+            this.repositoryBlastRoom = repoBlastRoom;
             this.repositoryRequisition = repoRequisition;
+            this.repositoryProMaster = repoProMaster;
             // Mapper
             this.mapper = map;
             // Json
@@ -203,5 +209,183 @@ namespace VipcoPainting.Controllers
         }
 
         #endregion DELETE
+
+        #region REPORT
+
+        // GET: api/GetReportPatinTaskDetailPaintPdf/5
+        [HttpGet("GetReportPatinTaskDetailPaintPdf/{PaintTaskDetailId}")]
+        public async Task<IActionResult> GetReportPatinTaskDetailPaintPdf(int PaintTaskDetailId)
+        {
+            string Message = "Not found overtime masterid.";
+            try
+            {
+                if (PaintTaskDetailId > 0)
+                {
+                    var QueryData = await this.repository.GetAllAsQueryable()
+                                                         .Include(x => x.RequisitionMasters)
+                                                         .Include(x => x.PaintTeam)
+                                                         .Include(x => x.PaintWorkItem)
+                                                         .Include(x => x.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
+                                                         .FirstOrDefaultAsync(x => x.PaintTaskDetailId == PaintTaskDetailId);
+
+                    if (QueryData != null)
+                    {
+                        var JobNumber = (await this.repositoryProMaster.GetAsync(QueryData.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
+                        var JobName = $"{QueryData.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub.Code}";
+
+                        // Check year Thai
+                        string year = QueryData.PaintTaskMaster.AssignDate.Value.Year > 2500 ?
+                                      QueryData.PaintTaskMaster.AssignDate.Value.Year.ToString() :
+                                     (QueryData.PaintTaskMaster.AssignDate.Value.Year + 543).ToString();
+
+                        string LevelString = QueryData.PaintWorkItem.PaintLevel == PaintLevel.PrimerCoat ? "PrimerCoat" :
+                                            (QueryData.PaintWorkItem.PaintLevel == PaintLevel.MidCoat ? "MidCoat" :
+                                            (QueryData.PaintWorkItem.PaintLevel == PaintLevel.IntermediateCoat ? "IntermediateCoat" : "TopCoat"));
+
+                        // Get ReportOverTimeMaster
+                        var ReportPaintTaskDetail = new 
+                        {
+                            JobNumber = JobNumber,
+                            PaintDate = QueryData?.PaintTaskMaster?.AssignDate.Value.ToString("dd/MM/yy"),
+                            JobName = JobName,
+                            DocNo = QueryData?.PaintTaskMaster?.TaskPaintNo,
+                            NPT = QueryData?.PaintTeam?.TeamName.ToLower().Contains("npt"),
+                            BPS = QueryData?.PaintTeam?.TeamName.ToLower().Contains("bps"),
+                            VIPCO = QueryData?.PaintTeam?.TeamName.ToLower().Contains("vipco"),
+                            ITP = QueryData?.PaintTaskMaster?.RequirePaintingList.ITP,
+                            FieldWeld = QueryData?.PaintTaskMaster?.RequirePaintingList.FieldWeld,
+                            Schedule = !string.IsNullOrEmpty(QueryData.PaintTaskMaster?.RequirePaintingList?.RequirePaintingMaster?.PaintingSchedule),
+                            EstimateTime = $"{QueryData.PlanSDate.ToString("dd/MM/yy")} - {QueryData.PlanEDate.ToString("dd/MM/yy")}" ,
+                            ActualTime = $"{QueryData.ActualSDate?.ToString("dd/MM/yy") ?? "NoData"} - {QueryData.ActualEDate?.ToString("dd/MM/yy") ?? "NoData"}",
+                            // Detail
+                            Details = new []
+                            {
+                                new
+                                {
+                                    RowNumber = 1,
+                                    PartNo = QueryData?.PaintTaskMaster?.RequirePaintingList?.MarkNo,
+                                    PartName = QueryData?.PaintTaskMaster?.RequirePaintingList?.Description,
+                                    UnitNo = QueryData?.PaintTaskMaster?.RequirePaintingList?.UnitNo,
+                                    Qty = QueryData?.PaintTaskMaster?.RequirePaintingList?.Quantity,
+                                    Plan = (QueryData?.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal 
+                                            ? QueryData?.PaintWorkItem?.IntCalcColorUsage : QueryData?.PaintWorkItem?.ExtCalcColorUsage) ?? 0,
+                                    ActualNo = 1,
+                                    ActualQty = QueryData?.RequisitionMasters?.Sum(x => x.Quantity),
+                                    Event = "พ่นสี",
+                                    Layer = LevelString,
+                                    AreaInt = QueryData?.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? QueryData?.PaintWorkItem?.IntArea : -1,
+                                    AreaExt = QueryData?.PaintTaskDetailLayer == PaintTaskDetailLayer.External ? QueryData?.PaintWorkItem?.ExtArea : -1,
+                                }
+                            },
+                        };
+
+                        // Get ReportOverTimeDetail
+                        return new JsonResult(ReportPaintTaskDetail, this.DefaultJsonSettings);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+
+            //return new ContentResult();
+        }
+
+        // GET: api/GetReportPatinTaskDetailPaintPdf/5
+        [HttpGet("GetReportPatinTaskDetailBlastPdf/{PaintTaskDetailId}")]
+        public async Task<IActionResult> GetReportPatinTaskDetailBlastPdf(int PaintTaskDetailId)
+        {
+            string Message = "Not found overtime masterid.";
+            try
+            {
+                if (PaintTaskDetailId > 0)
+                {
+                    var QueryData = await this.repository.GetAllAsQueryable()
+                                                         .Include(x => x.RequisitionMasters)
+                                                         .Include(x => x.BlastRoom.PaintTeam)
+                                                         .Include(x => x.BlastWorkItem.SurfaceTypeExt)
+                                                         .Include(x => x.BlastWorkItem.SurfaceTypeInt)
+                                                         .Include(x => x.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
+                                                         .FirstOrDefaultAsync(x => x.PaintTaskDetailId == PaintTaskDetailId);
+
+                    var AllRoom = await this.repositoryBlastRoom.GetAllAsQueryable()
+                                                                .Include(x => x.PaintTeam)
+                                                                .Select(x => new
+                                                                {
+                                                                    id = x.BlastRoomNumber,
+                                                                    name = x.BlastRoomName + " " + x.PaintTeam.TeamName
+                                                                }).ToListAsync();
+
+                    if (QueryData != null && AllRoom != null)
+                    {
+                        var JobNumber = (await this.repositoryProMaster.GetAsync(QueryData.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
+                        var JobName = $"{QueryData.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub.Code}";
+
+                        // Check year Thai
+                        string year = QueryData.PaintTaskMaster.AssignDate.Value.Year > 2500 ?
+                                      QueryData.PaintTaskMaster.AssignDate.Value.Year.ToString() :
+                                     (QueryData.PaintTaskMaster.AssignDate.Value.Year + 543).ToString();
+
+                        string SurfaceName = QueryData.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? 
+                            QueryData.BlastWorkItem.SurfaceTypeInt.SurfaceName : QueryData.BlastWorkItem.SurfaceTypeExt.SurfaceName;
+
+                        // Get ReportOverTimeMaster
+                        var ReportPaintTaskDetail = new
+                        {
+                            JobNumber = JobNumber,
+                            PaintDate = QueryData?.PaintTaskMaster?.AssignDate.Value.ToString("dd/MM/yy"),
+                            JobName = JobName,
+                            DocNo = QueryData?.PaintTaskMaster?.TaskPaintNo,
+                            R1 = QueryData.BlastRoom.BlastRoomNumber == 1,
+                            R2 = QueryData.BlastRoom.BlastRoomNumber == 2,
+                            R3 = QueryData.BlastRoom.BlastRoomNumber == 3,
+                            R4 = QueryData.BlastRoom.BlastRoomNumber == 4,
+                            R5 = QueryData.BlastRoom.BlastRoomNumber == 5,
+                            R1Name = AllRoom.FirstOrDefault(x => x.id == 1).name,
+                            R2Name = AllRoom.FirstOrDefault(x => x.id == 2).name,
+                            R3Name = AllRoom.FirstOrDefault(x => x.id == 3).name,
+                            R4Name = AllRoom.FirstOrDefault(x => x.id == 4).name,
+                            R5Name = AllRoom.FirstOrDefault(x => x.id == 5).name,
+                            ITP = QueryData?.PaintTaskMaster?.RequirePaintingList.ITP,
+                            FieldWeld = QueryData?.PaintTaskMaster?.RequirePaintingList.FieldWeld,
+                            Schedule = !string.IsNullOrEmpty(QueryData.PaintTaskMaster?.RequirePaintingList?.RequirePaintingMaster?.PaintingSchedule),
+                            EstimateTime = $"{QueryData.PlanSDate.ToString("dd/MM/yy")} - {QueryData.PlanEDate.ToString("dd/MM/yy")}",
+                            ActualTime = $"{QueryData.ActualSDate?.ToString("dd/MM/yy") ?? "NoData"} - {QueryData.ActualEDate?.ToString("dd/MM/yy") ?? "NoData"}",
+                            // Detail
+                            Details = new[]
+                            {
+                                new
+                                {
+                                    RowNumber = 1,
+                                    PartNo = QueryData?.PaintTaskMaster?.RequirePaintingList?.MarkNo,
+                                    PartName = QueryData?.PaintTaskMaster?.RequirePaintingList?.Description,
+                                    UnitNo = QueryData?.PaintTaskMaster?.RequirePaintingList?.UnitNo,
+                                    Qty = QueryData?.PaintTaskMaster?.RequirePaintingList?.Quantity,
+                                    Weight = QueryData?.PaintTaskMaster?.RequirePaintingList.Weight,
+                                    SurfaceName = SurfaceName,
+                                    AreaInt = QueryData?.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? QueryData?.BlastWorkItem?.IntArea : -1,
+                                    AreaExt = QueryData?.PaintTaskDetailLayer == PaintTaskDetailLayer.External ? QueryData?.BlastWorkItem?.ExtArea : -1,
+                                }
+                            },
+                        };
+
+                        // Get ReportOverTimeDetail
+                        return new JsonResult(ReportPaintTaskDetail, this.DefaultJsonSettings);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+
+            //return new ContentResult();
+        }
+        #endregion
     }
 }

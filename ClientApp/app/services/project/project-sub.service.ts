@@ -10,12 +10,6 @@ import { BaseRestService, BaseCommunicateService } from "../base-service/base.in
 @Injectable()
 export class ProjectSubService extends BaseRestService<ProjectSub> {
     constructor(http: Http) { super(http, "api/ProjectCodeSub/"); }
-
-    // auto complate
-    getAutoComplate(): Observable<Array<string>> {
-        let url: string = `${this.actionUrl}GetAutoComplate/`;
-        return this.http.get(url).map(this.extractData).catch(this.handleError);
-    }
 }
 
 @Injectable()

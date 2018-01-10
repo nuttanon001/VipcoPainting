@@ -22,6 +22,9 @@ import {
 } from "../../components/dialog/dialog.index";
 
 import { RequirePaintingViewScheduleComponent } from "../../components/require-painting/require-painting-master/require-painting-view-schedule.component";
+import {
+    ProjectsubEditExtendComponent,ColorEditExtendComponent
+} from "../../components/other-component/orther.index";
 // modules
 import { CustomMaterialModule } from "../customer-material/customer-material.module";
 import { ValidationModule } from "../validation/validation.module";
@@ -50,7 +53,9 @@ import { ValidationModule } from "../validation/validation.module";
         RequirePaintingViewDialogComponent,
         RequirePaintingViewScheduleComponent,
         ScheduleDialogComponent,
-        RequisitionListDialogComponent
+        RequisitionListDialogComponent,
+        ProjectsubEditExtendComponent,
+        ColorEditExtendComponent
     ],
     declarations: [
         ErrorDialog,
@@ -65,7 +70,9 @@ import { ValidationModule } from "../validation/validation.module";
         RequirePaintingViewDialogComponent,
         RequirePaintingViewScheduleComponent,
         ScheduleDialogComponent,
-        RequisitionListDialogComponent
+        RequisitionListDialogComponent,
+        ProjectsubEditExtendComponent,
+        ColorEditExtendComponent
     ],
     providers: [
         DialogsService,
@@ -86,7 +93,9 @@ import { ValidationModule } from "../validation/validation.module";
         RequirePaintingViewDialogComponent,
         RequirePaintingViewScheduleComponent,
         ScheduleDialogComponent,
-        RequisitionListDialogComponent
+        RequisitionListDialogComponent,
+        ProjectsubEditExtendComponent,
+        ColorEditExtendComponent
     ],
 })
 export class DialogsModule { }

@@ -27,3 +27,6 @@ export { PaintTaskScheduleComponent } from "./paint-task-master/paint-task-sched
 export { PaintTaskDetailBlastComponent } from "./paint-task-detail/paint-task-detail-blast.component";
 export { PaintTaskDetailListComponent } from "./paint-task-detail/paint-task-detail-list.component";
 export { PaintTaskDetailPaintComponent } from "./paint-task-detail/paint-task-detail-paint.component";
+export { PaintTaskDetailPaintReportComponent } from "./paint-task-detail/paint-task-detail-paint-report.component";
+export { PaintTaskDetailBlastReportComponent } from "./paint-task-detail/paint-task-detail-blast-report.component";
+

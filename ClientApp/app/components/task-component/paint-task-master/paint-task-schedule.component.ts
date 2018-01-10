@@ -62,8 +62,15 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
     taskMasterId: number | undefined;
     taskMasterEdit: PaintTaskMaster | undefined;
     canSave: boolean = false;
+    // report
+    loadReportPaint: boolean;
+    PaintTaskDetailId?: number;
+    ReportType?: string;
     // angular hook
     ngOnInit(): void {
+        this.loadReportPaint = false;
+        this.ReportType = "";
+
         if (window.innerWidth >= 1600) {
             this.scrollHeight = 75 + "vh";
         } else if (window.innerWidth > 1360 && window.innerWidth < 1600) {
@@ -435,5 +442,24 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
                 }
             );
         }
+    }
+
+    // on show report
+    onShowReportPaint(PaintTaskDetailId?: number,type?:string): void {
+        if (PaintTaskDetailId && type) {
+            this.PaintTaskDetailId = PaintTaskDetailId;
+            this.loadReportPaint = !this.loadReportPaint;
+            this.ReportType = type;
+        }
+    }
+
+    // on back from report
+    onBack(): void {
+        this.loadReportPaint = !this.loadReportPaint;
+        this.ReportType = "";
+        setTimeout(() => {
+            if (this.taskMasterEdit) {
+                this.serviceCom.toChildEdit(this.taskMasterEdit);
+            }}, 500);
     }
 }

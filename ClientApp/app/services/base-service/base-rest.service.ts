@@ -67,6 +67,12 @@ export abstract class BaseRestService<Model>{
             .map(this.extractData).catch(this.handleError);
     }
 
+    // get auto complate
+    getAutoComplate(): Observable<Array<string>> {
+        let url: string = `${this.actionUrl}GetAutoComplate/`;
+        return this.http.get(url).map(this.extractData).catch(this.handleError);
+    }
+
     // get by master id
     getByMasterId(masterId: number, subAction: string = "GetByMaster/"): Observable<Array<Model>> {
         let url: string = this.actionUrl + subAction + masterId;

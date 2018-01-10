@@ -1,6 +1,6 @@
 ﻿<div class="master-dialog-vh">
     <H5 style="color:cadetblue">Selected Job Level2/3</H5>
-    <div class="child-container">
+    <div class="child-container" *ngIf="!newProjectSub;else NewProjectBlock">
         <div class="center-content">
             <split direction="horizontal"
                    [gutterSize]="4"
@@ -14,10 +14,20 @@
                     </div>
                 </split-area>
                 <split-area [size]="60" [order]="2" *ngIf="mode === 0">
-                    <div class="child-container">
-                        <div class="center-content">
-                            <search-box (search)="onFilter($event)"
-                                        class="w-100 mx-1"></search-box>
+                    <div class="edit-container">
+                        <div class="top-container">
+                            <div class="edit-form-content">
+                                <search-box (search)="onFilter($event)"></search-box>
+
+                                <button type="button" mat-icon-button color="warn" (click)="onNewProjectSub(master)"
+                                        matTooltip="New Job Level2/3" style="float:left"
+                                        [disabled]="!master">
+                                    <i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i>
+                                    Add More
+                                </button>
+                            </div>
+                        </div>
+                        <div class="base-bottom-container">
                             <ngx-datatable class="material"
                                            #table
                                            [rows]="details"
@@ -48,3 +58,12 @@
         </div>
     </div>
 </div>
+
+<ng-template #NewProjectBlock>
+    <hr class="w-100" />
+    <p class="text-info text-sm-left">Insert job-level2/3 for "{{master.ProjectCode +'/'+ master.ProjectName}}".
+    <br />When complate add code click "New/Update" button.</p>
+    
+    <projectsub-edit-extend [editValue]="newProjectSub" (complateValue)="onProjectSubComplate($event)">
+    </projectsub-edit-extend>
+</ng-template>

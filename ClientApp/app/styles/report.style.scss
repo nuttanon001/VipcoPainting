@@ -50,6 +50,11 @@
     vertical-align: middle;
 }
 
+.label-sm-font {
+    @extend .label;
+    font-size: 11px;
+}
+
 .value {
     // padding
     padding-top: 1px;
@@ -126,6 +131,16 @@
     border-bottom: .5pt solid windowtext;
 }
 
+.line-no-btm {
+    @extend .line-all;
+    border-bottom: none;
+}
+
+.line-no-top {
+    @extend .line-all;
+    border-top: none;
+}
+
 .item-row {
     // padding
     padding-top: 1px;
@@ -134,7 +149,7 @@
     // font
     color: windowtext;
     font-size: 11px;
-    vertical-align: middle;
+    vertical-align: top;
     text-align: center;
 }
 

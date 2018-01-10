@@ -41,6 +41,7 @@ export class PaintTaskDetailBlastComponent implements OnInit {
     // Value
     @Input() ReadOnly: boolean = false;
     @Output() hasChange = new EventEmitter<boolean>();
+    @Output() showReportBlast = new EventEmitter<number>();
     // FormGroup
     paintTaskDetailForm: FormGroup;
     minProgress: number;
@@ -227,6 +228,13 @@ export class PaintTaskDetailBlastComponent implements OnInit {
             form.patchValue({
                 TaskDetailProgress: 0,
             });
+        }
+    }
+
+    // on ShowReport
+    showReportBlastMethod(): void {
+        if (this.paintTaskDetail.PaintTaskDetailId) {
+            this.showReportBlast.emit(this.paintTaskDetail.PaintTaskDetailId);
         }
     }
 }
