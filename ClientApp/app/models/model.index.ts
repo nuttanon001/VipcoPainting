@@ -30,3 +30,8 @@ export { ColorMovementStock } from "./stock/color-movement-stock.model";
 export { FinishedGoodsMaster } from "./stock/finished-goods-master.model";
 export { MovementStockStatus } from "./stock/movement-stock-status.model";
 export { RequisitionMaster } from "./stock/requisition-master.model";
+// Payment
+export { PaymentCostHistory } from "./payment/payment-cost-history.model";
+export { PaymentDetail } from "./payment/payment-detail.model";
+export { SubPaymentDetail } from "./payment/subpayment-detail.model";
+export { SubPaymentMaster } from "./payment/subpayment-master.model";

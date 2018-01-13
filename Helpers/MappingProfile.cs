@@ -197,6 +197,36 @@ namespace VipcoPainting.Helpers
                             o => o.MapFrom(s => s.ColorItem == null ? "-" : $"{s.ColorItem.ColorName}"));
 
             #endregion
+
+            #region PaymentDetail
+            CreateMap<PaymentDetail, PaymentDetailViewModel>()
+              .ForMember(x => x.PaymentTypeString,
+                          o => o.MapFrom(s => s.PaymentType == PaymentType.Blast ? "Blast" : "Paint"));
+            CreateMap<PaymentDetailViewModel, PaymentDetail>();
+            #endregion
+
+            #region SubPaymentDetail
+
+            CreateMap<SubPaymentDetail, SubPaymentDetailViewModel>()
+                .ForMember(x => x.CurrentCost,
+                            o => o.MapFrom(s => s.PaymentCostHistory == null ? 0D : s.PaymentCostHistory.PaymentCost))
+                .ForMember(x => x.PaymentDetailString,
+                            o => o.MapFrom(s => s.PaymentCostHistory.PaymentDetail == null ? "-" : s.PaymentCostHistory.PaymentDetail.Description))
+                .ForMember(x => x.PaymentCostHistory, o => o.Ignore());
+            CreateMap<SubPaymentDetailViewModel, SubPaymentDetail>();
+            #endregion
+
+            #region SubPaymentMaster
+
+            CreateMap<SubPaymentMaster, SubPaymentMasterViewModel>()
+                .ForMember(x => x.PaintTeamString,
+                            o => o.MapFrom(s => s.PaintTeam == null ? "-" : s.PaintTeam.TeamName))
+                .ForMember(x => x.SubPaymentMasterStatusString,
+                            o => o.MapFrom(s => s.SubPaymentMasterStatus == SubPaymentMasterStatus.Waiting ? "Waiting" :
+                                            (s.SubPaymentMasterStatus == SubPaymentMasterStatus.Complate ? "Complate" : "Cancel")));
+
+            CreateMap<SubPaymentMasterViewModel, SubPaymentMaster>();
+            #endregion
         }
     }
 }

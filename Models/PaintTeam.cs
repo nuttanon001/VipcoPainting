@@ -20,5 +20,7 @@ namespace VipcoPainting.Models
         public ICollection<BlastRoom> BlastRooms { get; set; }
         // PaintTaskDetail
         public ICollection<PaintTaskDetail> PaintTaskDetails { get; set; }
+        // SubPaymentMaster
+        public ICollection<SubPaymentMaster> SubPaymentMasters { get; set; }
     }
 }

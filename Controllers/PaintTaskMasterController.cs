@@ -81,7 +81,6 @@ namespace VipcoPainting.Controllers
             for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
                 yield return day;
         }
-
         private Func<DateTime, DateTime> ChangeTimeZone = d => d.AddHours(+7);
 
         #endregion PrivateMenbers

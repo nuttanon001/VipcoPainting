@@ -1,0 +1,44 @@
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Payment Detail</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        Description :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.Description || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Payment Type :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.PaymentTypeString || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Cost :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue?.LastCost | number) || "-"}}
+                    </div>
+                </div>
+                <hr class="w-75" />
+                <reuse-table [columns]="columns"
+                             [rows]="paymentCostHis">
+                </reuse-table>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

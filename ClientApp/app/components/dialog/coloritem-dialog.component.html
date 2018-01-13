@@ -4,18 +4,17 @@
         <div class="center-content ">
             <div class="edit-container">
                 <div class="top-container">
-                    <div class="edit-form-content" style="margin-top:-20px;">
-                        <button type="button" mat-icon-button color="warn" (click)="onNewColorItem()"
-                                matTooltip="New Paint" style="float:left">
+                    <div style="margin-top:-50px;margin-left:175px;">
+                        <button type="button" mat-icon-button color="warn" (click)="onNewColorItem()">
                             <i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i>
-                            Add More
+                            Add More Paint
                         </button>
                     </div>
                 </div>
                 <div class="base-bottom-container">
                     <data-table (selected)="onSelectedValue($event)"
                                 [columns]="columns"
-                                [height]="'45vh'" autofocus>
+                                [height]="'50vh'" autofocus>
                     </data-table>
                 </div>
             </div>

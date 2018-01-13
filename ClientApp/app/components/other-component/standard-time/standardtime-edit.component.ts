@@ -67,8 +67,8 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
         }
         if (!this.typeStdTimes) {
             this.typeStdTimes = new Array;
-            this.typeStdTimes.push({ label: "Paint", value: 1 });
-            this.typeStdTimes.push({ label: "Blast", value: 2 });
+            this.typeStdTimes.push({ label: "Blast", value: 1 });
+            this.typeStdTimes.push({ label: "Paint", value: 2 });
         }
     }
 

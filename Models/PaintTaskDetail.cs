@@ -37,6 +37,9 @@ namespace VipcoPainting.Models
         //BlastWorkItem
         public int? BlastWorkItemId { get; set; }
         public BlastWorkItem BlastWorkItem { get; set; }
+        //PaymentDetail
+        public int? PaymentDetailId { get; set; }
+        public PaymentDetail PaymentDetail { get; set; }
         //RequisitionMaster 
         public ICollection<RequisitionMaster> RequisitionMasters { get; set; }
     }

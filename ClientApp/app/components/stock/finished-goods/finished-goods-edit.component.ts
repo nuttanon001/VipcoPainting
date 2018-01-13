@@ -27,7 +27,6 @@ export class FinishedGoodsEditComponent extends BaseEditComponent<FinishedGoodsM
         private serviceAuth: AuthService,
         private serviceDialog: DialogsService,
         private viewContainerRef: ViewContainerRef,
-        private serviceDialogs: DialogsService,
         private fb: FormBuilder
     ) {
         super(
