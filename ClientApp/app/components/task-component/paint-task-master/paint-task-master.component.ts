@@ -162,6 +162,8 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
                             PaintWorkItemId: item.PaintWorkItemId,
                             //BlastWorkItem
                             BlastWorkItemId: item.BlastWorkItemId,
+                            //PaymentDetail
+                            PaymentDetailId:item.PaymentDetailId,
                         };
                         value.PaintTaskDetails[index] = newData;
                     }

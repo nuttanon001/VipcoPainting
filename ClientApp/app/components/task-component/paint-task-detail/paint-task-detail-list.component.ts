@@ -12,6 +12,7 @@ import { BlastWorkitemService } from "../../../services/require-paint/blast-work
 import { SelectItem } from "primeng/primeng";
 import { BlastRoomService } from "../../../services/task/blast-room.service";
 import { PaintTeamService } from "../../../services/task/paint-team.service";
+import { PaymentDetailService } from "../../../services/payment/payment-detail.service";
 
 @Component({
     selector: "paint-task-detail-list",
@@ -23,6 +24,7 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
     /** paint-task-detail-list ctor */
     constructor(
         private service: PaintTaskDetailService,
+        private servicePaymentDetail: PaymentDetailService,
         private serviceBlastRoom: BlastRoomService,
         private servicePaintTeam: PaintTeamService,
         private servicePaintWork: PaintWorkitemService,
@@ -39,6 +41,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
     // SelectedItem
     blastRooms: Array<SelectItem>;
     paintTeams: Array<SelectItem>;
+    blastPayment: Array<SelectItem>;
+    paintPayment: Array<SelectItem>;
 
     @Input() ReadOnly: boolean = false;
     @Output("onChange") onChange = new EventEmitter<Array<PaintTaskDetail>>();
@@ -50,6 +54,7 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getBlastRoomCombobox();
         this.getPaintTeamCombobox();
+        this.getPaymentDetailCombobox();
         if (this.paintTaskMaster) {
             if (this.paintTaskMaster.PaintTaskMasterId) {
                 this.service.getByMasterId(this.paintTaskMaster.PaintTaskMasterId)
@@ -156,14 +161,13 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
             }
         }
     }
-
+    // on destory
     ngOnDestroy(): void {
         this.intBlastWorks = undefined;
         this.extBlastWorks = undefined;
         this.intPaintWorks = undefined;
         this.extPaintWorks = undefined;
     }
-
     // get BlastRoom Array
     getBlastRoomCombobox(): void {
         if (!this.blastRooms) {
@@ -177,7 +181,6 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                 }, error => console.error(error));
         }
     }
-
     // get PaintTeam Array
     getPaintTeamCombobox(): void {
         if (!this.paintTeams) {
@@ -191,7 +194,26 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                 }, error => console.error(error));
         }
     }
+    // get Payment
+    getPaymentDetailCombobox(): void {
+        if (!this.blastPayment && !this.paintPayment) {
+            this.blastPayment = new Array;
+            this.paintPayment = new Array;
 
+            this.servicePaymentDetail.getAll()
+                .subscribe(dbPayment => {
+                    this.blastPayment.push({ label: "-", value: undefined });
+                    this.paintPayment.push({ label: "-", value: undefined });
+                    for (let item of dbPayment) {
+                        if (item.PaymentType === 1) {
+                            this.blastPayment.push({ label: `${(item.Description || "")}`, value: item.PaymentDetailId });
+                        } else {
+                            this.paintPayment.push({ label: `${(item.Description || "")}`, value: item.PaymentDetailId });
+                        }
+                    }
+                }, error => console.error(error));
+        }
+    }
     // on add item to array
     onChoosePushToArray(item: PaintTaskDetail): void {
         //1=Blast;2=Paint
@@ -223,7 +245,6 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
             }
         }
     }
-
     //onHasChange
     onHasChange(hasChange: boolean) {
         let ListPaintTaskDetail: Array<PaintTaskDetail> = new Array;
@@ -244,10 +265,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
             this.onChange.emit(ListPaintTaskDetail)
         }
     }
-
     //onReportClick
     showReportPaintMethod(PaintTaskDetailId?: number, type?: string): void {
-        console.log("ListType", type);
         if (PaintTaskDetailId && type) {
             this.onHasChange(true);
 

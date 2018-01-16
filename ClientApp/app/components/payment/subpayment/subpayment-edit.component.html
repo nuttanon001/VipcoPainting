@@ -1,1 +1,122 @@
-﻿<div style="border: 1px solid red">subpayment-edit Component</div>
+﻿<div *ngIf="editValue; else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Subpayment Information</b>
+            </ng-template>
+            <div class="edit-container">
+                <form [formGroup]="editValueForm">
+                    <div class="my-form">
+                        <label for="SubPaymentNo" class="my-label">SubPayment No:</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="my-input" placeholder="Code will automatically generated."
+                                   id="SubPaymentNo" formControlName="SubPaymentNo" readonly>
+                        </div>
+
+                        <label for="StartDate" class="my-label">Date SubPayment:</label>
+                        <div class="edit-form-content col-sm-5">
+                            <p-calendar formControlName="StartDate" [showIcon]="true"
+                                        id="StartDate" dateFormat="dd/mm/yy" placeholder="  Start subpayment start date"
+                                        appendTo="body"
+                                        [maxDate]="editValueForm.controls.EndDate.value">
+                            </p-calendar>
+                            <span style="margin-left:6px;margin-right:7px;">|</span>
+                            <p-calendar formControlName="EndDate" [showIcon]="true"
+                                        id="EndDate" dateFormat="dd/mm/yy" placeholder="  End subpayment end date"
+                                        appendTo="body"
+                                        [minDate]="editValueForm.controls.StartDate.value">
+                            </p-calendar>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="ProjectCodeMasterString" class="my-label">JobNumber:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose job-no here"
+                                   (click)="openDialog('Project')"
+                                   id="ProjectCodeMasterString" formControlName="ProjectCodeMasterString" required readonly>
+                            <validation-messages [control]="editValueForm.controls.ProjectCodeMasterString"></validation-messages>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label for="PaintTeamId" class="my-label">Team:</label>
+                            <p-dropdown class="my-input-combobox" [options]="paintTeams" filter="filter" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="PaintTeamId" formControlName="PaintTeamId" required>
+                            </p-dropdown>
+                            <validation-messages [control]="editValueForm.controls.PaintTeamId"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="EmpApproved1String" class="my-label">ApproveBy1:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose employee who approved subpayment here"
+                                   (click)="openDialog('EmpApproved1')"
+                                   id="EmpApproved1String" formControlName="EmpApproved1String" required readonly>
+                            <validation-messages [control]="editValueForm.controls.EmpApproved1String"></validation-messages>
+                        </div>
+
+                        <label for="EmpApproved2String" class="my-label">ApproveBy2:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose employee who approved subpayment here"
+                                   (click)="openDialog('EmpApproved2')"
+                                   id="EmpApproved2String" formControlName="EmpApproved2String" required readonly>
+                            <validation-messages [control]="editValueForm.controls.EmpApproved2String"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="Remark" class="my-label">Remark:</label>
+                        <div class="col-sm-4">
+                            <textarea class="my-input" placeholder="Insert remark here."
+                                      id="Remark" formControlName="Remark" rows="4">
+                            </textarea>
+                            <validation-messages [control]="editValueForm.controls.Remark"></validation-messages>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Subpayment List</b>
+            </ng-template>
+            <div class="edit-container" *ngIf="!subPaymentDetail;else SubPaymentDetailBlock">
+                <div style="margin-bottom:5px;">
+                    <button type="button" mat-icon-button color="warn" (click)="getSubPaymentDetail()"
+                            matTooltip="Load Data SubPayment" style="float:left" [disabled]="!CanLoadSubPayment">
+                        <i class="fa fa-2x fa-hacker-news" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <!--[columns]="columns"-->
+                <ngx-datatable class="material"
+                               [rows]="editValue.ProjectSubs"
+                               [columnMode]="'flex'"
+                               [headerHeight]="50"
+                               [footerHeight]="0"
+                               [rowHeight]="50"
+                               [selectionType]="'single'"
+                               [scrollbarV]="true"
+                               [scrollbarH]="true"
+                               [style.height]="'calc(100vh - 235px)'">
+                    <ngx-datatable-column name="PaymentInfo" prop="PaymentDetailString" [flexGrow]="2"></ngx-datatable-column>
+                    <ngx-datatable-column name="Area" prop="AreaWorkLoad" [flexGrow]="1"></ngx-datatable-column>
+                    <ngx-datatable-column name="Cost" prop="CurrentCost" [flexGrow]="1"></ngx-datatable-column>
+                    <ngx-datatable-column name="Total" prop="CalcCost" [flexGrow]="1"></ngx-datatable-column>
+                    <ngx-datatable-column [flexGrow]="1" [sortable]="false">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <button mat-button (click)="onEditSubPaymentDetail(row)" color="accent">Edit</button>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <ng-template #SubPaymentDetailBlock>
+                <div [@flyInOut]="'in'">
+                    <subpayment-detail-edit [subPaymentDetail]="subPaymentDetail" (ComplateOrCancel)="onComplateOrCancel($event)">
+                    </subpayment-detail-edit>
+                </div>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</div>

@@ -167,7 +167,6 @@ export class RequirePaintingEditComponent
             if (type === "Employee") {
                 this.serviceDialogs.dialogSelectEmployee(this.viewContainerRef)
                     .subscribe(emp => {
-                        console.log(emp);
                         if (emp) {
                             this.editValueForm.patchValue({
                                 RequireEmp: emp.EmpCode,

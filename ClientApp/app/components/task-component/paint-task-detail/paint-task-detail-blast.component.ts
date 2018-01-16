@@ -48,6 +48,7 @@ export class PaintTaskDetailBlastComponent implements OnInit {
     maxDate: Date = new Date();
     // ComboBox
     @Input() blastRooms: Array<SelectItem>;
+    @Input() paymentDetails: Array<SelectItem>;
     // OnInit
     ngOnInit(): void {
         this.buildForm();
@@ -96,6 +97,11 @@ export class PaintTaskDetailBlastComponent implements OnInit {
                 ]
             ],
             BlastWorkItemId: [this.paintTaskDetail.BlastWorkItemId,
+                [
+                    Validators.required
+                ]
+            ],
+            PaymentDetailId: [this.paintTaskDetail.PaymentDetailId,
                 [
                     Validators.required
                 ]

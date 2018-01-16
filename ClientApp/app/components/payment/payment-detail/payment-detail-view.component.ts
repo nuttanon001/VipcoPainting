@@ -25,9 +25,9 @@ export class PaymentDetailViewComponent extends BaseViewComponent<PaymentDetail>
     paymentCostHis: Array<PaymentCostHistory>;
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     columns: Array<TableColumn> = [
+        { prop: "PaymentCost", name: "Cost", flexGrow: 1 },
         { prop: "StartDate", name: "Start", flexGrow: 1, pipe: this.datePipe },
         { prop: "EndDate", name: "End", flexGrow: 1, pipe: this.datePipe },
-        { prop: "PaymentCost", name: "Cost", flexGrow: 1 },
     ];
     // load more data
     onLoadMoreData(value: PaymentDetail) {

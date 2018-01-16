@@ -116,8 +116,7 @@ export class SubpaymentMasterComponent
                             ModifyDate: item.ModifyDate,
                             //FK
                             SubPaymentMasterId: item.SubPaymentMasterId,
-                            PaintTaskDetailId: item.PaintTaskDetailId,
-                            PaymentCostHistoryId: item.PaymentCostHistoryId,
+                            PaymentDetailId: item.PaymentDetailId,
                         };
                         value.SubPaymentDetails[index] = newData;
                     }

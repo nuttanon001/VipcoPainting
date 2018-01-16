@@ -12,6 +12,8 @@ export interface SubPaymentMaster extends BaseModel {
     EmpApproved1?:string;
     EmpApproved2?:string;
     //FK
+    //SubPaymentMaster
+    PrecedingSubPaymentId?: number;
     //ProjectMaster
     ProjectCodeMasterId ?: number;
     //PaintTeam

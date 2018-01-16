@@ -14,13 +14,7 @@
                             <validation-messages [control]="editValueForm.controls.Description"></validation-messages>
                         </div>
 
-                        <label for="paymentType" class="my-label">Payment Type:</label>
-                        <div class="col-sm-4">
-                            <p-dropdown class="my-input-combobox" [options]="paymentType" filter="filter" [style]="{'width':'100%'}"
-                                        appendTo="body"
-                                        id="paymentType" formControlName="paymentType" required>
-                            </p-dropdown>
-                        </div>
+                  
                     </div>
 
                     <div class="my-form">
@@ -31,11 +25,20 @@
                                    id="LastCost" formControlName="LastCost" required>
                             <validation-messages [control]="editValueForm.controls.LastCost"></validation-messages>
                         </div>
+
+                        <label for="PaymentType" class="my-label">Payment Type:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="paymentType" filter="filter" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="PaymentType" formControlName="PaymentType" required>
+                            </p-dropdown>
+                        </div>
                     </div>
                 </form>
                 <hr class="w-75" />
+                <h5 class="text-primary">Cost History</h5>
                 <reuse-table [columns]="columns"
-                             [rows]="paymentCostHis">
+                             [rows]="paymentCostHis" [height]="'40vh'">
                 </reuse-table>
             </div>
         </mat-tab>

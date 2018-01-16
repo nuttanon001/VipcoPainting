@@ -24,6 +24,8 @@ export interface PaintTaskDetail extends BaseModel {
     PaintWorkItemId?: number;
     //BlastWorkItem
     BlastWorkItemId?: number;
+    //PaymentDetail
+    PaymentDetailId?: number;
     // ViewModel
     PaintTeamString?:string;
     BlastRoomString?: string;

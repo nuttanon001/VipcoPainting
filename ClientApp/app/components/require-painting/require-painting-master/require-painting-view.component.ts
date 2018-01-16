@@ -17,6 +17,17 @@ import { TableColumn } from "@swimlane/ngx-datatable";
 // require-painting-view component*/
 export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaintMaster>
 {
+   
+    /** require-painting-view ctor */
+    constructor(
+        private service: RequirePaintListService,
+        private dialogService: DialogsService,
+        private viewContainerRef: ViewContainerRef,
+    ) {
+        super();
+    }
+
+    //parameter
     requireLists: Array<RequirePaintList> = new Array;
     @Input("height") height: string = "calc(100vh - 184px)";
 
@@ -28,14 +39,6 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
         { prop: "Quantity", name: "Q'ty", flexGrow: 1 },
         { prop: "Weight", name: "Weight", flexGrow: 1 },
     ];
-    /** require-painting-view ctor */
-    constructor(
-        private service: RequirePaintListService,
-        private dialogService: DialogsService,
-        private viewContainerRef: ViewContainerRef,
-    ) {
-        super();
-    }
 
     // load more data
     onLoadMoreData(value: RequirePaintMaster) {

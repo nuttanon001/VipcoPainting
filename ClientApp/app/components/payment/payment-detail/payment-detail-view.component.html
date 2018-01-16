@@ -13,12 +13,6 @@
                         {{displayValue.Description || "-"}}
                     </div>
 
-                    <div class="my-label">
-                        Payment Type :
-                    </div>
-                    <div class="my-value">
-                        {{displayValue?.PaymentTypeString || "-"}}
-                    </div>
                 </div>
 
                 <div class="row my-1">
@@ -28,10 +22,18 @@
                     <div class="my-value">
                         {{(displayValue?.LastCost | number) || "-"}}
                     </div>
+
+                    <div class="my-label">
+                        Payment Type :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.PaymentTypeString || "-"}}
+                    </div>
                 </div>
                 <hr class="w-75" />
+                <h5 class="text-primary">Cost History</h5>
                 <reuse-table [columns]="columns"
-                             [rows]="paymentCostHis">
+                             [rows]="paymentCostHis" [height]="'40vh'">
                 </reuse-table>
             </div>
         </mat-tab>

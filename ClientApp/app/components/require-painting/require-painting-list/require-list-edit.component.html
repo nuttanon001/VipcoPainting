@@ -85,9 +85,9 @@
                     <div class="my-form">
                         <label for="Description" class="my-label">Description:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input" placeholder="Insert description of work item."
-                                   required
-                                   id="Description" formControlName="Description">
+                            <textarea class="my-input" placeholder="Insert description of work item here."
+                                      id="Description" formControlName="Description" rows="4" required>
+                            </textarea>
                             <validation-messages [control]="RequirePaintListForm.controls.Description"></validation-messages>
                         </div>
 

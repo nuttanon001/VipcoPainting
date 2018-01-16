@@ -29,6 +29,7 @@ import { MatCheckbox } from "@angular/material";
         [rowHeight]="rowHeight"
         [footerHeight]="0"
         [scrollbarV]="true"
+        [scrollbarH]="true"
         [loadingIndicator]="isLoading"
         (scroll)="onScroll($event.offsetY)"
         [externalSorting]="true"

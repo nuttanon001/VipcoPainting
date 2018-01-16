@@ -27,11 +27,12 @@ export class SubpaymentViewComponent extends BaseViewComponent<SubPaymentMaster>
 
     // Parameter
     subPaymentDetails: Array<SubPaymentDetail>;
-    datePipe: DateOnlyPipe = new DateOnlyPipe("it");
+    @Input("height") height: string = "calc(100vh - 184px)";
     columns: Array<TableColumn> = [
-        { prop: "PaymentDetailString", name: "PaymentInfo", flexGrow: 1 },
+        { prop: "PaymentDetailString", name: "PaymentInfo", flexGrow: 2 },
         { prop: "AreaWorkLoad", name: "Area", flexGrow: 1 },
         { prop: "CurrentCost", name: "Cost", flexGrow: 1 },
+        { prop: "CalcCost", name: "Total", flexGrow: 1 },
     ];
 
     // load more data

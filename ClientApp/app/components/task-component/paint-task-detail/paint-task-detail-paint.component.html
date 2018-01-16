@@ -69,10 +69,20 @@
                 </div>
 
                 <label for="SummaryActual" class="my-label-col1-right">PaintActual:</label>
-                <div class="col-sm-5">
+                <div class="col-sm-2">
                     <input type="text" class="my-input-click" placeholder="Add Requisition of Paint."
                            (click)="openDialog('SummaryActual')"
                            id="SummaryActual" formControlName="SummaryActual" readonly>
+                </div>
+
+
+
+                <label for="PaymentDetailId" class="my-label-col1-right">Payment:</label>
+                <div class="col-sm-2">
+                    <p-dropdown class="my-input-combobox" [options]="paymentDetails" [style]="{'width':'100%'}"
+                                appendTo="body" [readonly]="ReadOnly"
+                                formControlName="PaymentDetailId" required>
+                    </p-dropdown>
                 </div>
             </div>
 

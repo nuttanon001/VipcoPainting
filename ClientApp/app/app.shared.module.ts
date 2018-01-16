@@ -14,7 +14,8 @@ import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import {
     CustomMaterialModule, ValidationModule,
     DialogsModule, RequirePaintingModule,
-    OtherModule, TaskModule, StockModule
+    OtherModule, TaskModule, StockModule,
+    PaymentModule
 } from "./modules/module.index";
 // services
 import { AuthGuard } from "./services/auth/auth-guard.service";
@@ -54,7 +55,8 @@ import "popper.js";
         RequirePaintingModule,
         OtherModule,
         TaskModule,
-        StockModule
+        StockModule,
+        PaymentModule
         // 3rd party
         // mark NgxDatatableModule,
     ],

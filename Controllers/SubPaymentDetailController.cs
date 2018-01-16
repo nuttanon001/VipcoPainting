@@ -80,8 +80,7 @@ namespace VipcoPainting.Controllers
         {
             var QueryData = this.repository.GetAllAsQueryable()
                                 .Where(x => x.SubPaymentMasterId == MasterId)
-                                .Include(x => x.PaintTaskDetail)
-                                .Include(x => x.PaymentCostHistory.PaymentDetail)
+                                .Include(x => x.PaymentDetail)
                                 .AsNoTracking();
            
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<SubPaymentDetailViewModel, SubPaymentDetail>
@@ -103,8 +102,7 @@ namespace VipcoPainting.Controllers
                 nSubPaymenyDetail.CreateDate = DateTime.Now;
                 nSubPaymenyDetail.Creator = nSubPaymenyDetail.Creator ?? "Someone";
                 //Relation
-                nSubPaymenyDetail.PaymentCostHistory = null;
-                nSubPaymenyDetail.PaintTaskDetail = null;
+                nSubPaymenyDetail.PaymentDetail = null;
 
                 return new JsonResult(await this.repository.AddAsync(nSubPaymenyDetail), this.DefaultJsonSettings);
             }
@@ -129,8 +127,7 @@ namespace VipcoPainting.Controllers
                 uSubPaymentDetail.ModifyDate = DateTime.Now;
                 uSubPaymentDetail.Modifyer = uSubPaymentDetail.Modifyer ?? "Someone";
                 // Relation
-                uSubPaymentDetail.PaintTaskDetail = null;
-                uSubPaymentDetail.PaymentCostHistory = null;
+                uSubPaymentDetail.PaymentDetail = null;
 
                 return new JsonResult(await this.repository.UpdateAsync(uSubPaymentDetail, key), this.DefaultJsonSettings);
             }

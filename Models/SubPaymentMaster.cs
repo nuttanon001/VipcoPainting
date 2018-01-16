@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VipcoPainting.Models
 {
@@ -23,6 +24,10 @@ namespace VipcoPainting.Models
         [StringLength(50)]
         public string EmpApproved2 { get; set; }
         //FK
+        //SubPaymentMaster
+        public int? PrecedingSubPaymentId { get; set; }
+        [ForeignKey("PrecedingSubPaymentId")]
+        public SubPaymentMaster PrecedingSubPayment { get; set; }
         //ProjectMaster
         public int? ProjectCodeMasterId { get; set; }
         //PaintTeam

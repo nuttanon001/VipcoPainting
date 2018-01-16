@@ -11,7 +11,9 @@ namespace VipcoPainting.Models
         [Key]
         public int SubPaymentDetailId { get; set; }
         public double? AreaWorkLoad { get; set; }
+        public double? AdditionArea { get; set; }
         public double? CalcCost { get; set; }
+        public double? AdditionCost { get; set; }
         public DateTime? PaymentDate { get; set; }
         [StringLength(200)]
         public string Remark { get; set; }
@@ -19,11 +21,11 @@ namespace VipcoPainting.Models
         //SubPaymentMaster
         public int? SubPaymentMasterId { get; set; }
         public SubPaymentMaster SubPaymentMaster { get; set; }
+        //PaymentDetail
+        public int? PaymentDetailId { get; set; }
+        public PaymentDetail PaymentDetail { get; set; }
         //PaintTaskDetail
-        public int? PaintTaskDetailId { get; set; }
-        public PaintTaskDetail PaintTaskDetail { get; set; }
-        //PaymentCostHistory
-        public int? PaymentCostHistoryId { get; set; }
-        public PaymentCostHistory PaymentCostHistory { get; set; }
+        //public int? PaintTaskDetailId { get; set; }
+        //public PaintTaskDetail PaintTaskDetail { get; set; }
     }
 }

@@ -207,12 +207,7 @@ namespace VipcoPainting.Helpers
 
             #region SubPaymentDetail
 
-            CreateMap<SubPaymentDetail, SubPaymentDetailViewModel>()
-                .ForMember(x => x.CurrentCost,
-                            o => o.MapFrom(s => s.PaymentCostHistory == null ? 0D : s.PaymentCostHistory.PaymentCost))
-                .ForMember(x => x.PaymentDetailString,
-                            o => o.MapFrom(s => s.PaymentCostHistory.PaymentDetail == null ? "-" : s.PaymentCostHistory.PaymentDetail.Description))
-                .ForMember(x => x.PaymentCostHistory, o => o.Ignore());
+            CreateMap<SubPaymentDetail, SubPaymentDetailViewModel>();
             CreateMap<SubPaymentDetailViewModel, SubPaymentDetail>();
             #endregion
 

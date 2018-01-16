@@ -213,20 +213,23 @@ namespace VipcoPainting.Controllers
                     }
                     else
                     {
-                        dbPaymentCostHistory.EndDate = uPaymentDetail.ModifyDate;
-                        dbPaymentCostHistory.ModifyDate = uPaymentDetail.ModifyDate;
-                        dbPaymentCostHistory.Modifyer = uPaymentDetail.Modifyer;
-                        // update LastCost
-                        await this.repositoryCostHis.UpdateAsync(dbPaymentCostHistory, dbPaymentCostHistory.PaymentCostHistoryId);
-                        // add NewCost
-                        await this.repositoryCostHis.AddAsync(new PaymentCostHistory
+                        if (dbPaymentCostHistory.PaymentCost != uPaymentDetail.LastCost)
                         {
-                            CreateDate = uPaymentDetail.CreateDate,
-                            Creator = uPaymentDetail.Creator,
-                            PaymentCost = uPaymentDetail.LastCost,
-                            StartDate = uPaymentDetail?.CreateDate ?? DateTime.Now,
-                            PaymentDetailId = uPaymentDetail.PaymentDetailId
-                        });
+                            dbPaymentCostHistory.EndDate = uPaymentDetail.ModifyDate;
+                            dbPaymentCostHistory.ModifyDate = uPaymentDetail.ModifyDate;
+                            dbPaymentCostHistory.Modifyer = uPaymentDetail.Modifyer;
+                            // update LastCost
+                            await this.repositoryCostHis.UpdateAsync(dbPaymentCostHistory, dbPaymentCostHistory.PaymentCostHistoryId);
+                            // add NewCost
+                            await this.repositoryCostHis.AddAsync(new PaymentCostHistory
+                            {
+                                CreateDate = uPaymentDetail.CreateDate,
+                                Creator = uPaymentDetail.Creator,
+                                PaymentCost = uPaymentDetail.LastCost,
+                                StartDate = uPaymentDetail?.CreateDate ?? DateTime.Now,
+                                PaymentDetailId = uPaymentDetail.PaymentDetailId
+                            });
+                        }
                     }
                 }
                 return new JsonResult(await this.repository.UpdateAsync(uPaymentDetail, key), this.DefaultJsonSettings);

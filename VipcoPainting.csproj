@@ -31,6 +31,7 @@
     <None Remove="ClientApp\app\components\require-painting\require.index.ts" />
     <None Remove="ClientApp\app\components\stock\stock.index.ts" />
     <None Remove="ClientApp\app\components\task-component\task.index.ts" />
+    <None Remove="ClientApp\app\components\validation\dateminmax-validator.function.ts" />
     <None Remove="ClientApp\app\models\base.model.ts" />
     <None Remove="ClientApp\app\models\dictionary\idictionary.model.ts" />
     <None Remove="ClientApp\app\models\paint-task\paint-task-detail.model.ts" />
@@ -60,6 +61,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\require-painting\require.index.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\stock\stock.index.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\task-component\task.index.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\validation\dateminmax-validator.function.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\base.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\dictionary\idictionary.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\paint-task\paint-task-detail.model.ts" />
@@ -81,10 +83,6 @@
     <TypeScriptCompile Include="ClientApp\app\models\task\task-blast-detail.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\task-master.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\task-paint-detail.model.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\app\modules\payment\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

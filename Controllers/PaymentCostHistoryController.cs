@@ -73,7 +73,9 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> GetByMaster(int MasterId)
         {
             var QueryData = await this.repository.GetAllAsQueryable()
-                                      .Where(x => x.PaymentDetailId == MasterId).ToListAsync();
+                                      .Where(x => x.PaymentDetailId == MasterId)
+                                      .OrderByDescending(x => x.StartDate)
+                                      .ToListAsync();
 
             return new JsonResult(QueryData, this.DefaultJsonSettings);
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using VipcoPainting.Models;
 
@@ -80,8 +79,8 @@ namespace VipcoPainting.Data
                 Context.MovementStockStatuses
                   .Add(new MovementStockStatus
                   {
-                      CreateDate= DateTime.Now,
-                      Creator="Admin",
+                      CreateDate = DateTime.Now,
+                      Creator = "Admin",
                       StatusMovement = StatusMovement.Stock,
                       StatusName = "Stock",
                       TypeStatusMovement = TypeStatusMovement.Increased
@@ -126,6 +125,49 @@ namespace VipcoPainting.Data
                       StatusName = "Cancel",
                       TypeStatusMovement = TypeStatusMovement.Decreased
                   });
+
+                Context.SaveChanges();
+            }
+
+            if (!Context.PaymentDetails.Any())
+            {
+                var TempPayment = new string[]
+                {
+                    "งาน Blasting only SA 2 or SSPC-SP6 (Raw material )",
+                    "งาน Blasting only SA 2.5 or SSPC-SP10 (Raw material)",
+                    "งาน Blasting only SA 3 or SSPC-SP5  (Raw material)",
+                    "งานอะไหล่ SA 2 - Accessoies Part (พื้นที่น้อยกว่า 5 m2)",
+                    "งานอะไหล่ SA 2.5 - Accessoies Part (พื้นที่น้อยกว่า 5 m2)",
+                    "งานอะไหล่ SA 3 - Accessoies Part (พื้นที่น้อยกว่า 5 m2)",
+                    "งาน Blasting only sa.2 or SSPC-SP6",
+                    "งาน Blasting only sa.2.5 or SSPC-SP10",
+                    "งาน Blasting only sa.3 or SSPC-SP5",
+                    "งาน Light Blast Cleaning Sa.1 or SSPC-SP7",
+                    "งาน Power tool Cleaning SSPC-SP3",
+                    "งานพ่นสี (Cost)"
+                };
+
+                var TempCost = new double[] { 90, 100, 110, 130, 140, 140, 70, 80, 90, 50, 20, 30 };
+
+                for (int i = 0; i < TempPayment.Length; i++)
+                {
+                    Context.PaymentDetails
+                        .Add(new PaymentDetail
+                        {
+                            CreateDate = DateTime.Now,
+                            Creator = "Admin",
+                            Description = TempPayment[i],
+                            LastCost = TempCost[i],
+                            PaymentType = TempPayment[i].Contains("พ่นสี") ? PaymentType.Paint : PaymentType.Blast,
+                            PaymentCostHistorys = new List<PaymentCostHistory>() { new PaymentCostHistory
+                            {
+                                CreateDate = DateTime.Now,
+                                Creator = "Admin",
+                                StartDate = DateTime.Now,
+                                PaymentCost = TempCost[i]
+                            }}
+                        });
+                }
 
                 Context.SaveChanges();
             }

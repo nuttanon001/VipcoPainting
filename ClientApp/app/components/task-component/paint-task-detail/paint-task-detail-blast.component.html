@@ -41,6 +41,14 @@
                            [readonly]="ReadOnly"
                            formControlName="TaskDetailProgress">
                 </div>
+
+                <label for="PaymentDetailId" class="my-label-col1-right">Payment:</label>
+                <div class="col-sm-5">
+                    <p-dropdown class="my-input-combobox" [options]="paymentDetails" [style]="{'width':'100%'}"
+                                appendTo="body" [readonly]="ReadOnly"
+                                formControlName="PaymentDetailId" required>
+                    </p-dropdown>
+                </div>
             </div>
             <div class="my-form">
                 <label for="PlanSDate" class="my-label-col1-right">Plan:</label>
