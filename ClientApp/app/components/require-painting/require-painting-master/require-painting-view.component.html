@@ -53,7 +53,7 @@
                 <b>Request Work Item</b>
             </ng-template>
             <div class="view-container">
-                <reuse-table [rows]="requireLists" [columns]="columns" 
+                <reuse-table [rows]="requireLists" [columns]="columns"  [columnMode]="force"
                              [height]="height" (selected)="onSelectedRequestWorkItem($event)">
                 </reuse-table>
             </div>

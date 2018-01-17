@@ -406,6 +406,8 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
                             PaintWorkItemId: item.PaintWorkItemId,
                             //BlastWorkItem
                             BlastWorkItemId: item.BlastWorkItemId,
+                            //PaymentDetail
+                            PaymentDetailId: item.PaymentDetailId,
                         };
                         value.PaintTaskDetails[index] = newData;
                     }

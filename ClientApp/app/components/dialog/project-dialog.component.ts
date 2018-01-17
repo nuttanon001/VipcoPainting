@@ -98,7 +98,12 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         if (master) {
             this.master = master;
             if (this.mode === 1) {
-                this.dialogRef.close(master);
+                let template: ProjectSub = {
+                    ProjectCodeSubId: 0,
+                    ProjectCodeMasterId: master.ProjectCodeMasterId,
+                    ProjectMasterString: `${master.ProjectCode} ${master.ProjectName}`
+                };
+                this.dialogRef.close(template);
             } else {
                 this.serviceDetail.getByMasterId(master.ProjectCodeMasterId)
                     .subscribe(dbDetail => {

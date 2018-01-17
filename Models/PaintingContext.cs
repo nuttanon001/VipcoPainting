@@ -33,9 +33,6 @@ namespace VipcoPainting.Models
             modelBuilder.Entity<SubPaymentDetail>().ToTable("SubPaymentDetail");
             modelBuilder.Entity<SubPaymentMaster>().ToTable("SubPaymentMaster");
             modelBuilder.Entity<SurfaceType>().ToTable("SurfaceType");
-            modelBuilder.Entity<TaskBlastDetail>().ToTable("TaskBlastDetail");
-            modelBuilder.Entity<TaskMaster>().ToTable("TaskMaster");
-            modelBuilder.Entity<TaskPaintDetail>().ToTable("TaskPaintDetail");
         }
 
         public DbSet<BlastRoom> BlastRooms { get; set; }
@@ -58,8 +55,5 @@ namespace VipcoPainting.Models
         public DbSet<SubPaymentDetail> SubPaymentDetails { get; set; }
         public DbSet<SubPaymentMaster> SubPaymentMasters { get; set; }
         public DbSet<SurfaceType> SurfaceTypes { get; set; }
-        public DbSet<TaskBlastDetail> TaskBlastDetails { get; set; }
-        public DbSet<TaskMaster> TaskMasters { get; set; }
-        public DbSet<TaskPaintDetail> TaskPaintDetails { get; set; }
     }
 }

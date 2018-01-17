@@ -81,6 +81,7 @@ namespace VipcoPainting.Controllers
             var QueryData = this.repository.GetAllAsQueryable()
                                 .Where(x => x.SubPaymentMasterId == MasterId)
                                 .Include(x => x.PaymentDetail)
+                                .Include(x => x.PaymentCostHistory)
                                 .AsNoTracking();
            
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<SubPaymentDetailViewModel, SubPaymentDetail>

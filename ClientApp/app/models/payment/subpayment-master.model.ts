@@ -5,8 +5,8 @@ export interface SubPaymentMaster extends BaseModel {
     SubPaymentMasterId: number;
     SubPaymentNo?:string;
     SubPaymentDate ?: Date;
-    StartDate: Date;
-    EndDate: Date;
+    StartDate?: Date;
+    EndDate?: Date;
     SubPaymentMasterStatus ?: number;
     Remark?:string;
     EmpApproved1?:string;

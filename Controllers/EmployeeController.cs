@@ -123,8 +123,7 @@ namespace VipcoPainting.Controllers
                     break;
 
                 default:
-                    QueryData = QueryData.OrderByDescending(e => e.EmpCode.Length)
-                                         .ThenBy(e => e.EmpCode);
+                    QueryData = QueryData.OrderBy(e => e.NameThai);
                     break;
             }
 

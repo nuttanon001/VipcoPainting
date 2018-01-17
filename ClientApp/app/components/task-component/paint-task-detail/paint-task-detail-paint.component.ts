@@ -10,6 +10,7 @@ import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { PaintTeamService } from "../../../services/task/paint-team.service";
 import { PaintWorkitemService } from "../../../services/require-paint/paint-workitem.service";
 import { PaintTaskDetailService } from "../../../services/paint-task/paint-task-detail.service";
+import { Calendar } from "primeng/components/calendar/calendar";
 
 @Component({
     selector: "paint-task-detail-paint",
@@ -45,6 +46,7 @@ export class PaintTaskDetailPaintComponent implements OnInit {
     @Input() ReadOnly: boolean = false;
     @Output() hasChange = new EventEmitter<boolean>();
     @Output() showReportPaint = new EventEmitter<number>();
+    cannotEdit: boolean;
     // FormGroup
     paintTaskDetailForm: FormGroup;
     minProgress: number;
@@ -59,6 +61,7 @@ export class PaintTaskDetailPaintComponent implements OnInit {
     // build Form
     buildForm(): void {
         this.minProgress = this.paintTaskDetail.TaskDetailProgress || 0;
+        this.cannotEdit = this.ReadOnly ? true : this.minProgress > 0;
         this.paintTaskDetailForm = this.fb.group({
             PaintTaskDetailId: [this.paintTaskDetail.PaintTaskDetailId],
             Remark: [this.paintTaskDetail.Remark,
@@ -270,5 +273,10 @@ export class PaintTaskDetailPaintComponent implements OnInit {
         if (this.paintTaskDetail.PaintTaskDetailId) {
             this.showReportPaint.emit(this.paintTaskDetail.PaintTaskDetailId);
         }
+    }
+    // bug calendar not update min-max
+    // update CakenderUi
+    updateCalendarUI(calendar: Calendar) {
+        calendar.updateUI();
     }
 }

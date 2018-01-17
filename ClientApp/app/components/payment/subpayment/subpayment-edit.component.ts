@@ -73,12 +73,8 @@ export class SubpaymentEditComponent
         { prop: "CalcCost", name: "Total", flexGrow: 1 },
     ];
 
-    get CanLoadSubPayment(): boolean {
-        if (this.editValue) {
-            return this.editValue.SubPaymentMasterId > 0;
-        }
-        return false;
-    }
+    CanLoadSubPayment: boolean;
+
     // on get data by key
     onGetDataByKey(value?: SubPaymentMaster): void {
         if (!this.subPaymentDetails) {
@@ -86,6 +82,9 @@ export class SubpaymentEditComponent
         }
 
         if (value) {
+            // edit can load sub payment
+            this.CanLoadSubPayment = false;
+
             this.service.getOneKeyNumber(value.SubPaymentMasterId)
                 .subscribe(dbData => {
                     this.editValue = dbData;
@@ -111,10 +110,16 @@ export class SubpaymentEditComponent
                         });
                 }, error => console.error(error), () => this.defineData());
         } else {
+            // edit can load sub payment
+            this.CanLoadSubPayment = false;
+
             this.editValue = {
                 SubPaymentMasterId: 0,
-                StartDate: new Date,
-                EndDate: new Date,
+                SubPaymentMasterStatus:1,
+                PaintTeamId: undefined,
+                SubPaymentDate: new Date(),
+                EndDate: new Date(),
+                StartDate: new Date(),
             };
             this.defineData();
         }
@@ -126,9 +131,9 @@ export class SubpaymentEditComponent
 
         if (!this.paintTeams) {
             this.paintTeams = new Array;
+            this.paintTeams.push({ label: "-", value: undefined });
             this.servicePaintTeam.getAll()
                 .subscribe(dbPaintTeam => {
-                    this.paintTeams.push({ label: "-", value: undefined });
                     dbPaintTeam.forEach(item => {
                         if (item.TeamName) {
                             if (item.TeamName.indexOf("vipco") === -1 &&
@@ -147,7 +152,11 @@ export class SubpaymentEditComponent
         this.editValueForm = this.fb.group({
             SubPaymentMasterId: [this.editValue.SubPaymentMasterId],
             SubPaymentNo: [this.editValue.SubPaymentNo],
-            SubPaymentDate: [this.editValue.SubPaymentDate],
+            SubPaymentDate: [this.editValue.SubPaymentDate,
+                [
+                    Validators.required
+                ]
+            ],
             StartDate: [this.editValue.StartDate,
                 [
                     Validators.required
@@ -198,48 +207,36 @@ export class SubpaymentEditComponent
 
         this.editValueForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
         // this.onValueChanged();
+    }
 
-        const sDateControl: AbstractControl | null = this.editValueForm.get("StartDate");
-        if (sDateControl) {
-            sDateControl.valueChanges.subscribe((sDate: Date) => {
-                const eDateControl: AbstractControl | null = this.editValueForm.get("EndDate");
+    // on value of form change
+    // Override
+    onValueChanged(data?: any): void {
+        if (!this.editValueForm) { return; }
+        const form = this.editValueForm;
+        const SubPayIdControl: AbstractControl | null = this.editValueForm.get("SubPaymentMasterId");
+        const paintTeamControl: AbstractControl | null = this.editValueForm.get("PaintTeamId"); 
+        const projectControl: AbstractControl | null = this.editValueForm.get("ProjectCodeMasterId"); 
+        const StartDateControl: AbstractControl | null = this.editValueForm.get("StartDate"); 
+        const EndDateControl: AbstractControl | null = this.editValueForm.get("EndDate"); 
 
-                if (eDateControl) {
-                    if (sDate) {
-                        eDateControl.setValidators([
-                            Validators.required,
-                            DateMinValidator(sDate)
-                        ]);
-                    } else {
-                        eDateControl.setValidators([
-                            Validators.required
-                        ]);
-                    }
-                    eDateControl.updateValueAndValidity();
+        if (paintTeamControl && projectControl && SubPayIdControl && StartDateControl && EndDateControl) {
+            if (SubPayIdControl.value < 1) {
+                if (paintTeamControl.value && projectControl.value &&
+                    StartDateControl.value && EndDateControl.value) {
+                    this.CanLoadSubPayment = true;
+                } else {
+                    this.CanLoadSubPayment = false;
                 }
-            });
+            } else {
+                this.CanLoadSubPayment = false;
+            }
+        } else {
+            this.CanLoadSubPayment = false;
         }
 
-        const eDateControl: AbstractControl | null = this.editValueForm.get("EndDate");
-        if (eDateControl) {
-            eDateControl.valueChanges.subscribe((eDate: Date) => {
-                const sDateControl: AbstractControl | null = this.editValueForm.get("StartDate");
-
-                if (sDateControl) {
-                    if (eDate) {
-                        eDateControl.setValidators([
-                            Validators.required,
-                            DateMaxValidator(eDate)
-                        ]);
-                    } else {
-                        sDateControl.setValidators([
-                            Validators.required
-                        ]);
-                    }
-                    sDateControl.updateValueAndValidity();
-                }
-            });
-        }
+        // on form valid or not
+        this.onFormValid(form.valid);
     }
 
     // open dialog
@@ -270,7 +267,7 @@ export class SubpaymentEditComponent
                     .subscribe(project => {
                         if (project) {
                             this.editValueForm.patchValue({
-                                ProjectCodeMasterId: project.ProjectCodeSubId,
+                                ProjectCodeMasterId: project.ProjectCodeMasterId,
                                 ProjectCodeMasterString: `${project.ProjectMasterString}`,
                             });
                         }
@@ -295,6 +292,7 @@ export class SubpaymentEditComponent
                                 }
                                 newSubPaymentDetail.forEach((item,index) => {
                                     item.PaymentDate = new Date;
+                                    item.CalcCost = (item.AreaWorkLoad || 0) * (item.CurrentCost || 0);
                                 });
                                 this.editValue.SubPaymentDetails = newSubPaymentDetail.slice();
                                 this.editValueForm.patchValue({
@@ -333,7 +331,17 @@ export class SubpaymentEditComponent
                 // remove item
                 this.editValue.SubPaymentDetails.splice(this.indexSubPayDetail, 1);
             }
+
+            subPaymentDetail.CalcCost = (subPaymentDetail.AreaWorkLoad || 0) * (subPaymentDetail.CurrentCost || 0);
             // cloning an object
+            if (subPaymentDetail.AdditionCost) {
+                subPaymentDetail.CalcCost = (subPaymentDetail.CalcCost || 0) + subPaymentDetail.AdditionCost;
+            }
+
+            if (subPaymentDetail.AdditionArea) {
+                subPaymentDetail.CalcCost = (subPaymentDetail.CalcCost || 0) + (subPaymentDetail.AdditionArea * (subPaymentDetail.CurrentCost || 0));
+            }
+
             this.editValue.SubPaymentDetails.push(Object.assign({}, subPaymentDetail));
             this.editValueForm.patchValue({
                 SubPaymentDetails: this.editValue.SubPaymentDetails.slice(),

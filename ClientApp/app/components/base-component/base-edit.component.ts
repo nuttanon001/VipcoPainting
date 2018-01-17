@@ -3,6 +3,7 @@ import { OnInit, OnDestroy, ViewContainerRef } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 // rxjs
 import { Subscription } from 'rxjs/Subscription';
+import { Calendar } from "primeng/components/calendar/calendar";
 
 export abstract class BaseEditComponent<Model,Service> implements OnInit, OnDestroy {
     editValue: Model;
@@ -40,5 +41,10 @@ export abstract class BaseEditComponent<Model,Service> implements OnInit, OnDest
     onFormValid(isValid: boolean): void {
         this.editValue = this.editValueForm.value;
         this.communicateService.toParent([this.editValue, isValid]);
+    }
+    // bug calendar not update min-max
+    // update CakenderUi
+    updateCalendarUI(calendar: Calendar) {
+        calendar.updateUI();
     }
 }

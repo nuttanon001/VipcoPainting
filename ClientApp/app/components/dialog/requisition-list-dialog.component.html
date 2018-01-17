@@ -40,7 +40,8 @@
                                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                                     <p-calendar [showIcon]="true" autofocus (onSelect)="updateValueForPrimeNgComponent($event, 'RequisitionDate', rowIndex)"
                                                 name="RequisitionDate" dateFormat="dd/mm/yy"
-                                                appendTo="body" [(ngModel)]="requisitionMasters[rowIndex].RequisitionDate">
+                                                appendTo="body" 
+                                                [(ngModel)]="requisitionMasters[rowIndex].RequisitionDate">
                                     </p-calendar>
                                 </ng-template>
                             </ngx-datatable-column>

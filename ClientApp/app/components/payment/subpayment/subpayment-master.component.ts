@@ -46,9 +46,9 @@ export class SubpaymentMasterComponent
     //Parameter
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     columns: Array<TableColumn> = [
-        { prop: "SubPaymentNo", name: "SubPaymentMaster", flexGrow: 1 },
-        { prop: "PaintTeamString", name: "PaymentType", flexGrow: 1 },
-        { prop: "SubPaymentDate", name: "Cost", flexGrow: 1, pipe: this.datePipe },
+        { prop: "SubPaymentNo", name: "No", flexGrow: 1 },
+        { prop: "PaintTeamString", name: "Team", flexGrow: 1 },
+        { prop: "SubPaymentDate", name: "Date", flexGrow: 1, pipe: this.datePipe },
     ];
 
     // on get data with lazy load

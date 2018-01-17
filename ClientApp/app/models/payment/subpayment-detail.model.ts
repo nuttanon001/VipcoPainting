@@ -13,6 +13,8 @@ export interface SubPaymentDetail extends BaseModel {
     SubPaymentMasterId?: number;
     //PaymentDetail
     PaymentDetailId?: number;
+    //PaymentCostHistory
+    PaymentCostHistoryId?: number;
     //ViewModel
     CurrentCost?: number;
     PaymentDetailString?: string;

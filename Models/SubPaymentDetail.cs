@@ -24,6 +24,9 @@ namespace VipcoPainting.Models
         //PaymentDetail
         public int? PaymentDetailId { get; set; }
         public PaymentDetail PaymentDetail { get; set; }
+        //PaymentCostHistory
+        public int? PaymentCostHistoryId { get; set; }
+        public PaymentCostHistory PaymentCostHistory { get; set; }
         //PaintTaskDetail
         //public int? PaintTaskDetailId { get; set; }
         //public PaintTaskDetail PaintTaskDetail { get; set; }

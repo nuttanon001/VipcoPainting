@@ -9,6 +9,7 @@ import { SelectItem } from "primeng/primeng";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { BlastRoomService } from "../../../services/task/blast-room.service";
 import { BlastWorkitemService } from "../../../services/require-paint/blast-workitem.service";
+import { Calendar } from "primeng/components/calendar/calendar";
 
 @Component({
     selector: "paint-task-detail-blast",
@@ -42,6 +43,7 @@ export class PaintTaskDetailBlastComponent implements OnInit {
     @Input() ReadOnly: boolean = false;
     @Output() hasChange = new EventEmitter<boolean>();
     @Output() showReportBlast = new EventEmitter<number>();
+    cannotEdit: boolean;
     // FormGroup
     paintTaskDetailForm: FormGroup;
     minProgress: number;
@@ -57,6 +59,7 @@ export class PaintTaskDetailBlastComponent implements OnInit {
     // build Form
     buildForm(): void {
         this.minProgress = this.paintTaskDetail.TaskDetailProgress || 0;
+        this.cannotEdit = this.ReadOnly ? true : this.minProgress > 0;
         this.paintTaskDetailForm = this.fb.group({
             PaintTaskDetailId: [this.paintTaskDetail.PaintTaskDetailId],
             Remark: [this.paintTaskDetail.Remark,
@@ -242,5 +245,11 @@ export class PaintTaskDetailBlastComponent implements OnInit {
         if (this.paintTaskDetail.PaintTaskDetailId) {
             this.showReportBlast.emit(this.paintTaskDetail.PaintTaskDetailId);
         }
+    }
+
+    // bug calendar not update min-max
+    // update CakenderUi
+    updateCalendarUI(calendar: Calendar) {
+        calendar.updateUI();
     }
 }

@@ -12,6 +12,7 @@ import { BaseEditComponent } from "../../base-component/base-edit.component";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
+import { Calendar } from "primeng/components/calendar/calendar";
 
 @Component({
     selector: "require-list-edit",
@@ -294,6 +295,12 @@ export class RequireListEditComponent implements OnInit {
                 this.isPaintValid = true;
             }
         }
+    }
+
+    // bug calendar not update min-max
+    // update CakenderUi
+    updateCalendarUI(calendar: Calendar) {
+        calendar.updateUI();
     }
 }
 

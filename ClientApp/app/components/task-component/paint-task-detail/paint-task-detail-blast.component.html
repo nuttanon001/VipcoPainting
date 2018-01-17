@@ -45,7 +45,7 @@
                 <label for="PaymentDetailId" class="my-label-col1-right">Payment:</label>
                 <div class="col-sm-5">
                     <p-dropdown class="my-input-combobox" [options]="paymentDetails" [style]="{'width':'100%'}"
-                                appendTo="body" [readonly]="ReadOnly"
+                                appendTo="body" [readonly]="ReadOnly || cannotEdit"
                                 formControlName="PaymentDetailId" required>
                     </p-dropdown>
                 </div>
@@ -53,15 +53,15 @@
             <div class="my-form">
                 <label for="PlanSDate" class="my-label-col1-right">Plan:</label>
                 <div *ngIf="!ReadOnly;else ElsePlan" class="edit-form-content col-sm-5">
-                    <p-calendar formControlName="PlanSDate" [showIcon]="true"
+                    <p-calendar #PlanSDate formControlName="PlanSDate" [showIcon]="true"
                                 dateFormat="dd/mm/yy" placeholder="  Start actual date"
-                                appendTo="body"
+                                appendTo="body" (onFocus)="updateCalendarUI(PlanSDate)"
                                 [maxDate]="paintTaskDetailForm.controls.PlanEDate.value">
                     </p-calendar>
                     <span style="margin-left:6px;margin-right:7px;">|</span>
-                    <p-calendar formControlName="PlanEDate" [showIcon]="true"
+                    <p-calendar #PlanEDate formControlName="PlanEDate" [showIcon]="true"
                                 dateFormat="dd/mm/yy" placeholder="  End actual date"
-                                appendTo="body"
+                                appendTo="body" (onFocus)="updateCalendarUI(PlanEDate)"
                                 [minDate]="paintTaskDetailForm.controls.PlanSDate.value">
                     </p-calendar>
                 </div>
@@ -75,15 +75,15 @@
 
                 <label for="ActualSDate" class="my-label-col1-right">Actual:</label>
                 <div *ngIf="!ReadOnly;else ElseActual" class="edit-form-content col-sm-5">
-                    <p-calendar formControlName="ActualSDate" [showIcon]="true" [style]="{'width':'100%'}"
+                    <p-calendar #ActualSDate formControlName="ActualSDate" [showIcon]="true" [style]="{'width':'100%'}"
                                 dateFormat="dd/mm/yy" placeholder="  Start actual date"
-                                appendTo="body"
+                                appendTo="body" (onFocus)="updateCalendarUI(ActualSDate)"
                                 [maxDate]="paintTaskDetailForm.controls.ActualEDate.value || maxDate">
                     </p-calendar>
                     <span style="margin-left:6px;margin-right:7px;">|</span>
-                    <p-calendar formControlName="ActualEDate" [showIcon]="true"
+                    <p-calendar #ActualEDate formControlName="ActualEDate" [showIcon]="true"
                                 dateFormat="dd/mm/yy" placeholder="  End actual date"
-                                appendTo="body"
+                                appendTo="body" (onFocus)="updateCalendarUI(ActualEDate)"
                                 [minDate]="paintTaskDetailForm.controls.ActualSDate.value"
                                 [maxDate]="maxDate">
                     </p-calendar>
@@ -101,7 +101,7 @@
                 <label for="BlastRoomId" class="my-label-col1-right">Room:</label>
                 <div class="col-sm-5">
                     <p-dropdown class="my-input-combobox" [options]="blastRooms" [style]="{'width':'100%'}"
-                                appendTo="body" [readonly]="ReadOnly"
+                                appendTo="body" [readonly]="ReadOnly || cannotEdit"
                                 formControlName="BlastRoomId" required>
                     </p-dropdown>
                 </div>

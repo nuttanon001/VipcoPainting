@@ -19,15 +19,15 @@
                     <div class="my-form">
                         <label for="PlanStart" class="my-label">DatePlan:</label>
                         <div class="edit-form-content col-sm-5">
-                            <p-calendar formControlName="PlanStart" [showIcon]="true"
+                            <p-calendar #PlanStart formControlName="PlanStart" [showIcon]="true"
                                         id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
-                                        appendTo="body"
+                                        appendTo="body" (onFocus)="updateCalendarUI(PlanStart)"
                                         [maxDate]="RequirePaintListForm.controls.PlanEnd.value">
                             </p-calendar>
                             <span style="margin-left:6px;margin-right:7px;">|</span>
-                            <p-calendar formControlName="PlanEnd" [showIcon]="true"
+                            <p-calendar #PlanEnd formControlName="PlanEnd" [showIcon]="true"
                                         id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  End plane date"
-                                        appendTo="body"
+                                        appendTo="body" (onFocus)="updateCalendarUI(PlanEnd)"
                                         [minDate]="RequirePaintListForm.controls.PlanStart.value">
                             </p-calendar>
                         </div>

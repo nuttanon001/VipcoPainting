@@ -14,7 +14,7 @@ import { Subscription } from "rxjs/Subscription";
             class="material"
             [rows]="rows"
             [columns]="columns"
-            [columnMode]="'flex'"
+            [columnMode]="columnMode"
             [headerHeight]="50"
             [footerHeight]="0"
             [rowHeight]="50"
@@ -33,6 +33,7 @@ export class ReuseTableComponent implements OnInit {
     // input and output
     @Input("columns") columns: any;
     @Input("rows") rows: Array<any>;
+    @Input("columnMode") columnMode: string = "flex";
     @Input("height") height: string = "calc(100vh - 184px)";
     @Output("selected") selected = new EventEmitter<any>();
     // height: string;

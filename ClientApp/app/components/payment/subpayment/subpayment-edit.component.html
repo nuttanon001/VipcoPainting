@@ -8,23 +8,16 @@
                 <form [formGroup]="editValueForm">
                     <div class="my-form">
                         <label for="SubPaymentNo" class="my-label">SubPayment No:</label>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <input type="text" class="my-input" placeholder="Code will automatically generated."
                                    id="SubPaymentNo" formControlName="SubPaymentNo" readonly>
                         </div>
-
                         <label for="StartDate" class="my-label">Date SubPayment:</label>
-                        <div class="edit-form-content col-sm-5">
-                            <p-calendar formControlName="StartDate" [showIcon]="true"
-                                        id="StartDate" dateFormat="dd/mm/yy" placeholder="  Start subpayment start date"
-                                        appendTo="body"
-                                        [maxDate]="editValueForm.controls.EndDate.value">
-                            </p-calendar>
-                            <span style="margin-left:6px;margin-right:7px;">|</span>
-                            <p-calendar formControlName="EndDate" [showIcon]="true"
-                                        id="EndDate" dateFormat="dd/mm/yy" placeholder="  End subpayment end date"
-                                        appendTo="body"
-                                        [minDate]="editValueForm.controls.StartDate.value">
+                        <div class="edit-form-content col-sm-4">
+                            <p-calendar #SubPaymentDate formControlName="SubPaymentDate" [showIcon]="true"
+                                        id="SubPaymentDate" dateFormat="dd/mm/yy" placeholder="start date"
+                                        appendTo="body" (onFocus)="updateCalendarUI(SubPaymentDate)"
+                                        [maxDate]="editValueForm.controls.SubPaymentDate.value">
                             </p-calendar>
                         </div>
                     </div>
@@ -38,20 +31,19 @@
                             <validation-messages [control]="editValueForm.controls.ProjectCodeMasterString"></validation-messages>
                         </div>
 
+                        <label for="PaintTeamId" class="my-label">Team:</label>
                         <div class="col-sm-4">
-                            <label for="PaintTeamId" class="my-label">Team:</label>
                             <p-dropdown class="my-input-combobox" [options]="paintTeams" filter="filter" [style]="{'width':'100%'}"
                                         appendTo="body"
                                         id="PaintTeamId" formControlName="PaintTeamId" required>
                             </p-dropdown>
-                            <validation-messages [control]="editValueForm.controls.PaintTeamId"></validation-messages>
                         </div>
                     </div>
 
                     <div class="my-form">
                         <label for="EmpApproved1String" class="my-label">ApproveBy1:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input-click" placeholder="Choose employee who approved subpayment here"
+                            <input type="text" class="my-input-click" placeholder="Choose employee approved 1 subpayment here"
                                    (click)="openDialog('EmpApproved1')"
                                    id="EmpApproved1String" formControlName="EmpApproved1String" required readonly>
                             <validation-messages [control]="editValueForm.controls.EmpApproved1String"></validation-messages>
@@ -59,7 +51,7 @@
 
                         <label for="EmpApproved2String" class="my-label">ApproveBy2:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="my-input-click" placeholder="Choose employee who approved subpayment here"
+                            <input type="text" class="my-input-click" placeholder="Choose employee approved 2 subpayment here"
                                    (click)="openDialog('EmpApproved2')"
                                    id="EmpApproved2String" formControlName="EmpApproved2String" required readonly>
                             <validation-messages [control]="editValueForm.controls.EmpApproved2String"></validation-messages>
@@ -86,12 +78,13 @@
                 <div style="margin-bottom:5px;">
                     <button type="button" mat-icon-button color="warn" (click)="getSubPaymentDetail()"
                             matTooltip="Load Data SubPayment" style="float:left" [disabled]="!CanLoadSubPayment">
-                        <i class="fa fa-2x fa-hacker-news" aria-hidden="true"></i>
+                        <i class="fa fa-2x fa-envelope-open fa-rotate-180" aria-hidden="true"></i>
+                        Load SubPayment
                     </button>
                 </div>
                 <!--[columns]="columns"-->
                 <ngx-datatable class="material"
-                               [rows]="editValue.ProjectSubs"
+                               [rows]="editValue.SubPaymentDetails"
                                [columnMode]="'flex'"
                                [headerHeight]="50"
                                [footerHeight]="0"
@@ -101,9 +94,28 @@
                                [scrollbarH]="true"
                                [style.height]="'calc(100vh - 235px)'">
                     <ngx-datatable-column name="PaymentInfo" prop="PaymentDetailString" [flexGrow]="2"></ngx-datatable-column>
-                    <ngx-datatable-column name="Area" prop="AreaWorkLoad" [flexGrow]="1"></ngx-datatable-column>
+                    <!--Area-->
+                    <ngx-datatable-column prop="AreaWorkLoad" [flexGrow]="1">
+                        <ng-template let-column="column" ngx-datatable-header-template>
+                            Area
+                        </ng-template>
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                            {{value | number}}
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="AreaAddition" prop="AdditionArea" [flexGrow]="1"></ngx-datatable-column>
                     <ngx-datatable-column name="Cost" prop="CurrentCost" [flexGrow]="1"></ngx-datatable-column>
-                    <ngx-datatable-column name="Total" prop="CalcCost" [flexGrow]="1"></ngx-datatable-column>
+                    <ngx-datatable-column name="CostAddition" prop="AdditionCost" [flexGrow]="1"></ngx-datatable-column>
+                    <!--CalcCost-->
+                    <ngx-datatable-column prop="CalcCost" [flexGrow]="1">
+                        <ng-template let-column="column" ngx-datatable-header-template>
+                            Total
+                        </ng-template>
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                            {{value | number}}
+                        </ng-template>
+                    </ngx-datatable-column>
                     <ngx-datatable-column [flexGrow]="1" [sortable]="false">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <button mat-button (click)="onEditSubPaymentDetail(row)" color="accent">Edit</button>
@@ -120,3 +132,8 @@
         </mat-tab>
     </mat-tab-group>
 </div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

@@ -32,12 +32,12 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
     @Input("height") height: string = "calc(100vh - 184px)";
 
     columns: Array<TableColumn> = [
-        { prop: "Description", name: "Description", flexGrow: 1 },
-        { prop: "MarkNo", name: "MarkNo", flexGrow: 1 },
-        { prop: "DrawingNo", name: "DrawingNo", flexGrow: 1 },
-        { prop: "UnitNo", name: "UnitNo", flexGrow: 1 },
-        { prop: "Quantity", name: "Q'ty", flexGrow: 1 },
-        { prop: "Weight", name: "Weight", flexGrow: 1 },
+        { prop: "Description", name: "Description", width: 250 },
+        { prop: "MarkNo", name: "MarkNo", width: 150 },
+        { prop: "DrawingNo", name: "DrawingNo", width: 150 },
+        { prop: "UnitNo", name: "UnitNo", width: 75 },
+        { prop: "Quantity", name: "Q'ty", width: 75 },
+        { prop: "Weight", name: "Weight", width: 75 },
     ];
 
     // load more data

@@ -186,71 +186,114 @@ namespace VipcoPainting.Controllers
                 {
                     if (CurrentSubPayment.ProjectCodeMasterId > 0 && CurrentSubPayment.PaintTeamId > 0)
                     {
+                        #region PaintProgress
                         // get WorkLoad for paint team and project
-                        var QueryData = this.repositoryPaintTaskDetail.GetAllAsQueryable()
+                        var QueryPaintData = this.repositoryPaintTaskDetail.GetAllAsQueryable()
                                             .Where(x => x.PaintTeamId == CurrentSubPayment.PaintTeamId &&
                                                         x.PaintTaskMaster.RequirePaintingList
                                                          .RequirePaintingMaster.ProjectCodeSub
                                                          .ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId &&
-                                                        x.PaintTaskMaster.PaintTaskStatus != PaintTaskStatus.Cancel)
+                                                        x.PaintTaskMaster.PaintTaskStatus != PaintTaskStatus.Cancel &&
+                                                        x.PaymentDetailId != null &&
+                                                        x.PaintWorkItemId != null)
                                             .Include(x => x.PaintTaskMaster)
-                                            .Include(x => x.BlastWorkItem)
                                             .Include(x => x.PaintWorkItem)
                                             .Include(x => x.PaymentDetail);
 
-                        var dbData = await QueryData.Select(x => new
+                        var DataPaint = await QueryPaintData.Select(x => new CalclateProgressViewModel
                         {
-                            x.PaymentDetailId,
-                            x.PaymentDetail.Description,
-                            x.PaymentDetail.LastCost,
-                            AreaBlastIn = (x.BlastWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100),
-                            AreaBlastEx = (x.BlastWorkItem.ExtArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100),
-                            AreaPaintIn = (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100),
-                            AreaPaintEx = (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100),
+                            PaymentDetailId = x.PaymentDetailId,
+                            Description = x.PaymentDetail.Description,
+                            LastCost = x.PaymentDetail.LastCost,
+                            PaintTaskDetailId = x.PaintTaskDetailId,
+                            AreaPaintIn = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? 
+                                            (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
+                            AreaPaintEx = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ? 
+                                            (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
                         }).ToListAsync();
+                        #endregion
 
-                        Expression<Func<SubPaymentMaster, bool>> condition =
-                            p => p.PaintTeamId == CurrentSubPayment.PaintTeamId &&
-                            p.ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId;
+                        #region BlastProgress
+                        // get WorkLoad for paint team and project
+                        var QueryBlastData = this.repositoryPaintTaskDetail.GetAllAsQueryable()
+                                            .Where(x => x.BlastRoom.PaintTeamId == CurrentSubPayment.PaintTeamId &&
+                                                        x.PaintTaskMaster.RequirePaintingList
+                                                         .RequirePaintingMaster.ProjectCodeSub
+                                                         .ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId &&
+                                                        x.PaintTaskMaster.PaintTaskStatus != PaintTaskStatus.Cancel &&
+                                                        x.PaymentDetailId != null &&
+                                                        x.BlastWorkItemId != null)
+                                            .Include(x => x.PaintTaskMaster)
+                                            .Include(x => x.BlastRoom)
+                                            .Include(x => x.BlastWorkItem)
+                                            .Include(x => x.PaymentDetail);
 
-                        // any subpayment for project and paint team
-                        if (await this.repository.AnyDataAsync(condition))
+                        var DataBlast = await QueryBlastData.Select(x => new CalclateProgressViewModel
                         {
-                            var DbSubPayment = (await this.repositoryPaymentDetail.GetAllAsQueryable()
-                                                        .Where(x => x.SubPaymentMaster.PaintTeamId == CurrentSubPayment.PaintTeamId &&
-                                                                    x.SubPaymentMaster.ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId)
-                                                        .GroupBy(x => x.PaymentDetailId)
-                                                        .ToListAsync())
-                                                        .Select(x => new
-                                                        {
-                                                            PaymentDetailId = x.Key.Value,
-                                                            TotalArea = x.Sum(z => z.AreaWorkLoad)
-                                                        });
+                            PaymentDetailId = x.PaymentDetailId,
+                            Description = x.PaymentDetail.Description,
+                            LastCost = x.PaymentDetail.LastCost,
+                            PaintTaskDetailId = x.PaintTaskDetailId,
+                            AreaBlastIn = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? 
+                                            (x.BlastWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
+                            AreaBlastEx = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ? 
+                                            (x.BlastWorkItem.ExtArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
+                        }).ToListAsync();
+                        #endregion
 
-                            var SubPaymentDetails = dbData.GroupBy(x => x.PaymentDetailId)
-                                                        .Select(x => new SubPaymentDetail
-                                                        {
-                                                            AreaWorkLoad = DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key) != null ?
-                                                                (DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key).TotalArea ?? 0) -
-                                                                x.Sum(y => y.AreaBlastIn + y.AreaBlastEx + y.AreaPaintIn + y.AreaPaintEx) : x.Sum(y => y.AreaBlastIn + y.AreaBlastEx + y.AreaPaintIn + y.AreaPaintEx),
-                                                            CalcCost = x.Average(y => y.LastCost),
-                                                            PaymentDetailId = x.Key
-                                                        }).ToList();
+                       
 
-                            return new JsonResult(SubPaymentDetails, this.DefaultJsonSettings);
-                        }
-                        else
+                        var dbData = new List<CalclateProgressViewModel>();
+                        dbData.AddRange(DataPaint.Where(x => x.AreaPaintEx > 0 || x.AreaPaintIn > 0));
+                        dbData.AddRange(DataBlast.Where(x => x.AreaBlastEx > 0 || x.AreaBlastIn > 0));
+
+                        if (dbData.Any())
                         {
-                            var SubPaymentDetails = dbData.GroupBy(x => x.PaymentDetailId)
-                                                        .Select(x => new SubPaymentDetail
-                                                        {
-                                                            AreaWorkLoad = x.Sum(y => y.AreaBlastIn + y.AreaBlastEx +
-                                                                                      y.AreaPaintIn + y.AreaPaintEx),
-                                                            CalcCost = x.Average(y => y.LastCost),
-                                                            PaymentDetailId = x.Key
-                                                        }).ToList();
+                            Expression<Func<SubPaymentMaster, bool>> condition =
+                                   p => p.PaintTeamId == CurrentSubPayment.PaintTeamId &&
+                                   p.ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId;
 
-                            return new JsonResult(SubPaymentDetails, this.DefaultJsonSettings);
+                            // any subpayment for project and paint team
+                            if (await this.repository.AnyDataAsync(condition))
+                            {
+                                var DbSubPayment = (await this.repositoryPaymentDetail.GetAllAsQueryable()
+                                                            .Where(x => x.SubPaymentMaster.PaintTeamId == CurrentSubPayment.PaintTeamId &&
+                                                                        x.SubPaymentMaster.ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId)
+                                                            .GroupBy(x => x.PaymentDetailId)
+                                                            .ToListAsync())
+                                                            .Select(x => new
+                                                            {
+                                                                PaymentDetailId = x.Key.Value,
+                                                                TotalArea = x.Sum(z => z.AreaWorkLoad),
+                                                            });
+
+                                var SubPaymentDetails = dbData.GroupBy(x => x.PaymentDetailId)
+                                                            .Select(x => new SubPaymentDetailViewModel
+                                                            {
+                                                                AreaWorkLoad = DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key) != null ?
+                                                                    x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)) -
+                                                                    (DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key).TotalArea ?? 0) : 
+                                                                    x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)),
+                                                                CurrentCost = x.Average(y => y.LastCost),
+                                                                PaymentDetailId = x.Key,
+                                                                PaymentDetailString = x.FirstOrDefault().Description ?? "-"
+                                                            }).ToList();
+
+                                return new JsonResult(SubPaymentDetails.Where(x => x.AreaWorkLoad > 0), this.DefaultJsonSettings);
+                            }
+                            else
+                            {
+                                var SubPaymentDetails = dbData.GroupBy(x => x.PaymentDetailId)
+                                                            .Select(x => new SubPaymentDetailViewModel
+                                                            {
+                                                                AreaWorkLoad = x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)),
+                                                                CurrentCost = x.Average(y => y.LastCost),
+                                                                PaymentDetailId = x.Key,
+                                                                PaymentDetailString = x.FirstOrDefault().Description ?? "-"
+                                                            }).ToList();
+
+                                return new JsonResult(SubPaymentDetails, this.DefaultJsonSettings);
+                            }
                         }
                     }
                 }
@@ -342,6 +385,8 @@ namespace VipcoPainting.Controllers
                     //Date change timezone
                     if (nSubPaymentDetail.PaymentDate.HasValue)
                         nSubPaymentDetail.PaymentDate = this.ChangeTimeZone(nSubPaymentDetail.PaymentDate.Value);
+                    else
+                        nSubPaymentDetail.PaymentDate = DateTime.Now;
                     //Relation
                 }
 
@@ -376,11 +421,16 @@ namespace VipcoPainting.Controllers
                     {
                         uSubPaymentDetail.ModifyDate = uSubPaymentMaster.ModifyDate;
                         uSubPaymentDetail.Modifyer = uSubPaymentMaster.Modifyer;
+                        uSubPaymentDetail.PaymentDate = this.ChangeTimeZone(uSubPaymentDetail.PaymentDate.Value);
                     }
                     else
                     {
                         uSubPaymentDetail.CreateDate = uSubPaymentMaster.ModifyDate;
                         uSubPaymentDetail.Creator = uSubPaymentMaster.Modifyer;
+                        if (uSubPaymentDetail.PaymentDate.HasValue)
+                            uSubPaymentDetail.PaymentDate = this.ChangeTimeZone(uSubPaymentDetail.PaymentDate.Value);
+                        else
+                            uSubPaymentDetail.PaymentDate = DateTime.Now;
                     }
                 }
 
