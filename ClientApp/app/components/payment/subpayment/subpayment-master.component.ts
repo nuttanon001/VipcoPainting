@@ -51,6 +51,9 @@ export class SubpaymentMasterComponent
         { prop: "SubPaymentDate", name: "Date", flexGrow: 1, pipe: this.datePipe },
     ];
 
+    showReport: boolean;
+    SubPaymentMasterId?: number;
+
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
         if (this.scroll) {
@@ -184,5 +187,23 @@ export class SubpaymentMasterComponent
         } else {
             this.displayValue = undefined;
         }
+    }
+
+    // on show report
+    onShowReport(value?: SubPaymentMaster): void {
+        if (value) {
+            this.SubPaymentMasterId = value.SubPaymentMasterId;
+            this.showReport = !this.showReport;
+        }
+    }
+
+    // on back from report
+    onBack(): void {
+        this.showReport = !this.showReport;
+        setTimeout(() => {
+            if (this.displayValue) {
+                this.serviceCom.toChildEdit(this.displayValue);
+            }
+        }, 500);
     }
 }

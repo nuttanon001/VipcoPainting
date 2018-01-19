@@ -4,7 +4,7 @@
         <div class="center-content">
             <div class="child-col-container">
                 <div class="child-row-container my-1">
-                    <div class="plan-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan-1
+                    <div class="plan2-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan-1
                     <div class="ml-1 actual-col" style="margin-right:5px;">|||||</div> Actual
                 </div>
             </div>
@@ -30,7 +30,7 @@
                         <ng-template *ngIf="column.isCol" let-col let-data1="rowData" pTemplate="body">
                             <div [ngSwitch]="data1[col.field]" class="child-col-container">
                                 <div *ngSwitchCase="1">
-                                    <div class="plan-col">
+                                    <div class="plan2-col">
                                         |
                                     </div>
                                     <div class="empty-col">
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                                 <div *ngSwitchCase="3">
-                                    <div class="plan-col my-border">
+                                    <div class="plan2-col my-border">
                                         |
                                     </div>
                                     <div class="actual-col">

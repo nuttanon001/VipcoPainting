@@ -140,6 +140,7 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
                                         PaintTeamId: 1,
                                         //ViewModel
                                         PaintWorkItem: Object.assign({}, item),
+                                        SummaryActual: 0
                                     };
 
                                     // Internal = 1

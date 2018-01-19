@@ -25,14 +25,13 @@ namespace VipcoPainting.Controllers
 
         // Repository Painting
         private IRepositoryPainting<SubPaymentMaster> repository;
-
-        private IRepositoryPainting<SubPaymentDetail> repositoryPaymentDetail;
+        private IRepositoryPainting<SubPaymentDetail> repositorySubPaymentDetail;
+        private IRepositoryPainting<PaymentDetail> repositoryPaymentDetail;
         private IRepositoryPainting<PaintTeam> repositoryPaintTeam;
         private IRepositoryPainting<PaintTaskDetail> repositoryPaintTaskDetail;
 
         // Repositry Machines
         private IRepositoryMachine<Employee> repositoryEmp;
-
         private IRepositoryMachine<ProjectCodeMaster> repositoryProject;
 
         // Mapper
@@ -88,32 +87,14 @@ namespace VipcoPainting.Controllers
         }
 
         private Func<DateTime, DateTime> ChangeTimeZone = d => d.AddHours(+7);
-
-        private SubPaymentDetail ConvertTaskPaintDetailToSubPaymentDetail(PaintTaskDetail paintTaskDetail)
-        {
-            if (paintTaskDetail != null)
-            {
-                // var AreaWorkLoad = 0D;
-                //if (paintTaskDetail.PaintTaskDetailType == PaintTaskDetailType.Blast)
-                //{
-                //    if (paintTaskDetail)
-                //}
-                //else if (paintTaskDetail.PaintTaskDetailType == PaintTaskDetailType.Paint)
-                //{
-                //}
-
-                return new SubPaymentDetail();
-            }
-            return null;
-        }
-
         #endregion PrivateMenbers
 
         #region Constructor
 
         public SubPaymentMasterController(
             IRepositoryPainting<SubPaymentMaster> repo,
-            IRepositoryPainting<SubPaymentDetail> repoPaymentDetail,
+            IRepositoryPainting<SubPaymentDetail> repoSubPaymentDetail,
+            IRepositoryPainting<PaymentDetail> repoPaymentDetail,
             IRepositoryPainting<PaintTeam> repoPaintTeam,
             IRepositoryPainting<PaintTaskDetail> repoPaintTaskDetail,
             IRepositoryMachine<Employee> repoEmp,
@@ -123,6 +104,7 @@ namespace VipcoPainting.Controllers
             // Repository Painting
             this.repository = repo;
             this.repositoryPaintTeam = repoPaintTeam;
+            this.repositorySubPaymentDetail = repoSubPaymentDetail;
             this.repositoryPaymentDetail = repoPaymentDetail;
             this.repositoryPaintTaskDetail = repoPaintTaskDetail;
             // Repository Machie
@@ -206,9 +188,9 @@ namespace VipcoPainting.Controllers
                             Description = x.PaymentDetail.Description,
                             LastCost = x.PaymentDetail.LastCost,
                             PaintTaskDetailId = x.PaintTaskDetailId,
-                            AreaPaintIn = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? 
+                            AreaPaintIn = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ?
                                             (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
-                            AreaPaintEx = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ? 
+                            AreaPaintEx = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ?
                                             (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
                         }).ToListAsync();
                         #endregion
@@ -234,14 +216,14 @@ namespace VipcoPainting.Controllers
                             Description = x.PaymentDetail.Description,
                             LastCost = x.PaymentDetail.LastCost,
                             PaintTaskDetailId = x.PaintTaskDetailId,
-                            AreaBlastIn = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? 
+                            AreaBlastIn = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ?
                                             (x.BlastWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
-                            AreaBlastEx = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ? 
+                            AreaBlastEx = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ?
                                             (x.BlastWorkItem.ExtArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
                         }).ToListAsync();
                         #endregion
 
-                       
+
 
                         var dbData = new List<CalclateProgressViewModel>();
                         dbData.AddRange(DataPaint.Where(x => x.AreaPaintEx > 0 || x.AreaPaintIn > 0));
@@ -256,7 +238,7 @@ namespace VipcoPainting.Controllers
                             // any subpayment for project and paint team
                             if (await this.repository.AnyDataAsync(condition))
                             {
-                                var DbSubPayment = (await this.repositoryPaymentDetail.GetAllAsQueryable()
+                                var DbSubPayment = (await this.repositorySubPaymentDetail.GetAllAsQueryable()
                                                             .Where(x => x.SubPaymentMaster.PaintTeamId == CurrentSubPayment.PaintTeamId &&
                                                                         x.SubPaymentMaster.ProjectCodeMasterId == CurrentSubPayment.ProjectCodeMasterId)
                                                             .GroupBy(x => x.PaymentDetailId)
@@ -272,7 +254,7 @@ namespace VipcoPainting.Controllers
                                                             {
                                                                 AreaWorkLoad = DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key) != null ?
                                                                     x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)) -
-                                                                    (DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key).TotalArea ?? 0) : 
+                                                                    (DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key).TotalArea ?? 0) :
                                                                     x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)),
                                                                 CurrentCost = x.Average(y => y.LastCost),
                                                                 PaymentDetailId = x.Key,
@@ -440,13 +422,13 @@ namespace VipcoPainting.Controllers
                 {
                     // filter
                     Expression<Func<SubPaymentDetail, bool>> conditionSubDetail = m => m.SubPaymentMasterId == key;
-                    var dbSubDetails = this.repositoryPaymentDetail.FindAll(conditionSubDetail);
+                    var dbSubDetails = this.repositorySubPaymentDetail.FindAll(conditionSubDetail);
 
                     //Remove SubPaymentDetail if edit remove it
                     foreach (var dbSubDetail in dbSubDetails)
                     {
                         if (!uSubPaymentMaster.SubPaymentDetails.Any(x => x.SubPaymentDetailId == dbSubDetail.SubPaymentDetailId))
-                            await this.repositoryPaymentDetail.DeleteAsync(dbSubDetail.SubPaymentDetailId);
+                            await this.repositorySubPaymentDetail.DeleteAsync(dbSubDetail.SubPaymentDetailId);
                     }
 
                     //Update SubPaymentDetail or New SubPaymentDetail
@@ -456,13 +438,13 @@ namespace VipcoPainting.Controllers
                             continue;
 
                         if (uSubPaymentDetail.SubPaymentDetailId > 0)
-                            await this.repositoryPaymentDetail.UpdateAsync(uSubPaymentDetail, uSubPaymentDetail.SubPaymentDetailId);
+                            await this.repositorySubPaymentDetail.UpdateAsync(uSubPaymentDetail, uSubPaymentDetail.SubPaymentDetailId);
                         else
                         {
                             if (uSubPaymentDetail.SubPaymentMasterId is null || uSubPaymentDetail.SubPaymentMasterId < 1)
                                 uSubPaymentDetail.SubPaymentMasterId = uSubPaymentMaster.SubPaymentMasterId;
 
-                            await this.repositoryPaymentDetail.AddAsync(uSubPaymentDetail);
+                            await this.repositorySubPaymentDetail.AddAsync(uSubPaymentDetail);
                         }
                     }
                 }
@@ -485,5 +467,81 @@ namespace VipcoPainting.Controllers
         }
 
         #endregion DELETE
+
+        #region Report
+
+        // GET: api/GetReports/5
+        [HttpGet("GetReports/{SubPaymentMasterId}")]
+        public async Task<IActionResult> GetReports(int SubPaymentMasterId)
+        {
+            string Message = "Not found been sub payment master.";
+            try
+            {
+                if (SubPaymentMasterId > 0)
+                {
+                    var dbData = await this.repository.GetAllAsQueryable()
+                                                        .Include(x => x.SubPaymentDetails)
+                                                        .Include(x => x.PaintTeam)
+                                                        .FirstOrDefaultAsync(x => x.SubPaymentMasterId == SubPaymentMasterId);
+
+                    var dbDataAll = await this.repositorySubPaymentDetail.GetAllAsQueryable()
+                                                .Where(x => x.SubPaymentMaster.PaintTeamId == dbData.PaintTeamId &&
+                                                            x.SubPaymentMaster.ProjectCodeMasterId == dbData.ProjectCodeMasterId &&
+                                                            x.SubPaymentMasterId < dbData.SubPaymentMasterId)
+                                                .ToListAsync();
+
+                    if (dbData != null)
+                    {
+                        // Get ReportOverTimeMaster
+                        var ReportSubPayment = new ReportSubPaymentMasterViewModel
+                        {
+                            SubPaymentNo = dbData.SubPaymentNo,
+                            SubPaymentDate = dbData.SubPaymentDate.Value.ToString("dd / MM / yyyy"),
+                            TotalArea = dbData.SubPaymentDetails.Sum(x => (x.AreaWorkLoad ?? 0) + (x.AdditionArea ?? 0)),
+                            TotalCost = dbData.SubPaymentDetails.Sum(x => (x.CalcCost ?? 0) + (x.AdditionCost ?? 0)),
+                            TotalAllArea = dbDataAll?.Sum(x => (x.AreaWorkLoad ?? 0) + (x.AdditionArea ?? 0)) ?? 0,
+                            TotalAllCost = dbDataAll?.Sum(x => (x.CalcCost ?? 0) + (x.AdditionCost ?? 0)) ?? 0,
+                            Approved1 = !string.IsNullOrEmpty(dbData.EmpApproved1) ? (await this.repositoryEmp.GetAsync(dbData.EmpApproved1))?.NameThai ?? "-" : "-",
+                            Approved2 = !string.IsNullOrEmpty(dbData.EmpApproved2) ? (await this.repositoryEmp.GetAsync(dbData.EmpApproved2))?.NameThai ?? "-" : "-",
+                            // Detail
+                            Details = new List<ReportSubPaymentDetailViewModel>()
+                        };
+
+                        var dbPaymentDetail = await this.repositoryPaymentDetail.GetAllAsync();
+                        var RuningNumber = 1;
+                        foreach(var item in dbPaymentDetail.OrderBy(x => x.PaymentDetailId))
+                        {
+                            var subPayment = dbData.SubPaymentDetails.FirstOrDefault(x => x.PaymentDetailId == item.PaymentDetailId);
+
+                            ReportSubPayment.Details.Add(new ReportSubPaymentDetailViewModel()
+                            {
+                                RowNumber = RuningNumber,
+                                Description = item.Description,
+                                Cost = item.LastCost,
+                                AreaWorkLoad = subPayment != null ? subPayment.AreaWorkLoad ?? 0 : 0,
+                                CalcCost = subPayment != null ? subPayment.CalcCost ?? 0 : 0,
+                                AreaTotal = dbDataAll.Where(x => x.PaymentDetailId == item.PaymentDetailId)?.Sum(x => (x.AreaWorkLoad ?? 0) + (x.AdditionArea ?? 0)) ?? 0,
+                                CostTotal = dbDataAll.Where(x => x.PaymentDetailId == item.PaymentDetailId)?.Sum(x => (x.CalcCost ?? 0) + (x.AdditionCost ?? 0)) ?? 0,
+                            });
+
+                            RuningNumber++;
+                        }
+
+                        // Get ReportOverTimeDetail
+                        return new JsonResult(ReportSubPayment, this.DefaultJsonSettings);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+
+            //return new ContentResult();
+        }
+
+        #endregion
     }
 }

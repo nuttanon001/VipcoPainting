@@ -9,3 +9,4 @@ export { SubpaymentDetailEditComponent } from "./subpayment/subpayment-detail-ed
 export { SubpaymentEditComponent } from "./subpayment/subpayment-edit.component";
 export { SubpaymentMasterComponent } from "./subpayment/subpayment-master.component";
 export { SubpaymentViewComponent } from "./subpayment/subpayment-view.component";
+export { SubpaymentReportComponent } from "./subpayment/subpayment-report.component";

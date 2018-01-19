@@ -19,7 +19,7 @@ import {
     PaymentDetailMasterComponent, PaymentDetailViewComponent,
     SubpaymentCenterComponent, SubpaymentDetailEditComponent,
     SubpaymentEditComponent, SubpaymentMasterComponent,
-    SubpaymentViewComponent
+    SubpaymentViewComponent,SubpaymentReportComponent
 } from "../../components/payment/payment.index";
 
 @NgModule({
@@ -28,7 +28,7 @@ import {
         PaymentDetailMasterComponent, PaymentDetailViewComponent,
         SubpaymentCenterComponent, SubpaymentDetailEditComponent,
         SubpaymentEditComponent, SubpaymentMasterComponent,
-        SubpaymentViewComponent
+        SubpaymentViewComponent, SubpaymentReportComponent
     ],
     imports: [
         // angular

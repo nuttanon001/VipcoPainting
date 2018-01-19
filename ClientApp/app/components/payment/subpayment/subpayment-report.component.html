@@ -1,0 +1,265 @@
+﻿<div class="control-item">
+    <button type="button" mat-icon-button color="warn" (click)="onBackToMaster()"
+            style="margin:4px;">
+        <i class="fa fa-3x fa-chevron-circle-left" aria-hidden="true" style="margin:0px;"></i>
+    </button>
+
+    <button type="button" mat-icon-button color="primary" (click)="onPrintToPaper()"
+            style="margin:4px;">
+        <i class="fa fa-3x fa-print" aria-hidden="true" style="margin:0px;"></i>
+    </button>
+</div>
+<div *ngIf="SubPayment" class="report-box" id="printdiv">
+    <table border="0" cellpadding="0" cellspacing="0"
+           style="border-collapse:collapse;table-layout:fixed;">
+        <colgroup>
+            <col width="55"><!--1-->
+            <col width="55"><!--2-->
+            <col width="55"><!--3-->
+            <col width="55"><!--4-->
+            <col width="55"><!--5-->
+            <col width="55"><!--6-->
+            <col width="55"><!--7-->
+            <col width="55"><!--8-->
+            <col width="55"><!--9-->
+            <col width="55"><!--10-->
+            <col width="55"><!--11-->
+            <col width="55"><!--12-->
+            <col width="55"><!--13-->
+        </colgroup>
+        <!--Col13-->
+        <!--Header Table-->
+        <thead>
+            <tr height="25">
+                <td colspan="13" height="25" class="sub-title text-left">
+                    <b>VISAVAKIT PATANA CORP., LTD.</b>
+                </td>
+            </tr>
+            <tr height="20">
+                <td colspan="13" height="25" class="text-left">
+                    OFFICE  : 215/148-149 Pracharad 1 Road, Bangsue, Bangkok 10800, Tel : 02-5852556-8 Fax : 02-5876068
+                </td>
+            </tr>
+            <tr height="20">
+                <td colspan="13" height="25" class="text-left">
+                    PLANT : 42,52 Moo 7, 346 Road, Ladlumkaew, Pathumthani 12140 Tel : 02-9794001-9 Fax : 02-9794010
+                </td>
+            </tr>
+            <tr>
+                <td colspan="13" class="line-btm" height="1"></td>
+            </tr>
+            <tr height="18">
+                <td height="18"></td>
+            </tr>
+            <tr height="20">
+                <td colspan="2" height="25" class="lable text-right">
+                    <b>&nbsp; เลขที่เอกสาร</b> &nbsp;:&nbsp;
+                </td>
+                <td colspan="3" height="25" class="value text-left line-btm">
+                    {{SubPayment.SubPaymentNo}}
+                </td>
+
+                <td colspan="6" height="25" class="lable text-right">
+                    <b>&nbsp; วันที่เอกสาร</b> &nbsp;:&nbsp;
+                </td>
+                <td colspan="2" height="25" class="value text-left line-btm">
+                    {{SubPayment.SubPaymentDate}}
+                </td>
+            </tr>
+            <tr height="18">
+                <td height="18"></td>
+            </tr>
+            <tr height="25">
+                <td colspan="13" height="25" class="text-center sub-title">
+                    <b>แบบฟอร์มแนบใบการสั่งจ้างงานเตรียมผิว และ ทำสี</b>
+                </td>
+            </tr>
+            <!--RowHead1-->
+            <tr height="18">
+                <td height="18" colspan="1" class="column line-all">
+                    <b>No</b>
+                </td>
+                <td colspan="6" class="column line-all">
+                    <b>รายการ</b>
+                </td>
+                <td colspan="2" class="column line-all">
+                    <b>ราคางาน</b>
+                </td>
+                <td colspan="1" class="column line-all">
+                    <b>ปริมาณงาน</b>
+                </td>
+                <td colspan="1" class="column line-all">
+                    <b>คิดเป็นเงิน</b>
+                </td>
+                <td colspan="1" class="column line-all">
+                    <b>งานสะสม</b>
+                </td>
+                <td colspan="1" class="column line-all">
+                    <b>เงินสะสม</b>
+                </td>
+            </tr>
+        </thead>
+        <!--Footer Table-->
+        <tfoot>
+            <tr height="18">
+                <td colspan="9" class="text-right" height="18">
+                    <b>Total</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td colspan="1" class="line-all item-row">
+                    {{SubPayment.TotalArea > 0 ? (SubPayment.TotalArea | number) + '&nbsp;m²' : ''}}&nbsp;
+                </td>
+                <td colspan="1" class="line-all item-row">
+                    {{SubPayment.TotalCost > 0 ? (SubPayment.TotalCost | number) : ''}}&nbsp;
+                </td>
+                <td class="line-all item-row">
+                    {{SubPayment.TotalAllArea > 0 ? (SubPayment.TotalAllArea | number) + '&nbsp;m²' : ''}}&nbsp;
+                </td>
+                <td class="line-all item-row">
+                    {{SubPayment.TotalAllCost > 0 ? (SubPayment.TotalAllCost | number) : ''}}&nbsp;
+                </td>
+            </tr>
+            <!--Comment1-->
+            <tr height="18">
+                <td height="18"></td>
+            </tr>
+            <tr height="25">
+                <td colspan="5" height="25" class="text-left label">
+                    <b>เปอร์เซ็นการสูญเสียของสี</b>
+                </td>
+                <td colspan="1" class="label">
+                    <b>Primer</b>
+                </td>
+                <td colspan="3" class="lable">
+                    <b>Intermediate</b>/<b>Top coat</b>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" height="18" class="text-left value">
+                    2.1	งานกว้าง (แผ่นเรียบม stack , Duct inside)
+                </td>
+                <td colspan="1" class="value">
+                    38%
+                </td>
+                <td colspan="3" class="text-center value">
+                    33%
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" height="18" class="text-left value">
+                    2.2	งานกว้าง (Casing, Duct outside)
+                </td>
+                <td colspan="1" class="value">
+                    48%
+                </td>
+                <td colspan="3" class="value text-center">
+                    43%
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" height="18" class="text-left value">
+                    2.3	งานแคบ (Structure, Frame, Machine)
+                </td>
+                <td colspan="1" class="value">
+                    53%
+                </td>
+                <td colspan="3" class="value text-center">
+                    53%
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" height="18" class="text-left value">
+                    2.4	งานทรงยาว (Pipe, Handrail, Ladder)
+                </td>
+                <td colspan="1" class="value">
+                    83%
+                </td>
+                <td colspan="3" class="value text-center">
+                    83%
+                </td>
+            </tr>
+            <!--หมายเหตุ-->
+            <tr height="18">
+                <td height="18"></td>
+            </tr>
+            <tr height="25">
+                <td colspan="10" height="25" class="text-left label">
+                    <b>หมายเหตุ </b>
+                </td>
+            </tr>
+            <tr height="18">
+                <td colspan="10" height="18" class="text-left label">
+                    - ราคางานนี้รวมค่าแรง, ค่าเครื่องมือ และวัสดุสิ้นเปลืองต่างๆ ( ไม่รวมสี และทินเนอร์ ผสมสี )
+                </td>
+            </tr>
+            <tr height="18">
+                <td colspan="10" height="18" class="text-left label">
+                    - กำหนดความหนาสีไม่เกิน 300 micron ( หากเกิน 300 micron + 20 บาท / ตรม.)
+                </td>
+            </tr>
+            <tr height="18">
+                <td colspan="10" height="18" class="text-left label">
+                    - ปริมาณการใช้สี ถ้าหากควบคุมได้น้อยกว่าข้อตกลง ส่วนต่างที่เกิดขึ้นจะนำมาพิจารณาเป็นผลตอบ
+                </td>
+            </tr>
+            <tr height="18">
+                <td colspan="10" height="18" class="text-left label">
+                    - แทนคืนผู้ปฎิบัติงาน และขณะเดียวกัน หากใช้ปริมาณสีมากกว่าข้อตกลงก็จะต้องชดใช้ในส่วนที่เกิน
+                </td>
+            </tr>
+
+            <tr height="18">
+                <td height="18"></td>
+            </tr>
+            <tr height="25">
+                <td height="25" class="label text-right" colspan="1">ลงชื่อ&nbsp;</td>
+                <td class="value line-btm" colspan="3">&nbsp;</td>
+                <td class="label" colspan="2">&nbsp;ผู้อนุมัติ 1</td>
+
+                <td class="label text-right" colspan="2">ลงชื่อ&nbsp;</td>
+                <td class="value line-btm" colspan="3">&nbsp;</td>
+                <td class="label" colspan="2">&nbsp;ผู้อนุมัติ 2</td>
+            </tr>
+            <tr height="18">
+                <td height="18" colspan="1" class="label text-right">(</td>
+                <td colspan="3" class="value text-center">คุณ&nbsp;{{SubPayment.Approved1}}</td>
+                <td colspan="1">)</td>
+
+                <td colspan="3" class="label text-right">(</td>
+                <td colspan="3" class="value text-center">คุณ&nbsp;{{SubPayment.Approved2}}</td>
+                <td colspan="1">)</td>
+            </tr>
+            <tr height="18">
+                <td height="18" colspan="1" class="label text-right">วันที่&nbsp;</td>
+                <td class="value line-btm" colspan="3">&nbsp;</td>
+                <td height="18" colspan="4" class="label text-right">วันที่&nbsp;</td>
+                <td class="value line-btm" colspan="3">&nbsp;</td>
+            </tr>
+        </tfoot>
+        <!--Body Table-->
+        <tbody>
+            <tr height="15" *ngFor="let item of SubPayment.Details">
+                <td height=15 class="item-row item-line line-left">
+                    {{item.RowNumber > 0 ? item.RowNumber : ''}}
+                </td>
+                <td class="item-row text-left item-line" colspan="6">
+                    &nbsp;{{item.Description}}
+                </td>
+                <td class="item-row item-line" colspan="2">
+                    {{item.Cost | number}} &nbsp;Baht/m²
+                </td>
+                <td class="item-row item-line">
+                    {{item.AreaWorkLoad > 0 ? (item.AreaWorkLoad | number) + '&nbsp;m²': ''}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.CalcCost > 0 ? (item.CalcCost | number) : ''}}
+                </td>
+                <td class="item-row item-line">
+                    {{item.AreaTotal > 0 ? (item.AreaTotal | number) : ''}}
+                </td>
+                <td class="item-row item-line line-right">
+                    {{item.CostTotal > 0 ? (item.CostTotal | number) : ''}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

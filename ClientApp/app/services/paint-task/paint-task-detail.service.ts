@@ -28,7 +28,6 @@ export class PaintTaskDetailService extends BaseRestService<PaintTaskDetail> {
         let url: string = `${this.actionUrl}${PathString}${PaintTaskDetailId}/`;
         return this.http.get(url).map(this.extractData).catch(this.handleError);
     }
-
 }
 
 @Injectable()

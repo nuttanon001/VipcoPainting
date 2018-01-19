@@ -16,6 +16,12 @@ export class SubpaymentMasterService extends BaseRestService<SubPaymentMaster> {
         return this.http.post(this.actionUrl + "CalclateSubPaymentMaster/", JSON.stringify(nObject), this.getRequestOption())
                     .map(this.extractData).catch(this.handleError);
     }
+
+    // get report SubPayment to pdf
+    getReportSubPaymentToPdf(SubPaymentId: number, PathString: string = "GetReports/"): Observable<any> {
+        let url: string = `${this.actionUrl}${PathString}${SubPaymentId}/`;
+        return this.http.get(url).map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

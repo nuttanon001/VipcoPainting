@@ -151,9 +151,14 @@ export class ProjectEditComponent
     // remove Detail
     onRemoveDetail(projectSub?: ProjectSub): void {
         if (projectSub) {
-            if (this.editValue.ProjectSubs) {
-                let index = this.editValue.ProjectSubs.indexOf(projectSub);
-                this.editValue.ProjectSubs.splice(index, 1);
+            if (projectSub.ProjectCodeSubId < 1) {
+                if (this.editValue.ProjectSubs) {
+                    let index = this.editValue.ProjectSubs.indexOf(projectSub);
+                    this.editValue.ProjectSubs.splice(index, 1);
+                }
+            } else {
+                this.serviceDialogs.error("Warning Message", "Can't remove job-level2/3 if already use data !!!",
+                    this.viewContainerRef);
             }
         }
     }

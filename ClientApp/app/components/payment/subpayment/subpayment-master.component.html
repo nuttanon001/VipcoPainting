@@ -1,4 +1,4 @@
-﻿<div class="master-container">
+﻿<div class="master-container" *ngIf="!showReport;else ReportBlock">
     <split direction="horizontal" [gutterSize]="7" [visibleTransition]="true">
         <split-area [size]="35" [visible]="hideleft" [order]="1">
             <div class="child-left-container">
@@ -56,8 +56,18 @@
                             [disabled]="!canSave" matTooltip="Save" matTooltipPosition="left">
                         <i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i>
                     </button>
+                    <hr />
+                    <button type="button" mat-icon-button color="primary" (click)="onShowReport(displayValue)"
+                            [disabled]="ShowEdit || DisplayDataNull" matTooltip="PrintReport">
+                        <i class="fa fa-2x fa-print" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         </split-area>
     </split>
 </div>
+
+<ng-template #ReportBlock>
+    <subpayment-report [SubPaymentMasterId]="SubPaymentMasterId" (Back)="onBack()">
+    </subpayment-report>
+</ng-template>
