@@ -21,6 +21,7 @@ import { Subscription } from "rxjs/Subscription";
             [scrollbarV]="true"
             [scrollbarH]="true"
             [selectionType]="'single'"
+            [rowClass]="getRowClass"
             (select)="onSelect($event)"
             [style.height]="height">
         </ngx-datatable>
@@ -48,6 +49,27 @@ export class ReuseTableComponent implements OnInit {
     onSelect(selected: any): void {
         if (selected) {
             this.selected.emit(selected.selected[0]);
+        }
+    }
+
+    // row class
+    getRowClass(row?: any): any {
+        if (row) {
+            // debug 
+            // console.log("On row");
+            if (row["RequirePaintingListStatus"]) {
+                if (row.RequirePaintingListStatus === 1) {
+                    return { "is-require": true };
+                } else if (row.RequirePaintingListStatus === 2) {
+                    return { "is-wait": true };
+                } else if (row.RequirePaintingListStatus === 3) {
+                    return { "is-complate": true };
+                } else if (row.RequirePaintingListStatus === 4) {
+                    return { "is-cancel": true };
+                } else {
+                    return { "is-all": true };
+                }
+            }
         }
     }
 }

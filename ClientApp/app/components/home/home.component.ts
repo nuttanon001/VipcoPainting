@@ -6,12 +6,9 @@ import { Component } from "@angular/core";
 })
 export class HomeComponent {
     onOpenNewLink(): void {
-        let local = localStorage.getItem("document");
-        if (local) {
-            let link: string = JSON.parse(local);
-            if (link) {
-                window.open(link, "_blank");
-            }
+        let link: string = "/files/painting_doc.pdf";
+        if (link) {
+            window.open(link, "_blank");
         }
     }
 }

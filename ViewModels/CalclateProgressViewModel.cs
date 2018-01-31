@@ -11,6 +11,7 @@ namespace VipcoPainting.ViewModels
         public string Description { get; set; }
         public double LastCost { get; set; }
         public int? PaintTaskDetailId { get; set; }
+        public int? PaymentCostHistoryId { get; set; }
         public double? AreaBlastIn { get; set; }
         public double? AreaBlastEx { get; set; }
         public double? AreaPaintIn { get; set; }

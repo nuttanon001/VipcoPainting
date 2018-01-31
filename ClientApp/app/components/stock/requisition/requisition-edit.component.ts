@@ -48,6 +48,11 @@ export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaste
                 .subscribe(dbData => {
                     this.editValue = dbData;
                     // set Date
+                    if (this.editValue.RequisitionDate) {
+                        this.editValue.RequisitionDate = this.editValue.RequisitionDate != null ?
+                            new Date(this.editValue.RequisitionDate) : new Date();
+                    }
+
                     if (this.editValue.PaintTaskDetailId) {
                         this.servicePaintTaskDetail.getOneKeyNumberWithCustom(this.editValue.PaintTaskDetailId)
                             .subscribe(dbData => this.paintTaskDetail = dbData);
@@ -98,7 +103,11 @@ export class RequisitionEditComponent extends BaseEditComponent<RequisitionMaste
             Modifyer: [this.editValue.Modifyer],
             ModifyDate: [this.editValue.ModifyDate],
             //FK
-            PaintTaskDetailId: [this.editValue.PaintTaskDetailId],
+            PaintTaskDetailId: [this.editValue.PaintTaskDetailId,
+                [
+                    Validators.required,
+                ]
+            ],
             ColorItemId: [this.editValue.ColorItemId,
                 [
                     Validators.required

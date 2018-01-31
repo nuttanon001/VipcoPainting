@@ -1,6 +1,6 @@
 ﻿// angular
 import { Component, Output, EventEmitter, Input, ViewContainerRef } from "@angular/core";
-import { RequirePaintList } from "../../../models/model.index";
+import { RequirePaintList, RequirePaintMaster } from "../../../models/model.index";
 import { RequirePaintingViewComponent } from "./require-painting-view.component";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
@@ -25,6 +25,21 @@ export class RequirePaintingViewScheduleComponent extends RequirePaintingViewCom
 
     // Parameter
     @Output("selected") selected = new EventEmitter<number>();
+
+    // load more data OverRide
+    onLoadMoreData(value: RequirePaintMaster) {
+        this.service.getByMasterId(value.RequirePaintingMasterId)
+            .subscribe(dbLists => {
+                this.requireLists = new Array;
+                dbLists.forEach(item => {
+                    if (item.RequirePaintingListStatus === 1) {
+                        this.requireLists.push(item);
+                    }
+                });
+                // this.requireLists = dbLists.slice(); //[...dbDetail];
+                // console.log("DataBase is :", this.details);
+            }, error => console.error(error));
+    }
 
     // on Require-Workitem override
     onSelectedRequestWorkItem(value?: RequirePaintList) {

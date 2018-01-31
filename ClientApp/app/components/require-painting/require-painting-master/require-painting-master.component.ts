@@ -4,7 +4,7 @@ import { BaseMasterComponent } from "../../base-component/base-master.component"
 // models
 import {
     RequirePaintMaster, RequirePaintMasterHasList,
-    Scroll, ScrollData, RequirePaintList, PaintWorkItem
+    Scroll, ScrollData, RequirePaintList, PaintWorkItem, BlastWorkItem
 } from "../../../models/model.index";
 // services
 import { AuthService } from "../../../services/auth/auth.service";
@@ -54,7 +54,7 @@ export class RequirePaintingMasterComponent
 
     columns: Array<TableColumn> = [
         { prop: "RequireNo", name: "Code", flexGrow: 1 },
-        { prop: "JobCode", name: "Job", flexGrow: 2 },
+        { prop: "JobCode", name: "Job", flexGrow: 1 },
         { prop: "RequireDate", name: "Date", flexGrow: 1, pipe: this.datePipe },
     ];
 
@@ -165,7 +165,7 @@ export class RequirePaintingMasterComponent
                     });
 
                     //debug here
-                    // console.log(JSON.stringify(this.requirePaintLists));
+                    console.log(JSON.stringify(this.requirePaintLists));
 
                     this.servicePaintList.postLists2(this.requirePaintLists)
                         .subscribe((complate: any) => {
@@ -213,6 +213,35 @@ export class RequirePaintingMasterComponent
                             item.Modifyer = complete.Modifyer;
                         }
 
+                        if (item.BlastWorkItems) {
+                            item.BlastWorkItems.forEach((blastWork, index) => {
+                                if (item.BlastWorkItems) {
+                                    let newData: BlastWorkItem = {
+                                        BlastWorkItemId: blastWork.BlastWorkItemId,
+                                        IntArea: blastWork.IntArea,
+                                        IntCalcStdUsage: blastWork.IntCalcStdUsage,
+                                        ExtArea: blastWork.ExtArea,
+                                        ExtCalcStdUsage: blastWork.ExtCalcStdUsage,
+                                        Creator: blastWork.Creator,
+                                        CreateDate: blastWork.CreateDate,
+                                        Modifyer: blastWork.Modifyer,
+                                        ModifyDate: blastWork.ModifyDate,
+                                        // StandradTimeInt
+                                        StandradTimeIntId: blastWork.StandradTimeIntId,
+                                        // StandradTimeExt
+                                        StandradTimeExtId: blastWork.StandradTimeExtId,
+                                        // SurfaceTypeInt
+                                        SurfaceTypeIntId: blastWork.SurfaceTypeIntId,
+                                        // SurfaceTypeExt
+                                        SurfaceTypeExtId: blastWork.SurfaceTypeExtId,
+                                        // RequirePaintingList
+                                        RequirePaintingListId: blastWork.RequirePaintingListId
+                                    };
+                                    item.BlastWorkItems[index] = newData;
+                                }
+                            })
+                        }
+
                         if (item.PaintWorkItems) {
                             item.PaintWorkItems.forEach((paintWork, index) => {
                                 // can't update FromBody with same data from webapi try new object and send back update
@@ -252,7 +281,7 @@ export class RequirePaintingMasterComponent
                     });
 
                     //debug here
-                    // console.log(JSON.stringify(this.requirePaintLists));
+                    console.log(JSON.stringify(this.requirePaintLists));
 
                     this.servicePaintList.postLists2(this.requirePaintLists)
                         .subscribe((complate: any) => {

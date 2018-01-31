@@ -39,8 +39,8 @@ export class SurfaceTypeDialogComponent
         );
 
         this.columns = [
-            { prop: "SurfaceCode", name: "Code", flexGrow: 1 },
-            { prop: "SurfaceName", name: "Description", flexGrow: 1 },
+            { prop: "SurfaceCode", name: "Code", width: 75 },
+            { prop: "SurfaceName", name: "Description", width: 200 },
         ];
     }
 

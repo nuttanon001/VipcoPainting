@@ -18,22 +18,25 @@
                             <label for="PaintingSchedule" class="my-label">PaintingSchedule:</label>
                             <div class="col-sm-4">
                                 <input type="text" class="my-input" placeholder="Insert painting-schedule here"
-                                       id="PaintingSchedule" formControlName="PaintingSchedule">
+                                       id="PaintingSchedule" formControlName="PaintingSchedule" [readonly]="readOnly">
                                 <validation-messages [control]="editValueForm.controls.PaintingSchedule"></validation-messages>
                             </div>
                         </div>
 
                         <div class="my-form">
                             <label for="RequireDate" class="my-label">RequestDate:</label>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4" *ngIf="!readOnly;else ElseRequireDate">
                                 <p-calendar formControlName="RequireDate" [showIcon]="true"
                                             id="RequireDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
-                                            appendTo="body" 
+                                            appendTo="body"
                                             [maxDate]="maxDate">
                                 </p-calendar>
-                                <!--<span class="is-request-date">**</span>
-                                <validation-messages [control]="editValueForm.controls.RequireDate"></validation-messages>-->
                             </div>
+                            <ng-template #ElseRequireDate>
+                                <div class="col-sm-4">
+                                    {{(editValueForm.controls.RequireDate.value | date:'dd/MM/yyyy') || ''}}
+                                </div>
+                            </ng-template>
 
                             <label for="RequireString" class="my-label">RequesterBy:</label>
                             <div class="col-sm-4">

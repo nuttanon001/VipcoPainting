@@ -52,6 +52,7 @@ export class SubpaymentDetailEditComponent {
             //FK
             SubPaymentMasterId: [this.subPaymentDetail.SubPaymentMasterId],
             PaymentDetailId: [this.subPaymentDetail.PaymentDetailId],
+            PaymentCostHistoryId:[this.subPaymentDetail.PaymentCostHistoryId],
             //ViewModel
             CurrentCost: [this.subPaymentDetail.CurrentCost],
             PaymentDetailString: [this.subPaymentDetail.PaymentDetailString],

@@ -24,12 +24,12 @@ import { MatCheckbox } from "@angular/material";
         class="material datatable-scrolling"
         [rows]="rows"
         [columns]="columns"
-        [columnMode]="'flex'"
+        [columnMode]="columnMode"
         [headerHeight]="headerHeight"
         [rowHeight]="rowHeight"
         [footerHeight]="0"
         [scrollbarV]="true"
-        [scrollbarH]="true"
+        [scrollbarH]="scrollbarH"
         [loadingIndicator]="isLoading"
         (scroll)="onScroll($event.offsetY)"
         [externalSorting]="true"
@@ -48,6 +48,9 @@ export class DataTableComponent implements OnInit,OnDestroy {
     _onlyUser: boolean = true;
     // view chlid
     @ViewChild("checkBox") checkBox: MatCheckbox;
+    // flex, force, standard
+    @Input("columnMode") columnMode: string = "flex";
+    @Input("scrollbarH") scrollbarH: boolean = true; // true, false
     // input and output
     @Output("selected") selected = new EventEmitter<any>();
     @Input("height") height: string = "calc(100vh - 165px)";
@@ -302,17 +305,28 @@ export class DataTableComponent implements OnInit,OnDestroy {
         if (row) {
             // debug 
             // console.log("On row");
-
-            if (row.OverTimeStatus === 1) {
-                return { "is-require": true };
-            } else if (row.OverTimeStatus === 2) {
-                return { "is-wait": true };
-            } else if (row.OverTimeStatus === 3) {
-                return { "is-complate": true };
-            } else if (row.OverTimeStatus === 4) {
-                return { "is-cancel": true };
-            } else {
-                return { "is-all": true };
+            if (row["RequirePaintingStatus"]) {
+                if (row.RequirePaintingStatus === 1) {
+                    return { "is-require": true };
+                } else if (row.RequirePaintingStatus === 2) {
+                    return { "is-wait": true };
+                } else if (row.RequirePaintingStatus === 3) {
+                    return { "is-complate": true };
+                } else if (row.RequirePaintingStatus === 4) {
+                    return { "is-cancel": true };
+                } else {
+                    return { "is-all": true };
+                }
+            } else if (row["PaintTaskStatus"]) {
+                if (row.PaintTaskStatus === 1) {
+                    return { "is-wait": true };
+                } else if (row.PaintTaskStatus === 2) {
+                    return { "is-complate": true };
+                } else if (row.PaintTaskStatus === 3) {
+                    return { "is-cancel": true };
+                } else {
+                    return { "is-all": true };
+                }
             }
         }
     }

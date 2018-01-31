@@ -2,23 +2,22 @@
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
-                <b>Subpayment Information</b>
+                <b>Subpayment Information View</b>
             </ng-template>
             <div class="view-container">
                 <div class="row my-1">
                     <div class="my-label">
-                        SubPayment No :
+                        No :
                     </div>
                     <div class="my-value">
                         {{displayValue.SubPaymentNo || "-"}}
                     </div>
 
                     <div class="my-label">
-                        SubPayment Date :
+                        Date :
                     </div>
                     <div class="my-value">
-                        {{(displayValue?.StartDate | date:'dd/MM/yyyy') || "-"}} To
-                        {{(displayValue?.EndDate | date:'dd/MM/yyyy') || "-"}}
+                        {{(displayValue?.SubPaymentDate | date:'dd/MM/yyyy') || "-"}}
                     </div>
                 </div>
 

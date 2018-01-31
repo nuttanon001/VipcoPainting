@@ -19,5 +19,21 @@ namespace VipcoPainting.ViewModels
         public int? Mode { get; set; }
         public string Creator { get; set; }
         public int? TaskMasterId { get; set; }
+        /// <summary>
+        /// PaintTeam
+        /// </summary>
+        public int? PaintTeamId { get; set; }
+        ///<summary>
+        ///BlastTeam
+        /// </summary>
+        public int? BlastTeamId { get; set; }
+        /// <summary>
+        /// Start date
+        /// </summary>
+        public DateTime? SDate { get; set; }
+        /// <summary>
+        /// End date
+        /// </summary>
+        public DateTime? EDate { get; set; }
     }
 }

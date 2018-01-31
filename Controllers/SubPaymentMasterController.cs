@@ -180,7 +180,7 @@ namespace VipcoPainting.Controllers
                                                         x.PaintWorkItemId != null)
                                             .Include(x => x.PaintTaskMaster)
                                             .Include(x => x.PaintWorkItem)
-                                            .Include(x => x.PaymentDetail);
+                                            .Include(x => x.PaymentDetail.PaymentCostHistorys);
 
                         var DataPaint = await QueryPaintData.Select(x => new CalclateProgressViewModel
                         {
@@ -188,6 +188,7 @@ namespace VipcoPainting.Controllers
                             Description = x.PaymentDetail.Description,
                             LastCost = x.PaymentDetail.LastCost,
                             PaintTaskDetailId = x.PaintTaskDetailId,
+                            PaymentCostHistoryId = x.PaymentDetail.PaymentCostHistorys.Any() ? x.PaymentDetail.PaymentCostHistorys.FirstOrDefault(z => z.EndDate == null).PaymentCostHistoryId : 0,
                             AreaPaintIn = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ?
                                             (x.PaintWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
                             AreaPaintEx = x.PaintWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ?
@@ -208,7 +209,7 @@ namespace VipcoPainting.Controllers
                                             .Include(x => x.PaintTaskMaster)
                                             .Include(x => x.BlastRoom)
                                             .Include(x => x.BlastWorkItem)
-                                            .Include(x => x.PaymentDetail);
+                                            .Include(x => x.PaymentDetail.PaymentCostHistorys);
 
                         var DataBlast = await QueryBlastData.Select(x => new CalclateProgressViewModel
                         {
@@ -216,6 +217,7 @@ namespace VipcoPainting.Controllers
                             Description = x.PaymentDetail.Description,
                             LastCost = x.PaymentDetail.LastCost,
                             PaintTaskDetailId = x.PaintTaskDetailId,
+                            PaymentCostHistoryId = x.PaymentDetail.PaymentCostHistorys.Any() ? x.PaymentDetail.PaymentCostHistorys.FirstOrDefault(z => z.EndDate == null).PaymentCostHistoryId : 0,
                             AreaBlastIn = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ?
                                             (x.BlastWorkItem.IntArea ?? 0) * ((x.TaskDetailProgress ?? 0) / 100) : 0,
                             AreaBlastEx = x.BlastWorkItem != null && x.PaintTaskDetailLayer == PaintTaskDetailLayer.External ?
@@ -257,6 +259,7 @@ namespace VipcoPainting.Controllers
                                                                     (DbSubPayment.FirstOrDefault(z => z.PaymentDetailId == x.Key).TotalArea ?? 0) :
                                                                     x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)),
                                                                 CurrentCost = x.Average(y => y.LastCost),
+                                                                PaymentCostHistoryId = x.FirstOrDefault().PaymentCostHistoryId,
                                                                 PaymentDetailId = x.Key,
                                                                 PaymentDetailString = x.FirstOrDefault().Description ?? "-"
                                                             }).ToList();
@@ -270,6 +273,7 @@ namespace VipcoPainting.Controllers
                                                             {
                                                                 AreaWorkLoad = x.Sum(y => (y.AreaBlastIn ?? 0) + (y.AreaBlastEx ?? 0) + (y.AreaPaintIn ?? 0) + (y.AreaPaintEx ?? 0)),
                                                                 CurrentCost = x.Average(y => y.LastCost),
+                                                                PaymentCostHistoryId = x.FirstOrDefault().PaymentCostHistoryId,
                                                                 PaymentDetailId = x.Key,
                                                                 PaymentDetailString = x.FirstOrDefault().Description ?? "-"
                                                             }).ToList();

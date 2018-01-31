@@ -9,4 +9,8 @@
     Creator?: string;
     CreatorName?: string;
     TaskMasterId?: number;
+    PaintTeamId?: number;
+    BlastTeamId?: number;
+    SDate?: Date;
+    EDate?: Date;
 }

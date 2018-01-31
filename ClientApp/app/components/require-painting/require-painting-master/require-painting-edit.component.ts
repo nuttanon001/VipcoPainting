@@ -61,13 +61,15 @@ export class RequirePaintingEditComponent
     indexListItem: number;
     selectedIndex: number;
     maxDate:Date = new Date;
-    
+    readOnly: boolean;
+
     // on get data by key
     onGetDataByKey(value?: RequirePaintMaster): void {
         if (value) {
             this.service.getOneKeyNumber(value.RequirePaintingMasterId)
                 .subscribe(dbData => {
                     this.editValue = dbData;
+                    this.readOnly = this.editValue.RequirePaintingStatus !== 1;
                     // set Date
                     if (this.editValue.FinishDate) {
                         this.editValue.FinishDate = this.editValue.FinishDate != null ?
@@ -114,6 +116,8 @@ export class RequirePaintingEditComponent
                 this.editValue.RequireEmp = this.serviceAuth.getAuth.EmpCode || "";
                 this.editValue.RequireString = this.serviceAuth.getAuth.NameThai || "";
             }
+
+            this.readOnly = false;
             this.defineData();
         }
     }
@@ -163,6 +167,13 @@ export class RequirePaintingEditComponent
 
     // open dialog
     openDialog(type?: string): void {
+        if (this.readOnly) {
+            this.serviceDialogs.error("Error Message",
+                "This Requist-Painting was tasking. Only can input work item.",
+                this.viewContainerRef);
+            return;
+        }
+
         if (type) {
             if (type === "Employee") {
                 this.serviceDialogs.dialogSelectEmployee(this.viewContainerRef)
@@ -191,19 +202,26 @@ export class RequirePaintingEditComponent
     // add list item
     addOrEditListItem(listItem?:RequirePaintList): void {
         if (listItem) {
-            if (this.requirePaintLists) {
-                this.indexListItem = this.requirePaintLists.indexOf(listItem);
-                // Set Date
-                if (listItem.PlanStart) {
-                    listItem.PlanStart = listItem.PlanStart != null ?
-                        new Date(listItem.PlanStart) : new Date();
-                }
-                if (listItem.PlanEnd) {
-                    listItem.PlanEnd = listItem.PlanEnd != null ?
-                        new Date(listItem.PlanEnd) : new Date();
+            if (listItem.RequirePaintingListStatus === 1) {
+                if (this.requirePaintLists) {
+                    this.indexListItem = this.requirePaintLists.indexOf(listItem);
+                    // Set Date
+                    if (listItem.PlanStart) {
+                        listItem.PlanStart = listItem.PlanStart != null ?
+                            new Date(listItem.PlanStart) : new Date();
+                    }
+                    if (listItem.PlanEnd) {
+                        listItem.PlanEnd = listItem.PlanEnd != null ?
+                            new Date(listItem.PlanEnd) : new Date();
+                    }
+                } else {
+                    this.indexListItem = -1;
                 }
             } else {
-                this.indexListItem = -1;
+                this.serviceDialogs.error("Error Message",
+                    "This Requist-Painting-List was tasking. Only can input work item.",
+                    this.viewContainerRef);
+                return;
             }
         } else {
             listItem = {

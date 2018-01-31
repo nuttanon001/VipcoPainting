@@ -332,7 +332,10 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
                         setTimeout(() => this.serviceCom.toChildEdit(dbData), 1000);
                     });
             } else {
-                this.serviceDialogs.dialogTaskPaintMasterScheduleView(this.viewContainerRef, TaskMasterId);
+                let option: OptionTaskMasterSchedule = {
+                    TaskMasterId : TaskMasterId
+                }
+                this.serviceDialogs.dialogTaskPaintMasterScheduleView(this.viewContainerRef, option);
             }
         }
     }

@@ -48,6 +48,11 @@ export class MovementStockEditComponent extends BaseEditComponent<ColorMovementS
                 .subscribe(dbData => {
                     this.editValue = dbData;
                     // set Date
+                    if (this.editValue.MovementStockDate) {
+                        this.editValue.MovementStockDate = this.editValue.MovementStockDate != null ?
+                            new Date(this.editValue.MovementStockDate) : new Date();
+                    }
+
                 }, error => console.error(error), () => this.defineData());
         } else {
             this.editValue = {

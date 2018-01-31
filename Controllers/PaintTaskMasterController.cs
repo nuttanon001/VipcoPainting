@@ -27,6 +27,7 @@ namespace VipcoPainting.Controllers
         private IRepositoryPainting<PaintTaskDetail> repositoryDetail;
         private IRepositoryMachine<Employee> repositoryEmp;
         private IRepositoryMachine<ProjectCodeMaster> repositoryProMaster;
+        private IRepositoryPainting<RequirePaintingMaster> repositoryReqPaintingMaster;
         private IRepositoryPainting<RequirePaintingList> repositoryReqPaintingList;
         // Mapper
         private IMapper mapper;
@@ -42,13 +43,41 @@ namespace VipcoPainting.Controllers
             if (taskMaster != null)
             {
                 if (taskMaster.MainProgress.HasValue)
-                {
                     Result = taskMaster.MainProgress >= 100 ? PaintTaskStatus.Complated : PaintTaskStatus.Waiting;
-                }
                 else
                     Result = PaintTaskStatus.Waiting;
             }
             return Result;
+        }
+        private async Task<bool> ChangeRequirePaintingListStatus(int RequirePaintingListId,string Create,RequirePaintingListStatus Status = RequirePaintingListStatus.Tasking)
+        {
+            if (RequirePaintingListId > 0)
+            {
+                var Includes = new List<string> { "RequirePaintingMaster" };
+
+                var HasData = await this.repositoryReqPaintingList.GetAsynvWithIncludes(
+                    RequirePaintingListId, "RequirePaintingListId", Includes);
+                if (HasData != null)
+                {
+                    HasData.ModifyDate = DateTime.Now;
+                    HasData.Modifyer = Create;
+                    HasData.RequirePaintingListStatus = Status;
+
+                    if(HasData.RequirePaintingMaster != null)
+                    {
+                        HasData.RequirePaintingMaster.RequirePaintingStatus = RequirePaintingStatus.Tasking;
+                        HasData.RequirePaintingMaster.ModifyDate = DateTime.Now;
+                        HasData.RequirePaintingMaster.Modifyer = Create;
+                        await this.repositoryReqPaintingMaster.UpdateAsync(HasData.RequirePaintingMaster, 
+                            HasData.RequirePaintingMaster.RequirePaintingMasterId);
+                    }
+
+                    var ComplateUpdate = await this.repositoryReqPaintingList.UpdateAsync(HasData, HasData.RequirePaintingListId);
+                    if (ComplateUpdate != null)
+                        return true;
+                }
+            }
+            return false;
         }
         private async Task<string> GeneratedCode(int RequirePaintingListId)
         {
@@ -91,6 +120,7 @@ namespace VipcoPainting.Controllers
             IRepositoryPainting<PaintTaskDetail> repoDetail,
             IRepositoryPainting<RequirePaintingList> repoPaintingList,
             IRepositoryMachine<ProjectCodeMaster> repoProMaster,
+            IRepositoryPainting<RequirePaintingMaster> repoPaintingMaster,
             IRepositoryMachine<Employee> repoEmp, IMapper map)
         {
             // Repository
@@ -99,6 +129,7 @@ namespace VipcoPainting.Controllers
             this.repositoryReqPaintingList = repoPaintingList;
             this.repositoryEmp = repoEmp;
             this.repositoryProMaster = repoProMaster;
+            this.repositoryReqPaintingMaster = repoPaintingMaster;
             // Mapper
             this.mapper = map;
             this.helpers = new HelpersClass<PaintTaskMaster>();
@@ -201,7 +232,7 @@ namespace VipcoPainting.Controllers
                         QueryData = QueryData.Where(x =>
                             x.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub.ProjectCodeMasterId == Scehdule.ProjectMasterId);
 
-                    // Option Level
+                    // Option ProjectSubId
                     if (Scehdule.ProjectSubId.HasValue)
                         QueryData = QueryData.Where(x =>
                             x.RequirePaintingList.RequirePaintingMaster.ProjectCodeSubId == Scehdule.ProjectSubId);
@@ -239,8 +270,10 @@ namespace VipcoPainting.Controllers
                         GetData.Min(x => x.RequirePaintingList.PlanStart) ?? null,
                         //END Date
                         GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualEDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
+                        GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualSDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
+                        GetData.Select(x => x.PaintTaskDetails.Max(z => z.PlanSDate)).OrderByDescending(x => x).FirstOrDefault(),
                         GetData.Select(x => x.PaintTaskDetails.Max(z => z.PlanEDate)).OrderByDescending(x => x).FirstOrDefault(),
-                        GetData.Max(x => x.RequirePaintingList.PlanEnd) ?? null
+                        GetData.Max(x => x.RequirePaintingList.PlanEnd) ?? null,
                     };
 
                     //var Plan2Start = GetData.Select(x => x.PaintTaskDetails.Min(z => z.PlanSDate)).FirstOrDefault();
@@ -248,6 +281,9 @@ namespace VipcoPainting.Controllers
 
                     //var Plan2End = GetData.Select(x => x.PaintTaskDetails.Max(z => z.PlanEDate)).FirstOrDefault();
                     //var ActualEnd = GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualEDate)).FirstOrDefault();
+
+                    if (GetData.Any(x => x.PaintTaskDetails.Any(z => z.ActualEDate == null)))
+                        ListDate.Add(DateTime.Today);
 
                     DateTime? MinDate = ListDate.Min();
                     DateTime? MaxDate = ListDate.Max();
@@ -408,7 +444,6 @@ namespace VipcoPainting.Controllers
             try
             {
                 var QueryData = this.repositoryDetail.GetAllAsQueryable()
-                                               .Where(x => x.PaintTaskMasterId == Scehdule.TaskMasterId)
                                                .Include(x => x.PaintTaskMaster.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
                                                .Include(x => x.BlastWorkItem.SurfaceTypeExt)
                                                .Include(x => x.BlastWorkItem.SurfaceTypeInt)
@@ -421,6 +456,35 @@ namespace VipcoPainting.Controllers
 
                 if (Scehdule != null)
                 {
+                    // TaskMasterId
+                    if (Scehdule.TaskMasterId.HasValue)
+                        QueryData = QueryData.Where(x => x.PaintTaskMasterId == Scehdule.TaskMasterId);
+
+                    if (Scehdule.Mode.HasValue)
+                    {
+                        if (Scehdule.Mode > 0)
+                        {
+                            // PaintTeam
+                            if (Scehdule.PaintTeamId.HasValue)
+                                QueryData = QueryData.Where(x => x.PaintTeamId == Scehdule.PaintTeamId);
+                            // BlastTeam
+                            if (Scehdule.BlastTeamId.HasValue)
+                                QueryData = QueryData.Where(x => x.BlastRoomId == Scehdule.BlastTeamId);
+
+                            // SDate && EDate
+                            if (Scehdule.SDate.HasValue && Scehdule.EDate.HasValue)
+                            {
+                                Scehdule.SDate = Scehdule.SDate.Value.AddDays(-2);
+                                Scehdule.EDate = Scehdule.EDate.Value.AddDays(2);
+
+                                QueryData = QueryData.Where(x => (Scehdule.SDate.Value.Date <= x.PlanEDate.Date &&
+                                                                  x.PlanSDate.Date <= Scehdule.EDate.Value.Date) ||
+                                                                 (Scehdule.SDate.Value.Date <= x.ActualEDate &&
+                                                                  x.ActualSDate <= Scehdule.EDate.Value.Date));
+                            }
+                        }
+                    }
+
                     TotalRow = await QueryData.CountAsync();
 
                     // Option Skip and Task
@@ -443,9 +507,14 @@ namespace VipcoPainting.Controllers
                         GetData.Min(x => x.ActualSDate),
                         GetData.Min(x => x.PlanSDate),
                         //END Date
+                        GetData.Max(z => z.ActualSDate),
                         GetData.Max(z => z.ActualEDate),
+                        GetData.Max(x => x.PlanSDate),
                         GetData.Max(z => z.PlanEDate),
                     };
+
+                    if (GetData.Any(x => x.ActualEDate == null))
+                        ListDate.Add(DateTime.Today);
 
                     DateTime? MinDate = ListDate.Min();
                     DateTime? MaxDate = ListDate.Max();
@@ -651,7 +720,10 @@ namespace VipcoPainting.Controllers
                     nPaintTaskMaster.PaintTaskStatus = this.CheckTaskStatus(nPaintTaskMaster);
 
                     if (nPaintTaskMaster.RequirePaintingListId.HasValue)
+                    {
+                        await this.ChangeRequirePaintingListStatus(nPaintTaskMaster.RequirePaintingListId.Value, nPaintTaskMaster.Creator);
                         nPaintTaskMaster.TaskPaintNo = await this.GeneratedCode(nPaintTaskMaster.RequirePaintingListId.Value);
+                    }
 
                     if (nPaintTaskMaster.RequirePaintingList != null)
                         nPaintTaskMaster.RequirePaintingList = null;
@@ -731,6 +803,7 @@ namespace VipcoPainting.Controllers
                 if (uPaintTaskMaster.RequirePaintingList != null)
                     uPaintTaskMaster.RequirePaintingList = null;
 
+                // Update Status
                 uPaintTaskMaster.PaintTaskStatus = this.CheckTaskStatus(uPaintTaskMaster);
 
                 // Remove null
@@ -775,6 +848,10 @@ namespace VipcoPainting.Controllers
                 var updateComplate = await this.repository.UpdateAsync(uPaintTaskMaster, key);
                 if (updateComplate != null)
                 {
+                    // Update Status
+                    if (updateComplate.MainProgress >= 100)
+                        await this.ChangeRequirePaintingListStatus(updateComplate.RequirePaintingListId.Value, updateComplate.Modifyer,RequirePaintingListStatus.Complate);
+
                     // filter
                     Expression<Func<PaintTaskDetail, bool>> conditionBlast = m => m.PaintTaskMasterId == key;
                     var dbPaintTaskDetails = this.repositoryDetail.FindAll(conditionBlast);

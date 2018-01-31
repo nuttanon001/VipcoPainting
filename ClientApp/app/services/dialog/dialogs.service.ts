@@ -21,6 +21,7 @@ import {
     SurfaceType, Employee,
     ProjectSub,
     PaintTaskDetail,
+    OptionTaskMasterSchedule,
 } from "../../models/model.index";
 
 @Injectable()
@@ -187,13 +188,13 @@ export class DialogsService {
         return dialogRef.afterClosed();
     }
 
-    public dialogTaskPaintMasterScheduleView(viewContainerRef: ViewContainerRef, MasterId: number): Observable<boolean> {
+    public dialogTaskPaintMasterScheduleView(viewContainerRef: ViewContainerRef,Option: OptionTaskMasterSchedule): Observable<boolean> {
         let dialogRef: MatDialogRef<ScheduleDialogComponent>;
         let config: MatDialogConfig = new MatDialogConfig();
 
         // config
         config.viewContainerRef = viewContainerRef;
-        config.data = MasterId;
+        config.data = Option;
         config.hasBackdrop = true;
 
         // open dialog

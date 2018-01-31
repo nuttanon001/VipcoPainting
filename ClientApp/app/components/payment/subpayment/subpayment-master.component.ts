@@ -106,22 +106,25 @@ export class SubpaymentMasterComponent
                     }
 
                     if (value.SubPaymentDetails) {
-                        let newData: SubPaymentDetail = {
-                            SubPaymentDetailId: item.SubPaymentDetailId,
-                            AreaWorkLoad: item.AreaWorkLoad,
-                            CalcCost: item.CalcCost,
-                            PaymentDate: item.PaymentDate,
-                            Remark: item.Remark,
-                            //BaseModel
-                            Creator: item.Creator,
-                            CreateDate: item.CreateDate,
-                            Modifyer: item.Modifyer,
-                            ModifyDate: item.ModifyDate,
-                            //FK
-                            SubPaymentMasterId: item.SubPaymentMasterId,
-                            PaymentDetailId: item.PaymentDetailId,
-                        };
-                        value.SubPaymentDetails[index] = newData;
+                        //let newData: SubPaymentDetail = {
+                        //    SubPaymentDetailId: item.SubPaymentDetailId,
+                        //    AreaWorkLoad: item.AreaWorkLoad,
+                        //    CalcCost: item.CalcCost,
+                        //    PaymentDate: item.PaymentDate,
+                        //    Remark: item.Remark,
+                        //    //BaseModel
+                        //    Creator: item.Creator,
+                        //    CreateDate: item.CreateDate,
+                        //    Modifyer: item.Modifyer,
+                        //    ModifyDate: item.ModifyDate,
+                        //    //FK
+                        //    SubPaymentMasterId: item.SubPaymentMasterId,
+                        //    PaymentDetailId: item.PaymentDetailId,
+                        //    PaymentCostHistoryId: item.PaymentCostHistoryId
+                        //};
+                        //value.SubPaymentDetails[index] = newData;
+
+                        value.SubPaymentDetails[index] = item;
                     }
                 });
             }

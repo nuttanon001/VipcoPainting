@@ -20,7 +20,7 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
    
     /** require-painting-view ctor */
     constructor(
-        private service: RequirePaintListService,
+        public service: RequirePaintListService,
         private dialogService: DialogsService,
         private viewContainerRef: ViewContainerRef,
     ) {
@@ -38,6 +38,7 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
         { prop: "UnitNo", name: "UnitNo", width: 75 },
         { prop: "Quantity", name: "Q'ty", width: 75 },
         { prop: "Weight", name: "Weight", width: 75 },
+        //{ prop: "RequirePaintingListStatus", name: "Status", width:75 }
     ];
 
     // load more data

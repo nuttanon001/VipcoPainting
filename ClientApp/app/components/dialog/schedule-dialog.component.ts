@@ -25,7 +25,7 @@ export class ScheduleDialogComponent implements OnInit {
     constructor(
         private service: PaintTaskMasterService,
         public dialogRef: MatDialogRef<ScheduleDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public MasterId: number
+        @Inject(MAT_DIALOG_DATA) public publicData: OptionTaskMasterSchedule
     ) {}
 
     //@param
@@ -40,14 +40,11 @@ export class ScheduleDialogComponent implements OnInit {
     ngOnInit(): void {
         this.taskPaintDetails = new Array;
 
-        if (this.MasterId) {
+        if (!this.publicData) {
             this.dialogRef.afterClosed();
         }
 
-        this.option = {
-            TaskMasterId: this.MasterId
-        };
-
+        this.option = this.publicData;
         this.onGetTaskMasterSchedule();
     }
 
@@ -121,6 +118,7 @@ export class ScheduleDialogComponent implements OnInit {
         // imitate db connection over a network
         this.option.Skip = event.first;
         this.option.Take = (event.rows || 5);
+        this.onGetTaskMasterSchedule();
     }
 
     // no Click

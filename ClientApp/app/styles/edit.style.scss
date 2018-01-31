@@ -23,6 +23,12 @@
     align-content: flex-start;
 }
 
+.edit-left-content-column {
+    @extend .edit-left-content;
+    flex-flow: column;
+}
+
+
 .chlid-edit-container {
     display: flex;
     flex-direction: row;

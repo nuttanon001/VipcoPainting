@@ -164,11 +164,15 @@ export class RequisitionListDialogComponent implements OnInit, OnDestroy {
         let requisition: RequisitionMaster = {
             RequisitionMasterId: 0,
             RequisitionDate: new Date,
-            RequisitionBy: this.paintTaskDetail.Creator,
             Quantity: 1,
             ColorItemId: this.colorItem.ColorItemId,
             PaintTaskDetailId: this.paintTaskDetail.PaintTaskDetailId,
         };
+
+        if (this.serviceAuth.getAuth) {
+            requisition.RequisitionBy = this.serviceAuth.getAuth.EmpCode;
+        }
+
         // debug here
         // console.log(JSON.stringify(requisition));
 

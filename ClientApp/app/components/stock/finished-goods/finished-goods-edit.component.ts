@@ -44,6 +44,10 @@ export class FinishedGoodsEditComponent extends BaseEditComponent<FinishedGoodsM
                 .subscribe(dbData => {
                     this.editValue = dbData;
                     // set Date
+                    if (this.editValue.FinishedGoodsDate) {
+                        this.editValue.FinishedGoodsDate = this.editValue.FinishedGoodsDate != null ?
+                            new Date(this.editValue.FinishedGoodsDate) : new Date();
+                    }
                 }, error => console.error(error), () => this.defineData());
         } else {
             this.editValue = {

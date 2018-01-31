@@ -2,9 +2,11 @@
 import { OnInit, Component, ViewContainerRef, Input, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormControl, Validators, FormGroup, AbstractControl } from "@angular/forms";
 // models
-import { PaintTaskDetail, BlastWorkItem } from "../../../models/model.index";
+import { PaintTaskDetail, BlastWorkItem, OptionTaskMasterSchedule } from "../../../models/model.index";
 // 3rd-patry
 import { SelectItem } from "primeng/primeng";
+// timezone
+import * as moment from "moment-timezone";
 // services
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { BlastRoomService } from "../../../services/task/blast-room.service";
@@ -115,6 +117,8 @@ export class PaintTaskDetailBlastComponent implements OnInit {
             isValid:[this.paintTaskDetail.isValid],
         });
         this.paintTaskDetailForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
+        // Reset it
+        this.onValueChanged();
 
         const ControlPro: AbstractControl | null = this.paintTaskDetailForm.get("TaskDetailProgress");
         if (ControlPro) {
@@ -192,6 +196,8 @@ export class PaintTaskDetailBlastComponent implements OnInit {
         this.paintTaskDetail = form.value;
         this.paintTaskDetail.isValid = form.valid;
 
+        // console.log("Blast:", JSON.stringify(this.paintTaskDetail));
+
         this.hasChange.emit(this.paintTaskDetail.isValid);
     }
 
@@ -246,7 +252,29 @@ export class PaintTaskDetailBlastComponent implements OnInit {
             this.showReportBlast.emit(this.paintTaskDetail.PaintTaskDetailId);
         }
     }
+    // on ShowSchedule
+    showTaskScheduleMethod(): void {
+        if (this.paintTaskDetailForm) {
+            let paintTaskDetail: PaintTaskDetail = this.paintTaskDetailForm.value;
 
+            let zone: string = "Asia/Bangkok";
+            if (paintTaskDetail.PlanSDate !== null) {
+                paintTaskDetail.PlanSDate = moment.tz(paintTaskDetail.PlanSDate, zone).toDate();
+            }
+            if (paintTaskDetail.PlanEDate !== null) {
+                paintTaskDetail.PlanEDate = moment.tz(paintTaskDetail.PlanEDate, zone).toDate();
+            }
+
+            let option: OptionTaskMasterSchedule = {
+                BlastTeamId: paintTaskDetail.BlastRoomId,
+                SDate: paintTaskDetail.PlanSDate,
+                EDate: paintTaskDetail.PlanEDate,
+                Mode: 1
+            };
+
+            this.dialogService.dialogTaskPaintMasterScheduleView(this.viewContainerRef, option)
+        }
+    }
     // bug calendar not update min-max
     // update CakenderUi
     updateCalendarUI(calendar: Calendar) {

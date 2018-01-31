@@ -43,7 +43,7 @@ export class ColorItemDialogComponent
             { prop: "ColorCode", name: "Code", flexGrow: 1 },
             { prop: "ColorName", name: "Name", flexGrow: 1 },
             { prop: "VolumeSolids", name: "VolumeSolids", flexGrow: 1 },
-            { prop: "OnhandVolumn",name : "Onhand",flexGrow: 1},
+            { prop: "OnhandVolumn", name : "Onhand", flexGrow: 1},
         ];
     }
     // parameter

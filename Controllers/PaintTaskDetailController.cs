@@ -97,7 +97,7 @@ namespace VipcoPainting.Controllers
                 HasData.CommonText += " | " + (HasData.PaintTaskDetailLayer == PaintTaskDetailLayer.Internal ? "Internal" : "External");
                 if (HasData.PaintWorkItem != null)
                 {
-                    HasData.CommonText =  " | " + (HasData.PaintWorkItem.PaintLevel == PaintLevel.PrimerCoat ? "PrimerCoat" :
+                    HasData.CommonText +=  " | " + (HasData.PaintWorkItem.PaintLevel == PaintLevel.PrimerCoat ? "PrimerCoat" :
                                          (HasData.PaintWorkItem.PaintLevel == PaintLevel.MidCoat ? "MidCoat" :
                                          (HasData.PaintWorkItem.PaintLevel == PaintLevel.IntermediateCoat ? "IntermediateCoat" : "TopCoat")));
                 }

@@ -1,8 +1,14 @@
 ﻿<div class="edit-container-row border border-info" *ngIf="paintTaskDetail">
-    <div class="edit-left-content" *ngIf="paintTaskDetail?.PaintTaskDetailId > 0">
+    <div class="edit-left-content-column">
         <button type="button" mat-icon-button color="primary" (click)="showReportBlastMethod()"
-                style="margin:4px;">
+                style="margin:4px;" *ngIf="paintTaskDetail?.PaintTaskDetailId > 0"
+                matTooltip="Print paint task">
             <i class="fa fa-2x fa-print" aria-hidden="true" style="margin:0px;"></i>
+        </button>
+
+        <button type="button" mat-icon-button color="primary" (click)="showTaskScheduleMethod()"
+                style="margin:4px;" *ngIf="!ReadOnly" matTooltip="Show blast task schedule">
+            <i class="fa fa-2x fa-calendar-o" aria-hidden="true" style="margin:0px;"></i>
         </button>
     </div>
     <div class="edit-center-content">
@@ -52,7 +58,7 @@
             </div>
             <div class="my-form">
                 <label for="PlanSDate" class="my-label-col1-right">Plan:</label>
-                <div *ngIf="!ReadOnly;else ElsePlan" class="edit-form-content col-sm-5">
+                <div *ngIf="!ReadOnly && !cannotEdit;else ElsePlan" class="edit-form-content col-sm-5">
                     <p-calendar #PlanSDate formControlName="PlanSDate" [showIcon]="true"
                                 dateFormat="dd/mm/yy" placeholder="  Start actual date"
                                 appendTo="body" (onFocus)="updateCalendarUI(PlanSDate)"

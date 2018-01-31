@@ -1,20 +1,19 @@
 ﻿<div class="master-dialog-vh">
-    <H5 style="color:cadetblue">Selected Color-Item</H5>
+    <div class="edit-form-content">
+        <H5 style="color:cadetblue">Selected Color-Item</H5>
+        <span style="margin-right:25px;"></span>
+        <button type="button" mat-icon-button color="warn" (click)="onNewColorItem()">
+            <i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i>
+            Add More Paint
+        </button>
+    </div>
     <div class="child-container" *ngIf="!newColorItem;else NewColorBlock">
         <div class="center-content ">
             <div class="edit-container">
-                <div class="top-container">
-                    <div style="margin-top:-50px;margin-left:175px;">
-                        <button type="button" mat-icon-button color="warn" (click)="onNewColorItem()">
-                            <i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i>
-                            Add More Paint
-                        </button>
-                    </div>
-                </div>
                 <div class="base-bottom-container">
                     <data-table (selected)="onSelectedValue($event)"
-                                [columns]="columns"
-                                [height]="'50vh'" autofocus>
+                                [columns]="columns" [scrollbarH]="false"
+                                [height]="'49vh'">
                     </data-table>
                 </div>
             </div>

@@ -61,7 +61,7 @@ export class SubpaymentEditComponent
     }
 
     // Parameter
-    subPaymentDetails: Array<SubPaymentDetail>;
+    //subPaymentDetails: Array<SubPaymentDetail>;
     subPaymentDetail: SubPaymentDetail | undefined;
 
     indexSubPayDetail: number;
@@ -77,9 +77,11 @@ export class SubpaymentEditComponent
 
     // on get data by key
     onGetDataByKey(value?: SubPaymentMaster): void {
-        if (!this.subPaymentDetails) {
-            this.subPaymentDetails = new Array;
-        }
+        this.getArrayPaintTeam();
+
+        //if (!this.subPaymentDetails) {
+        //    this.subPaymentDetails = new Array;
+        //}
 
         if (value) {
             // edit can load sub payment
@@ -103,10 +105,14 @@ export class SubpaymentEditComponent
                         this.editValue.SubPaymentDate = this.editValue.SubPaymentDate != null ?
                             new Date(this.editValue.SubPaymentDate) : new Date();
                     }
+
                     // get Detail
                     this.serviceSubpaymentDetail.getByMasterId(value.SubPaymentMasterId)
                         .subscribe(dbSubPaymentDetail => {
-                            this.subPaymentDetails = dbSubPaymentDetail.slice();
+                            this.editValue.SubPaymentDetails = dbSubPaymentDetail.slice();
+                            this.editValueForm.patchValue({
+                                SubPaymentDetails: this.editValue.SubPaymentDetails.slice(),
+                            });
                         });
                 }, error => console.error(error), () => this.defineData());
         } else {
@@ -128,23 +134,6 @@ export class SubpaymentEditComponent
     // define data for edit form
     defineData(): void {
         this.buildForm();
-
-        if (!this.paintTeams) {
-            this.paintTeams = new Array;
-            this.paintTeams.push({ label: "-", value: undefined });
-            this.servicePaintTeam.getAll()
-                .subscribe(dbPaintTeam => {
-                    dbPaintTeam.forEach(item => {
-                        if (item.TeamName) {
-                            if (item.TeamName.indexOf("vipco") === -1 &&
-                                item.TeamName.indexOf("VIPCO") === -1 &&
-                                item.TeamName.indexOf("Vipco") === -1) {
-                                this.paintTeams.push({ label: item.TeamName, value: item.PaintTeamId });
-                            }
-                        }
-                    });
-                });
-        }
     }
 
     // build form
@@ -239,6 +228,24 @@ export class SubpaymentEditComponent
         this.onFormValid(form.valid);
     }
 
+    //get paint team
+    getArrayPaintTeam(): void {
+        if (!this.paintTeams) {
+            this.paintTeams = new Array;
+            this.paintTeams.push({ label: "-", value: undefined });
+            this.servicePaintTeam.getAll()
+                .subscribe(dbPaintTeam => {
+                    for (let item of dbPaintTeam) {
+                        if (item.TeamName) {
+                            if (item.TeamName.indexOf("VIPCO") === -1) {
+                                this.paintTeams.push({ label: item.TeamName, value: item.PaintTeamId });
+                            }
+                        }
+                    }
+                });
+        }
+    }
+
     // open dialog
     openDialog(type?: string): void {
         if (type) {
@@ -317,6 +324,7 @@ export class SubpaymentEditComponent
                 this.indexSubPayDetail = -1;
             }
             this.subPaymentDetail = Object.assign({}, subPaymentDetail);
+            this.onValueChanged();
         }
     }
 
@@ -325,6 +333,7 @@ export class SubpaymentEditComponent
         if (!this.editValue.SubPaymentDetails) {
             this.editValue.SubPaymentDetails = new Array;
         }
+        this.subPaymentDetail = undefined;
 
         if (subPaymentDetail && this.editValue.SubPaymentDetails) {
             if (this.indexSubPayDetail > -1) {
@@ -347,6 +356,23 @@ export class SubpaymentEditComponent
                 SubPaymentDetails: this.editValue.SubPaymentDetails.slice(),
             });
         }
-        this.subPaymentDetail = undefined;
+        else {
+            this.onValueChanged();
+        }
+    }
+
+    // subPaymentDetail
+    // on valid data
+    // OverRide
+    onFormValid(isValid: boolean): void {
+        this.editValue = this.editValueForm.value;
+
+        if (isValid) {
+            if (this.subPaymentDetail) {
+                isValid = false;
+            }
+        }
+
+        this.communicateService.toParent([this.editValue, isValid]);
     }
 }

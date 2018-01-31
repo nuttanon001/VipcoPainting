@@ -190,8 +190,9 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
         }
     }
 
+    // onShow Report Print
     onShowReportPaint(PaintTaskDetailId?: number, type?: string): void {
-        console.log("EditType", type);
+        // console.log("EditType", type);
 
         if (PaintTaskDetailId && type) {
             if (type.indexOf("Paint") !== -1) {
