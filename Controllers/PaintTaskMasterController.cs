@@ -644,7 +644,11 @@ namespace VipcoPainting.Controllers
             var QueryData = this.repository.GetAllAsQueryable()
                                            .Include(x => x.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
                                            .AsQueryable();
-
+            // Where
+            if (!string.IsNullOrEmpty(Scroll.Where))
+            {
+                QueryData = QueryData.Where(x => x.Creator == Scroll.Where);
+            }
             // Filter
             var filters = string.IsNullOrEmpty(Scroll.Filter) ? new string[] { "" }
                                 : Scroll.Filter.ToLower().Split(null);

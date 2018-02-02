@@ -11,10 +11,11 @@ export { User } from "./user/user.model";
 export { IDictionary } from "./dictionary/idictionary.model";
 // Require
 export { RequirePaintList } from "./require-paint/require-paint-list.model";
-export { RequirePaintMaster, RequirePaintMasterHasList } from "./require-paint/require-paint-master.model";
+export { RequirePaintMaster, RequirePaintMasterHasList, RequirePaintMasterHasInitial } from "./require-paint/require-paint-master.model";
 export { PaintWorkItem } from "./require-paint/paint-workitem.model";
 export { BlastWorkItem } from "./require-paint/blast-workitem.model";
-export { RequirePaintSchedule  } from "./require-paint/require-paint-schedule.model";
+export { RequirePaintSchedule } from "./require-paint/require-paint-schedule.model";
+export { InitialRequirePaint } from "./require-paint/initial-require-paint-list.model";
 // Task
 export { BlastRoom } from "./task/blast-room.model";
 export { PaintTeam } from "./task/paint-team.model";

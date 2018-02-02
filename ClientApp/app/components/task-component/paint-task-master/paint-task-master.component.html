@@ -3,7 +3,7 @@
         <split-area [size]="30" [visible]="hideleft" [order]="1">
             <div class="child-left-container">
                 <data-table (selected)="onDetailView($event)" [columns]="columns"
-                            [isDisabled]="false">
+                            [isDisabled]="false" [(onlyUser)]="onlyUser">
                 </data-table>
             </div>
         </split-area>

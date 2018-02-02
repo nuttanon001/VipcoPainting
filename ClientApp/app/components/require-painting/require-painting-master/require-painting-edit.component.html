@@ -100,18 +100,16 @@
                                    [rowHeight]="50"
                                    [scrollbarV]="true"
                                    [scrollbarH]="true"
+                                   [rowClass]="getRowClass"
                                    [style.height]="'calc(100vh - 230px)'">
-                        <ngx-datatable-column [width]="125" [sortable]="false">
+                        <ngx-datatable-column [width]="250" [sortable]="false">
                             <ng-template let-row="row" ngx-datatable-cell-template>
-                                <button mat-button (click)="addOrEditListItem(row)" color="warn">
+                                <button mat-button (click)="addOrEditListItem(row)" style="margin:0px;">
                                     Edit
                                 </button>
-                                <!--
-                                <button mat-button (click)="onRemoveOverTimeDetailOrCancelOverTimeDetail(row,1)"
-                                        color="accent" *ngIf="row?.OverTimeDetailId">
+                                <button mat-button (click)="addOrEditListItem(row,1)" style="margin:0px;">
                                     Cancel
                                 </button>
-                                -->
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column name="Description" prop="Description" [width]="200"></ngx-datatable-column>

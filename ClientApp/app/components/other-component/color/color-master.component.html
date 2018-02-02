@@ -2,8 +2,7 @@
     <split direction="horizontal" [gutterSize]="7" [visibleTransition]="true">
         <split-area [size]="45" [visible]="hideleft" [order]="1">
             <div class="child-left-container">
-                <data-table (selected)="onDetailView($event)" [columns]="columns"
-                            [isDisabled]="false">
+                <data-table (selected)="onDetailView($event)" [columns]="columns">
                 </data-table>
             </div>
         </split-area>

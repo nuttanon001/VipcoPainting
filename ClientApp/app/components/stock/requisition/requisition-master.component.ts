@@ -48,9 +48,17 @@ export class RequisitionMasterComponent
         { prop: "Quantity", name: "Quantity", flexGrow: 1 },
         { prop: "RequisitionDate", name: "Date", flexGrow: 1, pipe: this.datePipe, },
     ];
+    onlyUser: boolean;
 
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
+        if (this.onlyUser) {
+            if (this.serverAuth.getAuth) {
+                scroll.Where = this.serverAuth.getAuth.UserName || "";
+            }
+        } else {
+            scroll.Where = "";
+        }
         if (this.scroll) {
             if (this.scroll.Filter && scroll.Reload) {
                 scroll.Filter = this.scroll.Filter;

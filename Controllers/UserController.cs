@@ -26,6 +26,7 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
 
         private IRepositoryMachine<User> repository;
+        private IRepositoryPainting<Permission> repositoryPermission;
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
@@ -34,9 +35,14 @@ namespace VipcoPainting.Controllers
 
         #region Constructor
 
-        public UserController(IRepositoryMachine<User> repo, IMapper map)
+        public UserController(
+            IRepositoryMachine<User> repo,
+            IRepositoryPainting<Permission> repoPermission, IMapper map)
         {
+            //Machine
             this.repository = repo;
+            //Painting
+            this.repositoryPermission = repoPermission;
             this.mapper = map;
             // Json
             this.DefaultJsonSettings = new Helpers.JsonSerializer().DefaultJsonSettings;
@@ -90,7 +96,21 @@ namespace VipcoPainting.Controllers
                                                .FirstOrDefaultAsync(m => m.UserName.ToLower() == login.UserName.ToLower() &&
                                                                          m.PassWord.ToLower() == login.PassWord.ToLower());
                 if (HasData != null)
+                {
+                    if (HasData.LevelUser < 3)
+                    {
+                        var DataPermission = await this.repositoryPermission.GetAllAsQueryable()
+                                                    .Where(x => x.UserId == HasData.UserId).FirstOrDefaultAsync();
+
+                        if (DataPermission != null)
+                        {
+                            HasData.LevelUser = DataPermission.LevelPermission;
+                        }
+                        else
+                            HasData.LevelUser = 1;
+                    }
                     return new JsonResult(this.mapper.Map<User, UserViewModel>(HasData), this.DefaultJsonSettings);
+                }
                 else
                     return NotFound(new { Error = "user or password not match" });
             }

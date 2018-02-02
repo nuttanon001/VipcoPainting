@@ -27,6 +27,8 @@
     StandradTimeExtId?: number;
     // RequirePaintingList
     RequirePaintingListId?: number;
+    // InitialRequireId
+    InitialRequireId?: number;
     // ViewModel
     IntColorString?: string;
     ExtColorString?: string;

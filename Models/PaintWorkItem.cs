@@ -50,6 +50,9 @@ namespace VipcoPainting.Models
         // RequirePaintingList 
         public int? RequirePaintingListId { get; set; }
         public RequirePaintingList RequirePaintingList { get; set; }
+        //InitialRequirePaintingList
+        public int? InitialRequireId { get; set; }
+        public InitialRequirePaintingList InitialRequirePaintingList { get; set; }
     }
 
     public enum PaintLevel

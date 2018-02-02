@@ -3,40 +3,42 @@
 import { BaseMasterComponent } from "../../base-component/base-master.component";
 // models
 import {
-    RequirePaintMaster, RequirePaintMasterHasList,
-    Scroll, ScrollData, RequirePaintList, PaintWorkItem, BlastWorkItem
+    RequirePaintMaster, RequirePaintMasterHasList, InitialRequirePaint,
+    Scroll, ScrollData, PaintWorkItem, BlastWorkItem
 } from "../../../models/model.index";
 // services
 import { AuthService } from "../../../services/auth/auth.service";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { DataTableServiceCommunicate } from "../../../services/data-table/data-table.service";
-import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
-import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
+import {
+    RequirePaintMasterService, RequirePaintMasterHasInitialServiceCommunicate
+} from "../../../services/require-paint/require-paint-master.service";
+import { InitialRequirePaintService } from "../../../services/require-paint/initial-require-paint.service";
 // timezone
 import * as moment from "moment-timezone";
 // 3rd Party
 import { TableColumn } from "@swimlane/ngx-datatable";
 import { DateOnlyPipe } from "../../../pipes/date-only.pipe";
+import { RequirePaintMasterHasInitial } from "../../../models/require-paint/require-paint-master.model";
 
 @Component({
-    selector: "require-painting-master",
-    templateUrl: "./require-painting-master.component.html",
+    selector: "initial-require-painting-master",
+    templateUrl: "./initial-require-painting-master.component.html",
     styleUrls: ["../../../styles/master.style.scss"],
     providers: [DataTableServiceCommunicate]
 })
-// require-painting-master component*/
-export class RequirePaintingMasterComponent 
+/** initial-require-painting-master component*/
+export class InitialRequirePaintingMasterComponent 
     extends BaseMasterComponent<RequirePaintMaster, RequirePaintMasterService> {
-     
-    /** require-painting-master ctor */
+    /** initial-require-painting-master ctor */
     constructor(
         service: RequirePaintMasterService,
-        serviceCom: RequirePaintMasterServiceCommunicate,
+        serviceCom: RequirePaintMasterHasInitialServiceCommunicate,
         serviceComDataTable: DataTableServiceCommunicate<RequirePaintMaster>,
         dialogsService: DialogsService,
         viewContainerRef: ViewContainerRef,
         private serverAuth: AuthService,
-        private servicePaintList: RequirePaintListService
+        private serviceInitialRequire: InitialRequirePaintService
     ) {
         super(
             service,
@@ -50,7 +52,7 @@ export class RequirePaintingMasterComponent
     // Parameter
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     onlyUser: boolean;
-    requirePaintLists: Array<RequirePaintList> | undefined;
+    InitialRequirePaint: InitialRequirePaint | undefined;
 
     columns: Array<TableColumn> = [
         { prop: "RequireNo", name: "Code", flexGrow: 1 },
@@ -60,14 +62,13 @@ export class RequirePaintingMasterComponent
 
     // on init override
     ngOnInit(): void {
-
         this.ShowEdit = false;
         this.canSave = false;
 
         this.subscription1 = this.serviceCom.ToParent$.subscribe(
-            (TypeValue: [RequirePaintMasterHasList, boolean]) => {
+            (TypeValue: [RequirePaintMasterHasInitial, boolean]) => {
                 this.editValue = TypeValue[0].RequirePaintMaster;
-                this.requirePaintLists = TypeValue[0].RequirePaintLists;
+                this.InitialRequirePaint = TypeValue[0].InitialRequirePaint;
                 this.canSave = TypeValue[1];
             });
 
@@ -126,7 +127,7 @@ export class RequirePaintingMasterComponent
     }
 
     // on change time zone befor update to webapi
-    changeTimezone2(value: RequirePaintList): RequirePaintList {
+    changeTimezone2(value: InitialRequirePaint): InitialRequirePaint {
         let zone: string = "Asia/Bangkok";
         if (value !== null) {
             if (value.CreateDate !== null) {
@@ -156,27 +157,14 @@ export class RequirePaintingMasterComponent
         this.service.post(value).subscribe(
             (complete: any) => {
                 this.displayValue = complete;
-                if (this.requirePaintLists && complete) {
-                    this.requirePaintLists.forEach(item => {
-                        // change timezone
-                        item = this.changeTimezone2(item);
+                if (this.InitialRequirePaint && complete) {
+                    // change timezone
+                    this.InitialRequirePaint = this.changeTimezone2(this.InitialRequirePaint);
+                    this.InitialRequirePaint.RequirePaintingMasterId = complete.RequirePaintingMasterId;
+                    this.InitialRequirePaint.Creator = complete.Creator;
 
-                        item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
-                        item.Creator = complete.Creator;
-                    });
-
-                    //debug here
-                    console.log(JSON.stringify(this.requirePaintLists));
-
-                    this.servicePaintList.postLists2(this.requirePaintLists)
-                        .subscribe((complate: any) => {
-                            this.requirePaintLists = undefined;
-                            this.onSaveComplete();
-                        },
-                        (error: any) => {
-                            this.dialogsService.error("Failed !",
-                                "Save failed with the following error: WorkItem has error !!!", this.viewContainerRef);
-                        });
+                    this.serviceInitialRequire.post(this.InitialRequirePaint)
+                        .subscribe((complate: any) => this.onSaveComplete(),(error: any) =>console.error(error));
                 } else {
                     this.onSaveComplete();
                 }
@@ -202,21 +190,22 @@ export class RequirePaintingMasterComponent
         this.service.putKeyNumber(value, value.RequirePaintingMasterId).subscribe(
             (complete: any) => {
                 this.displayValue = complete;
-                if (this.requirePaintLists && complete) {
-                    this.requirePaintLists.forEach(item => {
-                        // change timezone
-                        item = this.changeTimezone2(item);
+                if (this.InitialRequirePaint && complete) {
+                    // change timezone
+                    this.InitialRequirePaint = this.changeTimezone2(this.InitialRequirePaint);
 
-                        if (!item.RequirePaintingListId) {
-                            item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
-                            item.Creator = complete.Creator;
-                        } else {
-                            item.Modifyer = complete.Modifyer;
-                        }
+                    if (!this.InitialRequirePaint.InitialRequireId) {
+                        this.InitialRequirePaint.RequirePaintingMasterId = complete.RequirePaintingMasterId;
+                        this.InitialRequirePaint.Creator = complete.Creator;
+                    } else {
+                        this.InitialRequirePaint.Modifyer = complete.Modifyer;
+                    }
 
-                        if (item.BlastWorkItems) {
-                            item.BlastWorkItems.forEach((blastWork, index) => {
-                                if (item.BlastWorkItems) {
+                    if (this.InitialRequirePaint.BlastWorkItems) {
+                        this.InitialRequirePaint.BlastWorkItems.forEach((blastWork, index) => {
+                            if (this.InitialRequirePaint) {
+                                // can't update FromBody with same data from webapi try new object and send back update
+                                if (this.InitialRequirePaint.BlastWorkItems) {
                                     let newData: BlastWorkItem = {
                                         BlastWorkItemId: blastWork.BlastWorkItemId,
                                         IntArea: blastWork.IntArea,
@@ -238,15 +227,17 @@ export class RequirePaintingMasterComponent
                                         // RequirePaintingList
                                         RequirePaintingListId: blastWork.RequirePaintingListId
                                     };
-                                    item.BlastWorkItems[index] = newData;
+                                    this.InitialRequirePaint.BlastWorkItems[index] = newData;
                                 }
-                            })
-                        }
+                            }
+                        });
+                    }
 
-                        if (item.PaintWorkItems) {
-                            item.PaintWorkItems.forEach((paintWork, index) => {
+                    if (this.InitialRequirePaint.PaintWorkItems) {
+                        this.InitialRequirePaint.PaintWorkItems.forEach((paintWork, index) => {
+                            if (this.InitialRequirePaint) {
                                 // can't update FromBody with same data from webapi try new object and send back update
-                                if (item.PaintWorkItems) {
+                                if (this.InitialRequirePaint.PaintWorkItems) {
                                     let newData: PaintWorkItem = {
                                         PaintWorkItemId: paintWork.PaintWorkItemId,
                                         PaintLevel: paintWork.PaintLevel,
@@ -275,24 +266,14 @@ export class RequirePaintingMasterComponent
                                         // RequirePaintingList
                                         RequirePaintingListId: paintWork.RequirePaintingListId
                                     };
-                                    item.PaintWorkItems[index] = newData;
+                                    this.InitialRequirePaint.PaintWorkItems[index] = newData;
                                 }
-                            });
-                        }
-                    });
-
-                    //debug here
-                    console.log(JSON.stringify(this.requirePaintLists));
-
-                    this.servicePaintList.postLists2(this.requirePaintLists)
-                        .subscribe((complate: any) => {
-                            this.requirePaintLists = undefined;
-                            this.onSaveComplete();
-                        },
-                        (error: any) => {
-                            this.dialogsService.error("Failed !",
-                                "Save failed with the following error: WorkItem has error !!!", this.viewContainerRef);
+                            }
                         });
+                    }
+
+                    this.serviceInitialRequire.putKeyNumber(this.InitialRequirePaint, this.InitialRequirePaint.InitialRequireId)
+                        .subscribe((complate: any) => this.onSaveComplete(),(error: any) => console.error(error));
                 } else {
                     this.onSaveComplete();
                 }
@@ -325,7 +306,7 @@ export class RequirePaintingMasterComponent
     onCancelEdit(): void {
         this.editValue = undefined;
         this.displayValue = undefined;
-        this.requirePaintLists = undefined;
+        this.InitialRequirePaint = undefined;
         this.canSave = false;
         this.ShowEdit = false;
         this.onDetailView(undefined);
@@ -337,7 +318,7 @@ export class RequirePaintingMasterComponent
         // console.log("onDetailEdit on Base Master Component");
         if (editValue) {
             if (editValue.RequirePaintingStatus !== 1 && editValue.RequirePaintingStatus !== 2) {
-                this.dialogsService.error("Access Denied", "Status war not waited. you can't edit it.", this.viewContainerRef);
+                this.dialogsService.error("Access Denied", "Status was not waited. you can't edit it.", this.viewContainerRef);
                 return;
             }
 

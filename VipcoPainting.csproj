@@ -41,6 +41,7 @@
     <None Remove="ClientApp\app\models\payment\subpayment-detail.model.ts" />
     <None Remove="ClientApp\app\models\payment\subpayment-master.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
+    <None Remove="ClientApp\app\models\require-paint\initial-require-paint-list.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
     <None Remove="ClientApp\app\models\stock\color-movement-stock.model.ts" />
@@ -53,6 +54,7 @@
     <None Remove="ClientApp\app\models\task\task-blast-detail.model.ts" />
     <None Remove="ClientApp\app\models\task\task-master.model.ts" />
     <None Remove="ClientApp\app\models\task\task-paint-detail.model.ts" />
+    <None Remove="ClientApp\app\services\require-paint\initial-require-paint.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +73,7 @@
     <TypeScriptCompile Include="ClientApp\app\models\payment\subpayment-detail.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\payment\subpayment-master.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\require-paint\initial-require-paint-list.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\stock\color-movement-stock.model.ts" />
@@ -83,6 +86,7 @@
     <TypeScriptCompile Include="ClientApp\app\models\task\task-blast-detail.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\task-master.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\task\task-paint-detail.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\require-paint\initial-require-paint.service.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

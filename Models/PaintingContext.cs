@@ -25,6 +25,7 @@ namespace VipcoPainting.Models
             modelBuilder.Entity<PaymentCostHistory>().ToTable("PaymentCostHistory");
             modelBuilder.Entity<PaymentDetail>().ToTable("PaymentDetail");
             modelBuilder.Entity<PaintWorkItem>().ToTable("PaintWorkItem");
+            modelBuilder.Entity<Permission>().ToTable("Permission");
             modelBuilder.Entity<ProjectCodeSub>().ToTable("ProjectCodeSub");
             modelBuilder.Entity<RequirePaintingList>().ToTable("RequirePaintingList");
             modelBuilder.Entity<RequirePaintingMaster>().ToTable("RequirePaintingMaster");
@@ -47,6 +48,7 @@ namespace VipcoPainting.Models
         public DbSet<PaintWorkItem> PaintWorkItems { get; set; }
         public DbSet<PaymentCostHistory> PaymentCostHistorys { get; set; }
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
         public DbSet<ProjectCodeSub> ProjectCodeSubs { get; set; }
         public DbSet<RequirePaintingList> RequirePaintingLists { get; set; }
         public DbSet<RequirePaintingMaster> RequirePaintingMasters { get; set; }

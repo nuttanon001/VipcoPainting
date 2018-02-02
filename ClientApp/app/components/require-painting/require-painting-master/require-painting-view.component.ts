@@ -17,7 +17,6 @@ import { TableColumn } from "@swimlane/ngx-datatable";
 // require-painting-view component*/
 export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaintMaster>
 {
-   
     /** require-painting-view ctor */
     constructor(
         public service: RequirePaintListService,

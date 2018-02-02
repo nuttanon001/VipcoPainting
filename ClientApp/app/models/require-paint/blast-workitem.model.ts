@@ -19,6 +19,8 @@
     SurfaceTypeExtId?: number;
     // RequirePaintingList
     RequirePaintingListId?: number;
+    // InitialRequireId
+    InitialRequireId?: number;
     // ViewModel
     IntStandradTimeString?: string;
     ExtStandradTimeString?: string;

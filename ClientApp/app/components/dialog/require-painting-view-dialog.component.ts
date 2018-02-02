@@ -21,9 +21,11 @@ export class RequirePaintingViewDialogComponent implements OnInit {
 
     // Parameter
     displayValue: RequirePaintMaster;
+    canClose: boolean;
 
     /** Called by Angular after cutting-plan-dialog component initialized */
     ngOnInit(): void {
+        this.canClose = false;
         if (this.requireMasterId) {
             this.service.getOneKeyNumber(this.requireMasterId)
                 .subscribe(dbData => {
@@ -42,7 +44,11 @@ export class RequirePaintingViewDialogComponent implements OnInit {
     }
 
     // No Click
-    onCancelClick(): void {
-        this.dialogRef.close();
+    onCancelClick(mode: number = 0): void {
+        if (mode === 0) {
+            this.dialogRef.close();
+        } else {
+            this.dialogRef.close(-99);
+        }
     }
 }

@@ -29,6 +29,8 @@ namespace VipcoPainting.Models
         public ProjectCodeSub ProjectCodeSub { get; set; }
         // RequirePaintingLists
         public ICollection<RequirePaintingList> RequirePaintingLists { get; set; }
+        // InitialRequirePaintingList
+        public InitialRequirePaintingList InitialRequirePaintingList { get; set; }
     }
 
     public enum RequirePaintingStatus

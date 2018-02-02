@@ -6,14 +6,15 @@ import { Subscription } from 'rxjs/Subscription';
 import { Calendar } from "primeng/components/calendar/calendar";
 
 export abstract class BaseEditComponent<Model,Service> implements OnInit, OnDestroy {
-    editValue: Model;
-    editValueForm: FormGroup;
-    subscription: Subscription;
+    
     constructor(
         protected service: Service,
         protected communicateService: any,
     ) { }
-
+    // parameter
+    editValue: Model;
+    editValueForm: FormGroup;
+    subscription: Subscription;
     // on hook component
     ngOnInit(): void {
         this.subscription = this.communicateService.toChildEdit$.subscribe(

@@ -1,5 +1,6 @@
 ﻿import { RequirePaintList } from "./require-paint-list.model";
 import { BaseModel } from "../base.model";
+import { InitialRequirePaint } from "../model.index";
 
 export interface RequirePaintMaster extends BaseModel {
     RequirePaintingMasterId: number;
@@ -23,4 +24,9 @@ export interface RequirePaintMaster extends BaseModel {
 export interface RequirePaintMasterHasList {
     RequirePaintMaster?: RequirePaintMaster;
     RequirePaintLists?: Array<RequirePaintList>;
+}
+
+export interface RequirePaintMasterHasInitial {
+    RequirePaintMaster?: RequirePaintMaster;
+    InitialRequirePaint?: InitialRequirePaint;
 }

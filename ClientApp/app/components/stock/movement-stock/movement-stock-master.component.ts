@@ -52,6 +52,7 @@ export class MovementStockMasterComponent
 
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
+
         if (this.scroll) {
             if (this.scroll.Filter && scroll.Reload) {
                 scroll.Filter = this.scroll.Filter;

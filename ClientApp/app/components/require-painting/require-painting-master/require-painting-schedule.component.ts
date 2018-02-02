@@ -198,7 +198,20 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
         if (RequirePaintMasterId) {
             this.serviceDialogs.dialogRequestPaintView(this.viewContainerRef, RequirePaintMasterId)
                 .subscribe(RequirePaintListId => {
-                    if (RequirePaintListId) {
+                    if (RequirePaintListId === -99) {
+                        this.service.getTryToCloseRequirePaintingMaster(RequirePaintMasterId)
+                            .subscribe(result => {
+                                if (result.Complate) {
+                                    this.serviceDialogs.context("Complate Message",
+                                        "This Request-Painti was close.", this.viewContainerRef);
+                                }
+                            }, error => {
+                                this.serviceDialogs.error("Error Message",
+                                    "This Request-Painti was Incompleted. some work item has waiting status !!!",
+                                    this.viewContainerRef);
+                            });
+                    }
+                    else if (RequirePaintListId) {
                         // Debug here
                         // console.log("RequirePaintListId is:", RequirePaintListId);
                         this.router.navigate(["paint-task/paint-task-master/", RequirePaintListId]);

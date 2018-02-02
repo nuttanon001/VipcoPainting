@@ -20,7 +20,10 @@ import { PaintWorkitemService } from "../../../services/require-paint/paint-work
 @Component({
     selector: "require-painting-edit",
     templateUrl: "./require-painting-edit.component.html",
-    styleUrls: ["../../../styles/edit.style.scss"],
+    styleUrls: [
+        "../../../styles/edit.style.scss",
+        "../../base-component/data-table.style.scss"
+    ],
     animations: [
         trigger("flyInOut", [
             state("in", style({ transform: "translateX(0)" })),
@@ -200,39 +203,55 @@ export class RequirePaintingEditComponent
     }
 
     // add list item
-    addOrEditListItem(listItem?:RequirePaintList): void {
-        if (listItem) {
-            if (listItem.RequirePaintingListStatus === 1) {
-                if (this.requirePaintLists) {
-                    this.indexListItem = this.requirePaintLists.indexOf(listItem);
-                    // Set Date
-                    if (listItem.PlanStart) {
-                        listItem.PlanStart = listItem.PlanStart != null ?
-                            new Date(listItem.PlanStart) : new Date();
-                    }
-                    if (listItem.PlanEnd) {
-                        listItem.PlanEnd = listItem.PlanEnd != null ?
-                            new Date(listItem.PlanEnd) : new Date();
-                    }
+    addOrEditListItem(listItem?: RequirePaintList, mode: number = 0): void {
+        if (mode === 1) {
+            if (listItem) {
+                if (listItem.RequirePaintingListStatus === 1) {
+                    listItem.RequirePaintingListStatus = 4;
+                    this.onValueChanged();
+                } else if (listItem.RequirePaintingListStatus !== 4) {
+                    this.serviceDialogs.error("Error Message",
+                        "This Requist-Painting-List was tasking. Can't cancel work item.",
+                        this.viewContainerRef);
+                    return;
                 } else {
-                    this.indexListItem = -1;
+                    return;
                 }
-            } else {
-                this.serviceDialogs.error("Error Message",
-                    "This Requist-Painting-List was tasking. Only can input work item.",
-                    this.viewContainerRef);
-                return;
             }
         } else {
-            listItem = {
-                RequirePaintingListId: 0,
-                RequirePaintingListStatus : 1
-            };
-            this.indexListItem = -1;
+            if (listItem) {
+                if (listItem.RequirePaintingListStatus === 1) {
+                    if (this.requirePaintLists) {
+                        this.indexListItem = this.requirePaintLists.indexOf(listItem);
+                        // Set Date
+                        if (listItem.PlanStart) {
+                            listItem.PlanStart = listItem.PlanStart != null ?
+                                new Date(listItem.PlanStart) : new Date();
+                        }
+                        if (listItem.PlanEnd) {
+                            listItem.PlanEnd = listItem.PlanEnd != null ?
+                                new Date(listItem.PlanEnd) : new Date();
+                        }
+                    } else {
+                        this.indexListItem = -1;
+                    }
+                } else {
+                    this.serviceDialogs.error("Error Message",
+                        "This Requist-Painting-List was tasking. Can't edit work-item.",
+                        this.viewContainerRef);
+                    return;
+                }
+            } else {
+                listItem = {
+                    RequirePaintingListId: 0,
+                    RequirePaintingListStatus: 1
+                };
+                this.indexListItem = -1;
+            }
+            this.newRequirePaintList = listItem;
+            // set save buttom diable
+            this.onValueChanged();
         }
-        this.newRequirePaintList = listItem;
-        // set save buttom diable
-        this.onValueChanged();
     }
 
     // edit list item
@@ -271,5 +290,25 @@ export class RequirePaintingEditComponent
             RequirePaintMaster : this.editValue
         };
         this.communicateService.toParent([editComplate, isValid]);
+    }
+
+    // row class
+    getRowClass(row?: any): any {
+        if (row) {
+            if (row["RequirePaintingListStatus"]) {
+                console.log("Data is: RequirePaintingListStatus", row.RequirePaintingListStatus)
+                if (row.RequirePaintingListStatus === 1) {
+                    return { "is-require": true };
+                } else if (row.RequirePaintingListStatus === 2) {
+                    return { "is-wait": true };
+                } else if (row.RequirePaintingListStatus === 3) {
+                    return { "is-complate": true };
+                } else if (row.RequirePaintingListStatus === 4) {
+                    return { "is-cancel": true };
+                } else {
+                    return { "is-all": true };
+                }
+            } 
+        }
     }
 }

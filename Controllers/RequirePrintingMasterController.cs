@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VipcoPainting.Helpers;
 using VipcoPainting.Models;
@@ -148,7 +149,8 @@ namespace VipcoPainting.Controllers
                                                .Include(x => x.ProjectCodeSub)
                                                .AsQueryable();
 
-                QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Waiting);
+                QueryData = QueryData.Where(
+                    x => (x.RequirePaintingStatus == RequirePaintingStatus.Waiting));
 
                 var GetData = await QueryData.ToListAsync();
                 if (GetData.Any())
@@ -213,6 +215,44 @@ namespace VipcoPainting.Controllers
             return NotFound(new { Error = Message });
         }
 
+        // GET: api/RequirePaintingMaster/CloseRequirePaintingMaster/5
+        [HttpGet("CloseRequirePaintingMaster/{RequirePaintingMasterId}")]
+        public async Task<IActionResult> CloseRequirePaintingMaster(int RequirePaintingMasterId)
+        {
+            var Message = "Can't close Request Painting !!!";
+            try
+            {
+                if (RequirePaintingMasterId > 0)
+                {
+                    Expression<Func<RequirePaintingMaster, bool>> condition =
+                    r => r.RequirePaintingMasterId == RequirePaintingMasterId &&
+                         r.RequirePaintingLists.Any(x => x.RequirePaintingListStatus == RequirePaintingListStatus.Waiting);
+
+                    if (!(await this.repository.AnyDataAsync(condition)))
+                    {
+                        var RequireMaster = await this.repository.GetAsync(RequirePaintingMasterId);
+                        if (RequireMaster != null)
+                        {
+                            RequireMaster.RequirePaintingStatus = RequirePaintingStatus.Complate;
+                            RequireMaster.ModifyDate = DateTime.Now;
+
+                            await this.repository.UpdateAsync(RequireMaster, RequirePaintingMasterId);
+                            return new JsonResult(new { Complate = true }, this.DefaultJsonSettings);
+                        }
+                    }
+                    else
+                        Message = "This \"Requist-Painting\" have work item wait for paint !!!";
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                Message = $"Has error{ex.ToString()}";
+            }
+
+            return NotFound(new { Error = Message});
+        }
+
         #endregion GET
 
         #region POST
@@ -266,6 +306,11 @@ namespace VipcoPainting.Controllers
                 var QueryData = this.repository.GetAllAsQueryable()
                                     .Include(x => x.ProjectCodeSub)
                                     .AsQueryable();
+                // Where
+                if (!string.IsNullOrEmpty(Scroll.Where))
+                {
+                    QueryData = QueryData.Where(x => x.Creator == Scroll.Where);
+                }
                 // Filter
                 var filters = string.IsNullOrEmpty(Scroll.Filter) ? new string[] { "" }
                                     : Scroll.Filter.ToLower().Split(null);
@@ -365,8 +410,12 @@ namespace VipcoPainting.Controllers
                     // Option Status
                     if (Scehdule.Status.HasValue)
                     {
-                        if (Scehdule.Status == 1)
-                            QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Waiting);
+                        if (Scehdule.Status == 1) {
+                            QueryData = QueryData.Where(
+                                x => (x.RequirePaintingStatus == RequirePaintingStatus.Waiting ||
+                                      x.RequirePaintingStatus == RequirePaintingStatus.Tasking) &&
+                                     x.RequirePaintingLists.Any(z => z.RequirePaintingListStatus == RequirePaintingListStatus.Waiting));
+                        }
                         else if (Scehdule.Status == 2)
                             QueryData = QueryData.Where(x => x.RequirePaintingStatus == RequirePaintingStatus.Tasking);
                         else

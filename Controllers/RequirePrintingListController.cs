@@ -371,6 +371,12 @@ namespace VipcoPainting.Controllers
                         //For Insert
                         else
                         {
+                            if (item.RequirePaintingListStatus.HasValue)
+                            {
+                                if (item.RequirePaintingListStatus.Value == RequirePaintingListStatus.Cancel)
+                                    continue;
+                            }
+
                             var nRequirePaintingList = helpers.AddHourMethod(item);
 
                             nRequirePaintingList.CreateDate = DateTime.Now;

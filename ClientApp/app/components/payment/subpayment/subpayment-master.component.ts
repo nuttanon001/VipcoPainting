@@ -53,9 +53,18 @@ export class SubpaymentMasterComponent
 
     showReport: boolean;
     SubPaymentMasterId?: number;
+    onlyUser: boolean;
 
     // on get data with lazy load
     loadPagedData(scroll: Scroll): void {
+        if (this.onlyUser) {
+            if (this.serverAuth.getAuth) {
+                scroll.Where = this.serverAuth.getAuth.UserName || "";
+            }
+        } else {
+            scroll.Where = "";
+        }
+
         if (this.scroll) {
             if (this.scroll.Filter && scroll.Reload) {
                 scroll.Filter = this.scroll.Filter;
