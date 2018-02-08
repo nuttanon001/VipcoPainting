@@ -61,10 +61,10 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> Get(int key)
         {
             // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
-            var Includes = new List<string> { "" };
-            return new JsonResult(this.mapper.Map<StandradTime,StandardTimeViewModel>(
-                                await this.repository.GetAsynvWithIncludes(key, "StandradTimeId")),
-                                this.DefaultJsonSettings);
+            var Includes = new List<string> { "LinkStandradTime" };
+            var HasData = this.mapper.Map<StandradTime, StandardTimeViewModel>(
+                            await this.repository.GetAsynvWithIncludes(key, "StandradTimeId",Includes));
+            return new JsonResult(HasData, this.DefaultJsonSettings);
         }
 
         #endregion GET
@@ -109,6 +109,13 @@ namespace VipcoPainting.Controllers
                         QueryData = QueryData.OrderBy(e => e.Description);
                     break;
 
+                case "TypeStandardTimeString":
+                    if (Scroll.SortOrder == -1)
+                        QueryData = QueryData.OrderByDescending(e => e.TypeStandardTime);
+                    else
+                        QueryData = QueryData.OrderBy(e => e.TypeStandardTime);
+                    break;
+
                 default:
                     QueryData = QueryData.OrderByDescending(e => e.CreateDate);
                     break;
@@ -132,7 +139,20 @@ namespace VipcoPainting.Controllers
                 nStandradTime.CreateDate = DateTime.Now;
                 nStandradTime.Creator = nStandradTime.Creator ?? "Someone";
 
-                return new JsonResult(await this.repository.AddAsync(nStandradTime), this.DefaultJsonSettings);
+                nStandradTime.LinkStandradTime = null;
+                var complate = await this.repository.AddAsync(nStandradTime);
+
+                if (complate != null && complate.LinkStandardTimeId.HasValue)
+                {
+                    var update = await this.repository.GetAsync(complate.LinkStandardTimeId.Value);
+                    if (update != null)
+                    {
+                        update.LinkStandardTimeId = complate.StandradTimeId;
+                        await this.repository.UpdateAsync(update, update.StandradTimeId);
+                    }
+                }
+
+                return new JsonResult(complate, this.DefaultJsonSettings);
             }
             return NotFound(new { Error = "Not found StandradTime data !!!" });
         }
@@ -155,10 +175,23 @@ namespace VipcoPainting.Controllers
 
                     uStandradTime.ModifyDate = DateTime.Now;
                     uStandradTime.Modifyer = uStandradTime.Modifyer ?? "Someone";
+                    uStandradTime.LinkStandradTime = null;
 
                     var UpdateData = await this.repository.UpdateAsync(uStandradTime, key);
                     if (UpdateData != null)
+                    {
+                        if (UpdateData.LinkStandardTimeId.HasValue)
+                        {
+                            var update = await this.repository.GetAsync(UpdateData.LinkStandardTimeId.Value);
+                            if (update != null)
+                            {
+                                update.LinkStandardTimeId = UpdateData.StandradTimeId;
+                                await this.repository.UpdateAsync(update, update.StandradTimeId);
+                            }
+                        }
+
                         return new JsonResult(UpdateData, this.DefaultJsonSettings);
+                    }
                 }
             }
             catch (Exception ex)

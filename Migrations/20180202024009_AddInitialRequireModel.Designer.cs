@@ -11,9 +11,10 @@ using VipcoPainting.Models;
 namespace VipcoPainting.Migrations
 {
     [DbContext(typeof(PaintingContext))]
-    partial class PaintingContextModelSnapshot : ModelSnapshot
+    [Migration("20180202024009_AddInitialRequireModel")]
+    partial class AddInitialRequireModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -613,8 +614,6 @@ namespace VipcoPainting.Migrations
 
                     b.Property<int?>("RequirePaintingMasterId");
 
-                    b.Property<DateTime?>("SendWorkItem");
-
                     b.Property<double?>("SizeH");
 
                     b.Property<double?>("SizeL");
@@ -723,12 +722,8 @@ namespace VipcoPainting.Migrations
                     b.Property<int>("StandradTimeId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double?>("AreaCodition");
-
                     b.Property<string>("Code")
                         .HasMaxLength(50);
-
-                    b.Property<int?>("Codition");
 
                     b.Property<DateTime?>("CreateDate");
 
@@ -737,8 +732,6 @@ namespace VipcoPainting.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(250);
-
-                    b.Property<int?>("LinkStandardTimeId");
 
                     b.Property<DateTime?>("ModifyDate");
 
@@ -755,8 +748,6 @@ namespace VipcoPainting.Migrations
                     b.Property<int?>("TypeStandardTime");
 
                     b.HasKey("StandradTimeId");
-
-                    b.HasIndex("LinkStandardTimeId");
 
                     b.ToTable("StandradTime");
                 });
@@ -1048,13 +1039,6 @@ namespace VipcoPainting.Migrations
                     b.HasOne("VipcoPainting.Models.PaintTaskDetail", "PaintTaskDetail")
                         .WithMany("RequisitionMasters")
                         .HasForeignKey("PaintTaskDetailId");
-                });
-
-            modelBuilder.Entity("VipcoPainting.Models.StandradTime", b =>
-                {
-                    b.HasOne("VipcoPainting.Models.StandradTime", "LinkStandradTime")
-                        .WithMany()
-                        .HasForeignKey("LinkStandardTimeId");
                 });
 
             modelBuilder.Entity("VipcoPainting.Models.SubPaymentDetail", b =>

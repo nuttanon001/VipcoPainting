@@ -22,6 +22,8 @@ import {
     ProjectSub,
     PaintTaskDetail,
     OptionTaskMasterSchedule,
+    ProjectModeDialog,
+    StandardTimeModeDialog,
 } from "../../models/model.index";
 
 @Injectable()
@@ -91,7 +93,7 @@ export class DialogsService {
         return dialogRef.afterClosed();
     }
 
-    public dialogSelectStandradTime(viewContainerRef: ViewContainerRef, type: number = 0): Observable<StandradTime> {
+    public dialogSelectStandradTime(viewContainerRef: ViewContainerRef, type: StandardTimeModeDialog): Observable<StandradTime> {
         let dialogRef: MatDialogRef<StandradTimeDialogComponent>;
         let config: MatDialogConfig = new MatDialogConfig();
 
@@ -139,13 +141,19 @@ export class DialogsService {
         return dialogRef.afterClosed();
     }
 
-    public dialogSelectProject(viewContainerRef: ViewContainerRef, type: number = 0): Observable<ProjectSub> {
+    public dialogSelectProject(viewContainerRef: ViewContainerRef, mode : number = 0): Observable<ProjectSub> {
         let dialogRef: MatDialogRef<ProjectDialogComponent>;
         let config: MatDialogConfig = new MatDialogConfig();
 
         // config
         config.viewContainerRef = viewContainerRef;
-        config.data = type;
+
+        let projectMode: ProjectModeDialog = {
+            CanAddProjectSub: mode > 1,
+            ShowProjectSub: mode !== 1
+        };
+
+        config.data = projectMode;
         // config.height = this.height;
         // config.width= this.width;
         config.hasBackdrop = true;

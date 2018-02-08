@@ -9,7 +9,10 @@ import {
     BlastWorkitemEditComponent, PaintWorkItemEditComponent,
     RequireListEditComponent, RequirePaintingCenterComponent,
     RequirePaintingEditComponent, RequirePaintingMasterComponent,
-    RequirePaintingScheduleComponent, RequirePaintingViewComponent
+    RequirePaintingScheduleComponent, RequirePaintingViewComponent,
+    RequirePaintingListWorkitemComponent, ListPaintBlastWorkitemComponent,
+    InitialRequirePaintingCenterComponent, InitialRequirePaintingEditComponent,
+    InitialRequirePaintingMasterComponent, InitialRequirePaintingViewComponent,
 } from "../../components/require-painting/require.index";
 // modules
 import { RequirePaintingRoutingModule } from "./require-painting-routing.module";
@@ -18,9 +21,10 @@ import {
 } from "../module.index";
 // services
 import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
-import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
+import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate, RequirePaintMasterHasInitialServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
 import { BlastWorkitemService } from "../../services/require-paint/blast-workitem.service";
 import { PaintWorkitemService } from "../../services/require-paint/paint-workitem.service";
+import { InitialRequirePaintService, InitialRequirePaintServiceCommunicate } from "../../services/require-paint/initial-require-paint.service";
 
 @NgModule({
     declarations: [
@@ -32,6 +36,12 @@ import { PaintWorkitemService } from "../../services/require-paint/paint-workite
         PaintWorkItemEditComponent,
         BlastWorkitemEditComponent,
         RequirePaintingScheduleComponent,
+        RequirePaintingListWorkitemComponent,
+        ListPaintBlastWorkitemComponent,
+        InitialRequirePaintingCenterComponent,
+        InitialRequirePaintingEditComponent,
+        InitialRequirePaintingMasterComponent,
+        InitialRequirePaintingViewComponent,
     ],
     imports: [
         // angular
@@ -49,6 +59,9 @@ import { PaintWorkitemService } from "../../services/require-paint/paint-workite
         RequirePaintMasterServiceCommunicate,
         BlastWorkitemService,
         PaintWorkitemService,
+        InitialRequirePaintService,
+        InitialRequirePaintServiceCommunicate,
+        RequirePaintMasterHasInitialServiceCommunicate
         // dataTableServiceCommunicate
     ]
 })

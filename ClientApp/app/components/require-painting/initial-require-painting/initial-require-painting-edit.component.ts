@@ -2,7 +2,7 @@
 import { Component, ViewContainerRef } from "@angular/core";
 import { FormBuilder, FormControl, Validators, FormGroup } from "@angular/forms";
 // models
-import { RequirePaintMaster, InitialRequirePaint, RequirePaintMasterHasInitial } from "../../../models/model.index";
+import { RequirePaintMaster, InitialRequirePaint, RequirePaintMasterHasInitial, BlastWorkItem, PaintWorkItem, ListPaintBlastWorkItem } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // services
@@ -17,6 +17,7 @@ import {
 
 import { BlastWorkitemService } from "../../../services/require-paint/blast-workitem.service";
 import { PaintWorkitemService } from "../../../services/require-paint/paint-workitem.service";
+import { Calendar } from "primeng/primeng";
 
 @Component({
     selector: "initial-require-painting-edit",
@@ -26,6 +27,7 @@ import { PaintWorkitemService } from "../../../services/require-paint/paint-work
         "../../base-component/data-table.style.scss"
     ],
 })
+
 /** initial-require-painting-edit component*/
 export class InitialRequirePaintingEditComponent 
     extends BaseEditComponent<RequirePaintMaster, RequirePaintMasterService> {
@@ -33,11 +35,11 @@ export class InitialRequirePaintingEditComponent
     constructor(
         service: RequirePaintMasterService,
         serviceCom: RequirePaintMasterHasInitialServiceCommunicate,
-        private blastService: BlastWorkitemService,
-        private paintService: PaintWorkitemService,
+        private serviceBlastWork: BlastWorkitemService,
+        private servicePaintWork: PaintWorkitemService,
+        private serviceInitial: InitialRequirePaintService,
         private serviceAuth: AuthService,
         private viewContainerRef: ViewContainerRef,
-        private serviceInitial: InitialRequirePaintService,
         private serviceDialogs: DialogsService,
         private fb: FormBuilder
     ) {
@@ -47,10 +49,12 @@ export class InitialRequirePaintingEditComponent
         );
     }
     // Parameter
-    levelPaints: Array<string>;
+    paintBlastWorkItems: ListPaintBlastWorkItem;
+    // isCheckForm
+    isPaintBlastValid: boolean;
+    paintCheckBox: Array<boolean>;
+
     initialRequirePaint: InitialRequirePaint;
-    maxDate: Date = new Date;
-    readOnly: boolean;
     // Form 
     initialRequireForm: FormGroup;
     // on get data by key
@@ -59,7 +63,6 @@ export class InitialRequirePaintingEditComponent
             this.service.getOneKeyNumber(value.RequirePaintingMasterId)
                 .subscribe(dbData => {
                     this.editValue = dbData;
-                    this.readOnly = this.editValue.RequirePaintingStatus !== 1;
                     // set Date
                     if (this.editValue.FinishDate) {
                         this.editValue.FinishDate = this.editValue.FinishDate != null ?
@@ -83,14 +86,14 @@ export class InitialRequirePaintingEditComponent
                                     if (dbInitials.length > 0) {
                                         this.initialRequirePaint = dbInitials[0];
                                         // get BlastWorkItem
-                                        this.blastService.getByMasterId(this.initialRequirePaint.InitialRequireId, "GetByMaster2/")
+                                        this.serviceBlastWork.getByMasterId(this.initialRequirePaint.InitialRequireId, "GetByMaster2/")
                                             .subscribe(dbData => {
                                                 if (this.initialRequirePaint) {
                                                     this.initialRequirePaint.BlastWorkItems = dbData.slice();
                                                 }
                                             });
                                         // get PaintWorkItem
-                                        this.paintService.getByMasterId(this.initialRequirePaint.InitialRequireId, "GetByMaster2/")
+                                        this.servicePaintWork.getByMasterId(this.initialRequirePaint.InitialRequireId, "GetByMaster2/")
                                             .subscribe(dbData => {
                                                 if (this.initialRequirePaint) {
                                                     this.initialRequirePaint.PaintWorkItems = dbData.slice();
@@ -110,23 +113,43 @@ export class InitialRequirePaintingEditComponent
                 ReceiveDate: new Date,
             };
 
+            this.initialRequirePaint = {
+                InitialRequireId: 0,
+                RequirePaintingMasterId:0,
+                PlanStart: new Date,
+                PlanEnd: new Date,
+                BlastWorkItems: new Array,
+                PaintWorkItems: new Array,
+            }
+
             if (this.serviceAuth.getAuth) {
                 this.editValue.RequireEmp = this.serviceAuth.getAuth.EmpCode || "";
                 this.editValue.RequireString = this.serviceAuth.getAuth.NameThai || "";
             }
 
-            this.readOnly = false;
             this.defineData();
         }
     }
 
     // define data for edit form
     defineData(): void {
-        if (!this.levelPaints) {
-            this.levelPaints = new Array;
+
+        if (!this.paintBlastWorkItems) {
+            this.paintBlastWorkItems = {
+                BlastWorkItems: new Array,
+                PaintWorkItems: new Array
+            };
         }
 
         this.buildForm();
+
+        if (this.initialRequirePaint.BlastWorkItems) {
+            this.paintBlastWorkItems.BlastWorkItems.push(...this.initialRequirePaint.BlastWorkItems);
+        }
+
+        if (this.initialRequirePaint.PaintWorkItems) {
+            this.paintBlastWorkItems.PaintWorkItems.push(...this.initialRequirePaint.PaintWorkItems);
+        } 
     }
 
     // build form
@@ -172,13 +195,13 @@ export class InitialRequirePaintingEditComponent
             BlastWorkItems: [this.initialRequirePaint.BlastWorkItems],
             PaintWorkItems: [this.initialRequirePaint.PaintWorkItems],
         });
-
+        this.initialRequireForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
     }
+
     // Override
     // on value of form change 
     onValueChanged(data?: any): void {
-        if (!this.editValueForm) { return; }
-        if (!this.initialRequireForm) { return; }
+        if (!this.editValueForm && !this.initialRequireForm) { return; }
         const form = this.editValueForm;
         const form2 = this.initialRequireForm;
         // on form valid or not
@@ -187,13 +210,6 @@ export class InitialRequirePaintingEditComponent
 
     // open dialog
     openDialog(type?: string): void {
-        if (this.readOnly) {
-            this.serviceDialogs.error("Error Message",
-                "This Requist-Painting was tasking. Only can input work item.",
-                this.viewContainerRef);
-            return;
-        }
-
         if (type) {
             if (type === "Employee") {
                 this.serviceDialogs.dialogSelectEmployee(this.viewContainerRef)
@@ -206,7 +222,7 @@ export class InitialRequirePaintingEditComponent
                         }
                     });
             } else if (type === "Project") {
-                this.serviceDialogs.dialogSelectProject(this.viewContainerRef)
+                this.serviceDialogs.dialogSelectProject(this.viewContainerRef,2)
                     .subscribe(project => {
                         if (project) {
                             this.editValueForm.patchValue({
@@ -223,10 +239,43 @@ export class InitialRequirePaintingEditComponent
     onFormValid(isValid: boolean): void {
 
         this.editValue = this.editValueForm.value;
+        this.initialRequirePaint = this.initialRequireForm.value;
+
+        // Update WorkItem
+        if (this.isPaintBlastValid) {
+            this.onUpdateWorkItem();
+        }
+
         let editComplate: RequirePaintMasterHasInitial = {
-            InitialRequirePaints: this.initialRequirePaint,
+            InitialRequirePaint: this.initialRequirePaint,
             RequirePaintMaster: this.editValue
         };
-        this.communicateService.toParent([editComplate, isValid]);
+        this.communicateService.toParent([editComplate, isValid && this.isPaintBlastValid]);
+    }
+
+    // on Update Workitem
+    onUpdateWorkItem(): void {
+        let tempPaint: Array<PaintWorkItem> = new Array;
+        // get only paint selected
+        this.paintCheckBox.forEach((item, index) => {
+            if (item === true && index != 0) {
+                if (this.paintBlastWorkItems.PaintWorkItems) {
+                    tempPaint.push(this.paintBlastWorkItems.PaintWorkItems[index - 1]);
+                }
+            }
+        });
+
+        // set BlastWorks
+        this.initialRequirePaint.BlastWorkItems = new Array;
+        this.initialRequirePaint.BlastWorkItems = this.paintBlastWorkItems.BlastWorkItems.slice();
+        // set PaintWorks
+        this.initialRequirePaint.PaintWorkItems = new Array;
+        this.initialRequirePaint.PaintWorkItems = tempPaint.slice();
+    }
+
+    // bug calendar not update min-max
+    // update CakenderUi
+    updateCalendarUI(calendar: Calendar) {
+        calendar.updateUI();
     }
 }

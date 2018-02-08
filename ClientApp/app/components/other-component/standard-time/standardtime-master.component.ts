@@ -27,6 +27,7 @@ export class StandardtimeMasterComponent extends BaseMasterComponent<StandradTim
         { prop: "Code", name: "Code", flexGrow: 1 },
         { prop: "Description", name: "Name", flexGrow: 2 },
         { prop: "RateWithUnit", name: "Std-Time", flexGrow: 1 },
+        { prop: "TypeStandardTimeString", name: "Type", flexGrow: 1 },
     ];
 
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");

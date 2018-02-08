@@ -1,1 +1,112 @@
-﻿<div style="border: 1px solid red">initial-require-painting-edit Component</div>
+﻿<div *ngIf="editValue; else elseBlock">
+    <div *ngIf="!newRequirePaintList; else elseDetail">
+        <mat-tab-group>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>Initial Painting Master</b>
+                </ng-template>
+                <div class="edit-container">
+                    <form [formGroup]="editValueForm">
+                        <div class="my-form">
+                            <label for="RequireNo" class="my-label">RequireNo:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input-read-only" placeholder="Code will automatically generated."
+                                       id="RequireNo" formControlName="RequireNo" readonly>
+                                <validation-messages [control]="editValueForm.controls.RequireNo"></validation-messages>
+                            </div>
+
+                            <label for="PaintingSchedule" class="my-label">PaintingSchedule:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input" placeholder="Insert painting-schedule here"
+                                       id="PaintingSchedule" formControlName="PaintingSchedule" [readonly]="readOnly">
+                                <validation-messages [control]="editValueForm.controls.PaintingSchedule"></validation-messages>
+                            </div>
+                        </div>
+
+                        <div class="my-form">
+                            <label for="RequireDate" class="my-label">RequestDate:</label>
+                            <div class="col-sm-4">
+                                <p-calendar formControlName="RequireDate" [showIcon]="true"
+                                            id="RequireDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
+                                            appendTo="body"
+                                            [maxDate]="maxDate">
+                                </p-calendar>
+                            </div>
+
+                            <label for="RequireString" class="my-label">RequesterBy:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input-click" placeholder="Choose employee here"
+                                       (click)="openDialog('Employee')"
+                                       id="RequireString" formControlName="RequireString" required readonly>
+                                <validation-messages [control]="editValueForm.controls.RequireString"></validation-messages>
+                            </div>
+                        </div>
+
+                        <div class="my-form">
+                            <label for="ProjectCodeSubString" class="my-label">JobNumber:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input-click" placeholder="Choose job-no here"
+                                       (click)="openDialog('Project')"
+                                       id="ProjectCodeSubString" formControlName="ProjectCodeSubString" required readonly>
+                                <validation-messages [control]="editValueForm.controls.ProjectCodeSubString"></validation-messages>
+                            </div>
+                        </div>
+                    </form>
+                    <hr class="w-75" />
+                    <form [formGroup]="initialRequireForm">
+                        <div class="my-form">
+                            <label for="PlanStart" class="my-label">DatePlan:</label>
+                            <div class="edit-form-content col-sm-5">
+                                <p-calendar #PlanStart formControlName="PlanStart" [showIcon]="true"
+                                            id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
+                                            appendTo="body" (onFocus)="updateCalendarUI(PlanStart)"
+                                            [maxDate]="initialRequireForm.controls.PlanEnd.value">
+                                </p-calendar>
+                                <span style="margin-left:6px;margin-right:7px;">|</span>
+                                <p-calendar #PlanEnd formControlName="PlanEnd" [showIcon]="true"
+                                            id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  End plane date"
+                                            appendTo="body" (onFocus)="updateCalendarUI(PlanEnd)"
+                                            [minDate]="initialRequireForm.controls.PlanStart.value">
+                                </p-calendar>
+                            </div>
+                        </div>
+
+                        <div class="my-form">
+                            <label for="DrawingNo" class="my-label">DrawingNo:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="my-input" placeholder="Insert drawing-no of work item."
+                                       id="DrawingNo" formControlName="DrawingNo">
+                                <validation-messages [control]="initialRequireForm.controls.DrawingNo"></validation-messages>
+                            </div>
+
+                            <label for="UnitNo" class="my-label">UnitNo:</label>
+                            <div class="col-sm-4">
+                                <input type="number" min="1" class="my-input" placeholder="Insert unit-no of work item."
+                                       required
+                                       id="UnitNo" formControlName="UnitNo">
+                                <validation-messages [control]="initialRequireForm.controls.UnitNo"></validation-messages>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>Initial Work Item</b>
+                </ng-template>
+                <div class="edit-container">
+                    <list-paint-blast-workitem [(ListPaintBlastWorks)]="paintBlastWorkItems"
+                                               (isValid)="isPaintBlastValid=$event"
+                                               (paintCheckBox)="paintCheckBox=$event"
+                                               [noRequest]="true">
+                    </list-paint-blast-workitem>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

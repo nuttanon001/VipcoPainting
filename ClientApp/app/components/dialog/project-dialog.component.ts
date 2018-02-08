@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 // models
 import {
     ProjectMaster, ProjectSub,
-    Scroll
+    ProjectModeDialog, Scroll
 } from "../../models/model.index";
 // service
 import { DataTableServiceCommunicate } from "../../services/data-table/data-table.service";
@@ -37,7 +37,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         private serviceAuth: AuthService,
         private serviceDataTable: DataTableServiceCommunicate<ProjectMaster>,
         public dialogRef: MatDialogRef<ProjectDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public mode: number
+        @Inject(MAT_DIALOG_DATA) public mode: ProjectModeDialog
     ) { }
 
     //@param
@@ -59,11 +59,18 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     ];
     columnsDetail: Array<TableColumn> = [
         { prop: "Code", name: "Code", flexGrow: 1 },
-        { prop: "Name", name: "Description", flexGrow: 3 },
+        { prop: "Name", name: "Description", flexGrow: 1 },
     ];
 
     get CanSelected(): boolean {
         return this.selectedDetails !== undefined;
+    }
+
+    get CanAddProjectSub(): boolean {
+        if (this.mode && this.master) {
+            return this.mode.CanAddProjectSub;
+        }
+        return false;
     }
 
     /** Called by Angular after project-dialog component initialized */
@@ -97,7 +104,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     onSelectedMaster(master?: ProjectMaster): void {
         if (master) {
             this.master = master;
-            if (this.mode === 1) {
+            if (!this.mode.ShowProjectSub) {
                 let template: ProjectSub = {
                     ProjectCodeSubId: 0,
                     ProjectCodeMasterId: master.ProjectCodeMasterId,

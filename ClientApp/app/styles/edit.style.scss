@@ -41,6 +41,12 @@
     order: 2;
 }
 
+.edit-center-content-with-scroll {
+    @extend .edit-center-content;
+    height: 75vh;
+    overflow: scroll;
+}
+
 .top-container {
     order: 1;
     display: flex;

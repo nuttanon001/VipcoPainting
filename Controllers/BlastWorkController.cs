@@ -87,6 +87,21 @@ namespace VipcoPainting.Controllers
             return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastWorkItemViewModel,BlastWorkItem>
                                  (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
         }
+
+        // GET: api/BlastWorkItem/GetByMaster/5
+        [HttpGet("GetByMaster2/{MasterId}")]
+        public async Task<IActionResult> GetByMaster2(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Where(x => x.InitialRequireId == MasterId)
+                                .Include(x => x.StandradTimeExt)
+                                .Include(x => x.StandradTimeInt)
+                                .Include(x => x.SurfaceTypeExt)
+                                .Include(x => x.SurfaceTypeInt);
+
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<BlastWorkItemViewModel, BlastWorkItem>
+                                 (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
+        }
         #endregion GET
 
         #region POST

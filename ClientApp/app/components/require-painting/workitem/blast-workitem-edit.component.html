@@ -3,13 +3,13 @@
         <h5 class="alert-info mx-1">&nbsp;&nbsp;BlastWork</h5>
         <div class="my-form">
             <label for="IntArea" class="my-label-col-1">Internal :</label>
-            <div class="edit-form-content col-sm-3">
+            <div class="edit-form-content col-sm-2">
                 <input type="number" min="1" class="my-input" placeholder="Area m²"
                        id="IntArea" formControlName="IntArea">
             </div>
 
             <label for="IntSurfaceTypeString" class="my-label">Surface/Standard :</label>
-            <div class="edit-form-content col-sm-5">
+            <div class="edit-form-content col-sm-6">
                 <input type="text" class="my-input-click" placeholder="Internal Surface"
                        (click)="onOpenDialogBox('SurfaceTypeInt')" readonly
                        id="IntSurfaceTypeString" formControlName="IntSurfaceTypeString">
@@ -22,13 +22,13 @@
         <hr class="w-100 my-0 py-0 bg-primary" />
         <div class="my-form">
             <label for="ExtArea" class="my-label-col-1">External :</label>
-            <div class="edit-form-content col-sm-3">
+            <div class="edit-form-content col-sm-2">
                 <input type="number" min="1" class="my-input" placeholder="Area m²"
                        id="ExtArea" formControlName="ExtArea">
             </div>
 
             <label for="ExtSurfaceTypeString" class="my-label">Surface/Standard :</label>
-            <div class="edit-form-content col-sm-5">
+            <div class="edit-form-content col-sm-6">
                 <input type="text" class="my-input-click" placeholder="External Surface"
                        (click)="onOpenDialogBox('SurfaceTypeExt')" readonly
                        id="ExtSurfaceTypeString" formControlName="ExtSurfaceTypeString">

@@ -10,5 +10,8 @@ namespace VipcoPainting.ViewModels
         public string RateWithUnit { get; set; }
         public string PercentLossString { get; set; }
         public string TypeStandardTimeString { get; set; }
+        public string AreaWithUnitNameString { get; set; }
+        public string ConditionString { get; set; }
+        public string LinkStandardTimeString { get; set; }
     }
 }

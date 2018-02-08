@@ -1,4 +1,4 @@
-﻿<div class="master-dialog-vh">
+﻿<div class="master-dialog-vh" *ngIf="mode">
     <H5 style="color:cadetblue">Selected Job Level2/3</H5>
     <div class="child-container" *ngIf="!newProjectSub;else NewProjectBlock">
         <div class="center-content">
@@ -13,7 +13,7 @@
                         </data-table>
                     </div>
                 </split-area>
-                <split-area [size]="60" [order]="2" *ngIf="mode === 0">
+                <split-area [size]="60" [order]="2" *ngIf="mode.ShowProjectSub">
                     <div class="edit-container">
                         <div class="top-container">
                             <div class="edit-form-content">
@@ -21,7 +21,7 @@
 
                                 <button type="button" mat-icon-button color="warn" (click)="onNewProjectSub(master)"
                                         matTooltip="New Job Level2/3" style="float:left"
-                                        [disabled]="!master">
+                                        [disabled]="!CanAddProjectSub">
                                     <i class="fa fa-2x fa-plus-circle" aria-hidden="true"></i>
                                     Add More
                                 </button>

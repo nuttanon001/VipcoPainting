@@ -11,9 +11,10 @@ using VipcoPainting.Models;
 namespace VipcoPainting.Migrations
 {
     [DbContext(typeof(PaintingContext))]
-    partial class PaintingContextModelSnapshot : ModelSnapshot
+    [Migration("20180206065400_UpdateStandTime")]
+    partial class UpdateStandTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -738,8 +739,6 @@ namespace VipcoPainting.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(250);
 
-                    b.Property<int?>("LinkStandardTimeId");
-
                     b.Property<DateTime?>("ModifyDate");
 
                     b.Property<string>("Modifyer")
@@ -755,8 +754,6 @@ namespace VipcoPainting.Migrations
                     b.Property<int?>("TypeStandardTime");
 
                     b.HasKey("StandradTimeId");
-
-                    b.HasIndex("LinkStandardTimeId");
 
                     b.ToTable("StandradTime");
                 });
@@ -1048,13 +1045,6 @@ namespace VipcoPainting.Migrations
                     b.HasOne("VipcoPainting.Models.PaintTaskDetail", "PaintTaskDetail")
                         .WithMany("RequisitionMasters")
                         .HasForeignKey("PaintTaskDetailId");
-                });
-
-            modelBuilder.Entity("VipcoPainting.Models.StandradTime", b =>
-                {
-                    b.HasOne("VipcoPainting.Models.StandradTime", "LinkStandradTime")
-                        .WithMany()
-                        .HasForeignKey("LinkStandardTimeId");
                 });
 
             modelBuilder.Entity("VipcoPainting.Models.SubPaymentDetail", b =>

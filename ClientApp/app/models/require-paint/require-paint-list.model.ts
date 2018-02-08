@@ -20,6 +20,7 @@ export interface RequirePaintList extends BaseModel {
     Weight?: number;
     PlanStart?: Date;
     PlanEnd?: Date;
+    SendWorkItem?: Date;
     // FK
     RequirePaintingMasterId?: number;
     BlastWorkItems?: Array<BlastWorkItem>;

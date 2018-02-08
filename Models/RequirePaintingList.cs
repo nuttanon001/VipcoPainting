@@ -33,7 +33,7 @@ namespace VipcoPainting.Models
         public double? Weight { get; set; }
         public DateTime? PlanStart { get; set; }
         public DateTime? PlanEnd { get; set; }
-
+        public DateTime? SendWorkItem { get; set; }
         //FK
         // RequirePaintingMaster
         public int? RequirePaintingMasterId { get; set; }

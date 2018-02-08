@@ -24,10 +24,16 @@
                     <i class="fa fa-flag" aria-hidden="true"></i>
                     <span></span> Request Painting
                 </a>
+                <!--initial-painting-->
                 <mat-menu #menu1="matMenu" [overlapTrigger]="false">
                     <button mat-menu-item [routerLink]="['/require-painting']" routerLinkActive="active">
                         <i class="fa fa-flag" aria-hidden="true"></i>
                         <span>Request Painting</span>
+                    </button>
+
+                    <button mat-menu-item [routerLink]="['/initial-painting']" routerLinkActive="active" [disabled]="!GetLevel2">
+                        <i class="fa fa-eraser" aria-hidden="true"></i>
+                        <span>initial Painting</span>
                     </button>
                 </mat-menu>
             </li>

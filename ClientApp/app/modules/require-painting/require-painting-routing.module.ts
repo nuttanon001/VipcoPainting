@@ -3,7 +3,8 @@ import { Routes, RouterModule } from "@angular/router";
 // componentes
 import {
     RequirePaintingCenterComponent, RequirePaintingMasterComponent,
-    RequirePaintingScheduleComponent
+    RequirePaintingScheduleComponent, InitialRequirePaintingCenterComponent,
+    InitialRequirePaintingMasterComponent,
 } from "../../components/require-painting/require.index";
 
 // service
@@ -22,6 +23,17 @@ const requirePaintingRoutes: Routes = [
             {
                 path: "",
                 component: RequirePaintingMasterComponent,
+            }
+        ],
+    },
+    {
+        path: "initial-painting",
+        component: InitialRequirePaintingCenterComponent,
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: "",
+                component: InitialRequirePaintingMasterComponent,
             }
         ],
     }

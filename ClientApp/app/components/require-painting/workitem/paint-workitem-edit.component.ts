@@ -24,11 +24,12 @@ export class PaintWorkItemEditComponent implements OnInit {
     // Two way binding
     _paintWorkItem: PaintWorkItem;
     @Output() paintWorkItemChange = new EventEmitter<PaintWorkItem>();
+    @Input() noRequest: boolean = false;
     @Input()
-    get paintWorkItem():PaintWorkItem {
+    get paintWorkItem(): PaintWorkItem {
         return this._paintWorkItem;
     }
-    set paintWorkItem(data:PaintWorkItem) {
+    set paintWorkItem(data: PaintWorkItem) {
         this._paintWorkItem = data;
         this.paintWorkItemChange.emit(this._paintWorkItem);
     }
@@ -83,85 +84,87 @@ export class PaintWorkItemEditComponent implements OnInit {
         });
         this.paintWorkForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
         this.onValueChanged();
-        // change validity control
-        const IntAreaControl: AbstractControl | null = this.paintWorkForm.get("IntArea");
-        if (IntAreaControl) {
-            IntAreaControl.valueChanges.subscribe((IntArea: number) => {
-                const IntDFTMinControl: AbstractControl | null = this.paintWorkForm.get("IntDFTMin");
-                const IntDFTMaxControl: AbstractControl | null = this.paintWorkForm.get("IntDFTMax");
-                const IntColorControl: AbstractControl | null = this.paintWorkForm.get("IntColorString");
-                const IntStandradControl: AbstractControl | null = this.paintWorkForm.get("IntStandradTimeString");
+        if (this.noRequest) {
+            // change validity control
+            const IntAreaControl: AbstractControl | null = this.paintWorkForm.get("IntArea");
+            if (IntAreaControl) {
+                IntAreaControl.valueChanges.subscribe((IntArea: number) => {
+                    const IntDFTMinControl: AbstractControl | null = this.paintWorkForm.get("IntDFTMin");
+                    const IntDFTMaxControl: AbstractControl | null = this.paintWorkForm.get("IntDFTMax");
+                    const IntColorControl: AbstractControl | null = this.paintWorkForm.get("IntColorString");
+                    const IntStandradControl: AbstractControl | null = this.paintWorkForm.get("IntStandradTimeString");
 
-                if (IntDFTMinControl && IntDFTMaxControl &&
-                    IntColorControl && IntStandradControl) {
-                    if (IntArea) {
-                        IntDFTMinControl.setValidators([
+                    if (IntDFTMinControl && IntDFTMaxControl &&
+                        IntColorControl && IntStandradControl) {
+                        if (IntArea) {
+                            IntDFTMinControl.setValidators([
                                 Validators.required,
                                 Validators.minLength(1)
-                        ]);
-                        IntDFTMaxControl.setValidators([
-                            Validators.required,
-                            Validators.minLength(1)
-                        ]);
-                        IntColorControl.setValidators([
-                            Validators.required,
-                        ]);
-                        IntStandradControl.setValidators([
-                            Validators.required,
-                        ]);
-                    } else {
-                        IntDFTMinControl.setValidators([]);
-                        IntDFTMaxControl.setValidators([]);
-                        IntColorControl.setValidators([]);
-                        IntStandradControl.setValidators([]);
+                            ]);
+                            IntDFTMaxControl.setValidators([
+                                Validators.required,
+                                Validators.minLength(1)
+                            ]);
+                            IntColorControl.setValidators([
+                                Validators.required,
+                            ]);
+                            IntStandradControl.setValidators([
+                                Validators.required,
+                            ]);
+                        } else {
+                            IntDFTMinControl.setValidators([]);
+                            IntDFTMaxControl.setValidators([]);
+                            IntColorControl.setValidators([]);
+                            IntStandradControl.setValidators([]);
+                        }
+
+                        IntDFTMinControl.updateValueAndValidity();
+                        IntDFTMaxControl.updateValueAndValidity();
+                        IntColorControl.updateValueAndValidity();
+                        IntStandradControl.updateValueAndValidity();
                     }
+                });
+            }
 
-                    IntDFTMinControl.updateValueAndValidity();
-                    IntDFTMaxControl.updateValueAndValidity();
-                    IntColorControl.updateValueAndValidity();
-                    IntStandradControl.updateValueAndValidity();
-                }
-            });
-        }
+            const ExtAreaControl: AbstractControl | null = this.paintWorkForm.get("ExtArea");
+            if (ExtAreaControl) {
+                ExtAreaControl.valueChanges.subscribe((ExtArea: number) => {
+                    const ExtDFTMinControl: AbstractControl | null = this.paintWorkForm.get("ExtDFTMin");
+                    const ExtDFTMaxControl: AbstractControl | null = this.paintWorkForm.get("ExtDFTMax");
+                    const ExtColorControl: AbstractControl | null = this.paintWorkForm.get("ExtColorString");
+                    const ExtStandradControl: AbstractControl | null = this.paintWorkForm.get("ExtStandradTimeString");
 
-        const ExtAreaControl: AbstractControl | null = this.paintWorkForm.get("ExtArea");
-        if (ExtAreaControl) {
-            ExtAreaControl.valueChanges.subscribe((ExtArea: number) => {
-                const ExtDFTMinControl: AbstractControl | null = this.paintWorkForm.get("ExtDFTMin");
-                const ExtDFTMaxControl: AbstractControl | null = this.paintWorkForm.get("ExtDFTMax");
-                const ExtColorControl: AbstractControl | null = this.paintWorkForm.get("ExtColorString");
-                const ExtStandradControl: AbstractControl | null = this.paintWorkForm.get("ExtStandradTimeString");
+                    if (ExtDFTMinControl && ExtDFTMaxControl &&
+                        ExtColorControl && ExtStandradControl) {
+                        if (ExtArea) {
+                            ExtDFTMinControl.setValidators([
+                                Validators.required,
+                                Validators.minLength(1)
+                            ]);
+                            ExtDFTMaxControl.setValidators([
+                                Validators.required,
+                                Validators.minLength(1)
+                            ]);
+                            ExtColorControl.setValidators([
+                                Validators.required,
+                            ]);
+                            ExtStandradControl.setValidators([
+                                Validators.required,
+                            ]);
+                        } else {
+                            ExtDFTMinControl.setValidators([]);
+                            ExtDFTMaxControl.setValidators([]);
+                            ExtColorControl.setValidators([]);
+                            ExtStandradControl.setValidators([]);
+                        }
 
-                if (ExtDFTMinControl && ExtDFTMaxControl &&
-                    ExtColorControl && ExtStandradControl) {
-                    if (ExtArea) {
-                        ExtDFTMinControl.setValidators([
-                            Validators.required,
-                            Validators.minLength(1)
-                        ]);
-                        ExtDFTMaxControl.setValidators([
-                            Validators.required,
-                            Validators.minLength(1)
-                        ]);
-                        ExtColorControl.setValidators([
-                            Validators.required,
-                        ]);
-                        ExtStandradControl.setValidators([
-                            Validators.required,
-                        ]);
-                    } else {
-                        ExtDFTMinControl.setValidators([]);
-                        ExtDFTMaxControl.setValidators([]);
-                        ExtColorControl.setValidators([]);
-                        ExtStandradControl.setValidators([]);
+                        ExtDFTMinControl.updateValueAndValidity();
+                        ExtDFTMaxControl.updateValueAndValidity();
+                        ExtColorControl.updateValueAndValidity();
+                        ExtStandradControl.updateValueAndValidity();
                     }
-
-                    ExtDFTMinControl.updateValueAndValidity();
-                    ExtDFTMaxControl.updateValueAndValidity();
-                    ExtColorControl.updateValueAndValidity();
-                    ExtStandradControl.updateValueAndValidity();
-                }
-            });
+                });
+            }
         }
     }
 
@@ -179,8 +182,8 @@ export class PaintWorkItemEditComponent implements OnInit {
     // on OpenDialogBox
     onOpenDialogBox(mode?: string): void {
         if (mode) {
-            if (mode.indexOf("StandardTime") !== -1 ) {
-                this.dialogService.dialogSelectStandradTime(this.viewContainerRef,1)
+            if (mode.indexOf("StandardTime") !== -1) {
+                this.dialogService.dialogSelectStandradTime(this.viewContainerRef, { StandardTimeWithOut: 0, TypeStandardTime: 1 })
                     .subscribe(standardTime => {
                         if (mode.indexOf("Int") !== -1) {
                             this.paintWorkForm.patchValue({

@@ -27,6 +27,7 @@ import { RequirePaintMasterHasInitial } from "../../../models/require-paint/requ
     styleUrls: ["../../../styles/master.style.scss"],
     providers: [DataTableServiceCommunicate]
 })
+
 /** initial-require-painting-master component*/
 export class InitialRequirePaintingMasterComponent 
     extends BaseMasterComponent<RequirePaintMaster, RequirePaintMasterService> {
@@ -53,7 +54,6 @@ export class InitialRequirePaintingMasterComponent
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     onlyUser: boolean;
     InitialRequirePaint: InitialRequirePaint | undefined;
-
     columns: Array<TableColumn> = [
         { prop: "RequireNo", name: "Code", flexGrow: 1 },
         { prop: "JobCode", name: "Job", flexGrow: 1 },
@@ -93,7 +93,7 @@ export class InitialRequirePaintingMasterComponent
         }
 
         this.scroll = scroll;
-        this.service.getAllWithScroll(scroll)
+        this.service.getAllWithScroll(scroll,"GetScrollWithInitial/")
             .subscribe((scrollData: ScrollData<RequirePaintMaster>) => {
                 // console.log(scrollData);
 

@@ -1,1 +1,120 @@
-﻿<div style="border: 1px solid red">initial-require-painting-view Component</div>
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Initial Painting Master</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        RequireNo :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.RequireNo || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        PaintSchedule :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.PaintingSchedule || "-"}}
+                    </div>
+
+                </div>
+                <div class="row my-1">
+                    <div class="my-label">
+                        RequireDate :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue.RequireDate | date:'dd/MM/yyyy') || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        RequesterBy :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.RequireString || "-"}}
+                    </div>
+                </div>
+                <div class="row my-1">
+                    <div class="my-label">
+                        JobNumber :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.ProjectCodeSubString || "-"}}
+                    </div>
+                </div>
+                <hr class="w-75"/>
+                <div *ngIf="initialRequirePaint" class="m-0 p-0">
+                    <div class="row my-1">
+                        <div class="my-label">
+                            PlanDate :
+                        </div>
+                        <div class="my-value">
+                            {{(initialRequirePaint.PlanStart | date:'dd/MM/yyyy') || "-"}} |
+                            {{(initialRequirePaint.PlanEnd | date:'dd/MM/yyyy') || "-"}}
+                        </div>
+
+                        <div class="my-label">
+                            DrawingNo :
+                        </div>
+                        <div class="my-value">
+                            {{initialRequirePaint.DrawingNo || "-"}} &nbsp;
+                             U/N {{initialRequirePaint.UnitNo || "0"}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>Initial Work Item</b>
+            </ng-template>
+            <div class="view-container">
+                <split direction="vertical" [gutterSize]="4" [visibleTransition]="true">
+                    <split-area [size]="40" [order]="1">
+                        <div class="child-container">
+                            <div class="center-content">
+                                <span class="text-success mb-1">Blast</span>
+                                <ngx-datatable class="material"
+                                               [rows]="blastWorkItems"
+                                               [columns]="columnsBlastWork"
+                                               [columnMode]="force"
+                                               [headerHeight]="50"
+                                               [footerHeight]="0"
+                                               [rowHeight]="50"
+                                               [scrollbarV]="true"
+                                               [scrollbarH]="true"
+                                               [style.height]="'40vh'">
+                                </ngx-datatable>
+                            </div>
+                        </div>
+                    </split-area>
+                    <split-area [size]="60" [order]="2">
+                        <div class="child-container">
+                            <div class="center-content">
+                                <span class="text-success mb-1">Paint</span>
+                                <ngx-datatable class="material"
+                                               [rows]="paintWorkItems"
+                                               [columns]="columnsPaintWork"
+                                               [columnMode]="force"
+                                               [headerHeight]="50"
+                                               [footerHeight]="0"
+                                               [rowHeight]="50"
+                                               [scrollbarV]="true"
+                                               [scrollbarH]="true"
+                                               [style.height]="'40vh'">
+                                </ngx-datatable>
+                            </div>
+                        </div>
+                    </split-area>
+                </split>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

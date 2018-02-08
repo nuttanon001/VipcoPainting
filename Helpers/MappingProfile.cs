@@ -51,9 +51,22 @@ namespace VipcoPainting.Helpers
                 // TypeStandardTimeString
                 .ForMember(x => x.TypeStandardTimeString,
                             o => o.MapFrom(s => s.TypeStandardTime == null ? "-" : $"{(s.TypeStandardTime == TypeStandardTime.Paint ? "Paint" : "Blast")}"))
+                // Condition
+                .ForMember(x => x.ConditionString,
+                            o => o.MapFrom(s => s.Codition == null ? "-" :
+                             s.Codition == Codition.Equal ? "Equal " :
+                            (s.Codition == Codition.Less ? "Less " :
+                            (s.Codition == Codition.Over ? "Over " : "None"))))
+                // Condition Area
+                .ForMember(x => x.AreaWithUnitNameString,
+                            o => o.MapFrom(s => s.AreaCodition == null ? "0 m²" : $"{s.AreaCodition} m²"))
                 // PercentLossString
                 .ForMember(x => x.PercentLossString,
                             o => o.MapFrom(s => s.PercentLoss == null ? "0.0%" : $"{s.PercentLoss.Value.ToString("00.0")}%"))
+                // LinkStandardTime
+                .ForMember(x => x.LinkStandardTimeString,
+                            o => o.MapFrom(s => s.LinkStandradTime == null ? "" : $"{s.LinkStandradTime.Code} | {s.LinkStandradTime.Description}"))
+                .ForMember(x => x.LinkStandradTime,o => o.Ignore())
                 // StandardTime
                 .ForMember(x => x.RateWithUnit,
                             o => o.MapFrom(s => s.Rate == null || s.RateUnit == null ? "-" : $"{s.Rate.Value.ToString("0.00")} {s.RateUnit}"));

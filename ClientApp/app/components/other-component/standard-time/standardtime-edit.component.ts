@@ -38,6 +38,7 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
     // Parameter
     unitRates: Array<SelectItem>;
     typeStdTimes: Array<SelectItem>;
+    codtions: Array<SelectItem>;
 
     // on get data by key
     onGetDataByKey(value?: StandradTime): void {
@@ -59,16 +60,27 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
     // define data for edit form
     defineData(): void {
         this.buildForm();
+
         if (!this.unitRates) {
             this.unitRates = new Array;
             this.unitRates.push({ label: "Select UnitRate", value: undefined });
             this.unitRates.push({ label: "m\xB2/HR", value: "m\xB2/HR" });
             this.unitRates.push({ label: "m\xB2/MH", value: "m\xB2/MH" });
         }
+
         if (!this.typeStdTimes) {
             this.typeStdTimes = new Array;
             this.typeStdTimes.push({ label: "Blast", value: 1 });
             this.typeStdTimes.push({ label: "Paint", value: 2 });
+        }
+
+        if (!this.codtions) {
+            this.codtions = new Array;
+            this.codtions.push({ label: "Select Codition", value: undefined });
+            this.codtions.push({ label: " =  (Equal)", value: 1 });
+            this.codtions.push({ label: " >  (Over)", value: 2 });
+            this.codtions.push({ label: " <  (Less)", value: 3 });
+            this.codtions.push({ label: " -  (None)", value: 4 });
         }
     }
 
@@ -82,6 +94,7 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
                     Validators.maxLength(150)
                 ]
             ],
+            TypeStandardTime: [this.editValue.TypeStandardTime],
             Description: [this.editValue.Description,
                 [
                     Validators.required,
@@ -105,7 +118,14 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
                     Validators.maxLength(100),
                 ]
             ],
-            TypeStandardTime: [this.editValue.TypeStandardTime],
+            AreaCodition: [this.editValue.AreaCodition],
+            Codition: [this.editValue.Codition,
+                [
+                    Validators.required,
+                ]
+            ],
+            LinkStandardTimeId: [ this.editValue.LinkStandardTimeId],
+
             Creator: [this.editValue.Creator],
             CreateDate: [this.editValue.CreateDate],
             Modifyer: [this.editValue.Modifyer],
@@ -113,10 +133,31 @@ export class StandardtimeEditComponent extends BaseEditComponent<StandradTime, S
             // ViewModel
             RateWithUnit: [this.editValue.RateWithUnit],
             PercentLossString: [this.editValue.PercentLossString],
-            TypeStandardTimeString: [this.editValue.TypeStandardTimeString]
+            TypeStandardTimeString: [this.editValue.TypeStandardTimeString],
+            AreaWithUnitNameString: [this.editValue.AreaWithUnitNameString],
+            ConditionString: [this.editValue.ConditionString],
+            LinkStandardTimeString: [this.editValue.LinkStandardTimeString]
         });
 
         this.editValueForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
         // this.onValueChanged();
+    }
+
+    // dialog box
+    // on OpenDialogBox
+    onOpenDialogBox(mode?: string): void {
+        if (mode) {
+            let template: StandradTime = this.editValueForm.value;
+
+            if (mode.indexOf("StandardTime") !== -1) {
+                this.serviceDialogs.dialogSelectStandradTime(this.viewContainerRef, { StandardTimeWithOut: template.StandradTimeId, TypeStandardTime: template.TypeStandardTime || 0})
+                    .subscribe(standardTime => {
+                        this.editValueForm.patchValue({
+                            LinkStandardTimeId: standardTime ? standardTime.StandradTimeId : undefined,
+                            LinkStandardTimeString: standardTime ? `${standardTime.Code} | ${standardTime.Description}` : undefined
+                        });
+                    });
+            } 
+        }
     }
 }

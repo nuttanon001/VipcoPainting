@@ -2,7 +2,7 @@
 import { Component, Inject, ViewChild, OnDestroy } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 // models
-import { StandradTime, Scroll } from "../../models/model.index";
+import { StandradTime,StandardTimeModeDialog, Scroll, ScrollData } from "../../models/model.index";
 // service
 import { StandradTimeService } from "../../services/standrad-time/standrad-time.service";
 import { DataTableServiceCommunicate } from "../../services/data-table/data-table.service";
@@ -21,6 +21,7 @@ import { BaseDialogComponent } from "../base-component/base-dialog.component";
         DataTableServiceCommunicate
     ]
 })
+
 // standrad-time-dialog component*/
 export class StandradTimeDialogComponent
     extends BaseDialogComponent<StandradTime, StandradTimeService> implements OnDestroy {
@@ -29,7 +30,7 @@ export class StandradTimeDialogComponent
         public service: StandradTimeService,
         public serviceDataTable: DataTableServiceCommunicate<StandradTime>,
         public dialogRef: MatDialogRef<StandradTimeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public mode: number
+        @Inject(MAT_DIALOG_DATA) public mode: StandardTimeModeDialog
     ) {
         super(
             service,
@@ -53,11 +54,26 @@ export class StandradTimeDialogComponent
     // on get data with lazy load
     loadDataScroll(scroll: Scroll): void {
         if (this.mode) {
-            scroll.Where = this.mode.toString();
+            if (this.mode.TypeStandardTime) {
+                scroll.Where = this.mode.TypeStandardTime.toString();
+            }
         }
         this.service.getAllWithScroll(scroll)
             .subscribe(scrollData => {
                 if (scrollData) {
+                    if (this.mode.StandardTimeWithOut) {
+                        let standard: Array<StandradTime> = new Array;
+                        if (scrollData.Data) {
+                            scrollData.Data.forEach((item, index) => {
+                                if (this.mode.StandardTimeWithOut !== item.StandradTimeId) {
+                                    standard.push(item);
+                                }
+                            });
+                            // new Data for scroll data
+                            scrollData.Data = new Array;
+                            scrollData.Data = standard;
+                        }
+                    }
                     this.serviceDataTable.toChild(scrollData);
                 }
             }, error => console.error(error));

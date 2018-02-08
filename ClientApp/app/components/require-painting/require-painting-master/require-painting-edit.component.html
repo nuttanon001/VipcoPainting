@@ -127,8 +127,8 @@
 
 <ng-template #elseDetail>
     <div [@flyInOut]="'in'">
-        <require-list-edit (ComplateOrCancel)="onComplateOrCancel($event)" [RequirePaintList]="newRequirePaintList">
-        </require-list-edit>
+        <require-painting-list-workitem (ComplateOrCancel)="onComplateOrCancel($event)" [RequirePaintList]="newRequirePaintList">
+        </require-painting-list-workitem>
     </div>
 </ng-template>
 

@@ -21,12 +21,27 @@ namespace VipcoPainting.Models
         [StringLength(50)]
         public string RateUnit { get; set; }
         public double? PercentLoss { get; set; }
+        public double? AreaCodition { get; set; }
+        public Codition? Codition { get; set; }
 
+        // FK
+        //StandardTime
+        public int? LinkStandardTimeId { get; set; }
+        [ForeignKey("LinkStandardTimeId")]
+        public StandradTime LinkStandradTime { get; set; }
     }
 
     public enum TypeStandardTime
     {
         Paint = 1,
         Blast = 2
+    }
+
+    public enum Codition
+    {
+        Equal = 1,
+        Over = 2,
+        Less = 3,
+        None = 4,
     }
 }

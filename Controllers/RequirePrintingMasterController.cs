@@ -364,6 +364,75 @@ namespace VipcoPainting.Controllers
             return NotFound(new { Error = Message });
         }
 
+        // POST: api/RequirePaintingMaster/GetScroll
+        [HttpPost("GetScrollWithInitial")]
+        public async Task<IActionResult> GetScrollWithInitial([FromBody] ScrollViewModel Scroll)
+        {
+            var Message = "Data been not found.";
+            try
+            {
+                var QueryData = this.repository.GetAllAsQueryable()
+                                    .Where(x => x.InitialRequirePaintingList != null)
+                                    .Include(x => x.ProjectCodeSub)
+                                    .AsQueryable();
+                // Where
+                if (!string.IsNullOrEmpty(Scroll.Where))
+                {
+                    QueryData = QueryData.Where(x => x.Creator == Scroll.Where);
+                }
+                // Filter
+                var filters = string.IsNullOrEmpty(Scroll.Filter) ? new string[] { "" }
+                                    : Scroll.Filter.ToLower().Split(null);
+                // foreach
+                foreach (var keyword in filters)
+                {
+                    QueryData = QueryData.Where(x => x.RequireNo.ToLower().Contains(keyword) ||
+                                                     x.PaintingSchedule.ToLower().Contains(keyword) ||
+                                                     x.ProjectCodeSub.Code.ToLower().Contains(keyword));
+                }
+
+                // Order
+                switch (Scroll.SortField)
+                {
+                    case "RequireNo":
+                        if (Scroll.SortOrder == -1)
+                            QueryData = QueryData.OrderByDescending(e => e.RequireNo);
+                        else
+                            QueryData = QueryData.OrderBy(e => e.RequireNo);
+                        break;
+
+                    case "JobCode":
+                        if (Scroll.SortOrder == -1)
+                            QueryData = QueryData.OrderByDescending(e => e.ProjectCodeSub.Code);
+                        else
+                            QueryData = QueryData.OrderBy(e => e.ProjectCodeSub.Code);
+                        break;
+
+                    case "RequireDate":
+                        if (Scroll.SortOrder == -1)
+                            QueryData = QueryData.OrderByDescending(e => e.RequireDate);
+                        else
+                            QueryData = QueryData.OrderBy(e => e.RequireDate);
+                        break;
+
+                    default:
+                        QueryData = QueryData.OrderByDescending(e => e.RequireDate);
+                        break;
+                }
+                QueryData = QueryData.Skip(Scroll.Skip ?? 0).Take(Scroll.Take ?? 50);
+
+                return new JsonResult(new ScrollDataViewModel<RequirePaintingMasterViewModel>
+                    (Scroll,
+                    this.ConvertTable.ConverterTableToViewModel<RequirePaintingMasterViewModel, RequirePaintingMaster>(await QueryData.AsNoTracking().ToListAsync())),
+                    this.DefaultJsonSettings);
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+        }
+
         // POST: api/RequirePaintingMaster/RequirePaintSchedule
         [HttpPost("RequirePaintSchedule")]
         public async Task<IActionResult> RequirePaintSchedule([FromBody] OptionRequirePaintSchedule Scehdule)

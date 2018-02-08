@@ -152,6 +152,22 @@ namespace VipcoPainting.Controllers
                 this.DefaultJsonSettings);
         }
 
+        // GET: api/PaintWorkItem/GetByMaster/5
+        [HttpGet("GetByMaster2/{MasterId}")]
+        public async Task<IActionResult> GetByMaster2(int MasterId)
+        {
+            var QueryData = this.repository.GetAllAsQueryable()
+                                .Where(x => x.InitialRequireId == MasterId)
+                                .OrderBy(x => x.PaintLevel)
+                                .Include(x => x.StandradTimeExt)
+                                .Include(x => x.StandradTimeInt)
+                                .Include(x => x.ExtColorItem)
+                                .Include(x => x.IntColorItem);
+
+            return new JsonResult(this.ConvertTable.ConverterTableToViewModel<PaintWorkItemViewModel, PaintWorkItem>
+                                 (await QueryData.AsNoTracking().ToListAsync()), this.DefaultJsonSettings);
+        }
+
         #endregion GET
 
         #region POST

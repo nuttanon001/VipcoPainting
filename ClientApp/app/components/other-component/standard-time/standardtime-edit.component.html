@@ -16,16 +16,15 @@
                         </div>
 
                         <!--
-                        <label for="TypeStandardTime" class="my-label">Type StandardTime:</label>
-                        <div class="col-sm-2">
-                            <p-radioButton name="group2" class="my-input-combobox" value="1" label="Paint" formControlName="TypeStandardTime"></p-radioButton>
-                        </div>
-                        <div class="col-sm-2">
-                            <p-radioButton name="group2" class="my-input-combobox" value="2" label="Blast" formControlName="TypeStandardTime"></p-radioButton>
-                        </div>
-                        -->
+        <label for="TypeStandardTime" class="my-label">Type StandardTime:</label>
+        <div class="col-sm-2">
+            <p-radioButton name="group2" class="my-input-combobox" value="1" label="Paint" formControlName="TypeStandardTime"></p-radioButton>
+        </div>
+        <div class="col-sm-2">
+            <p-radioButton name="group2" class="my-input-combobox" value="2" label="Blast" formControlName="TypeStandardTime"></p-radioButton>
+        </div>
+        -->
                     </div>
-
                     <div class="my-form">
                         <label for="Code" class="my-label">StandardTime Code:</label>
                         <div class="col-sm-4">
@@ -39,6 +38,33 @@
                             <input type="text" class="my-input" placeholder="Insert standard-time name here."
                                    id="Description" formControlName="Description" required>
                             <validation-messages [control]="editValueForm.controls.Description"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="AreaCodition" class="my-label">Area Codition(m²):</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert area codition here."
+                                   id="AreaCodition" formControlName="AreaCodition">
+                            <validation-messages [control]="editValueForm.controls.AreaCodition"></validation-messages>
+                        </div>
+
+                        <label for="Codition" class="my-label">Codition:</label>
+                        <div class="col-sm-4">
+                            <p-dropdown class="my-input-combobox" [options]="codtions" filter="filter" [style]="{'width':'100%'}"
+                                        appendTo="body"
+                                        id="Codition" formControlName="Codition" required>
+                            </p-dropdown>
+                            <!--<validation-messages [control]="editValueForm.controls.RateUnit"></validation-messages>-->
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="LinkStandardTimeString" class="my-label">Relate Standard:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose standard time with relate condition."
+                                   (click)="onOpenDialogBox('StandardTime')"
+                                   id="LinkStandardTimeString" formControlName="LinkStandardTimeString" readonly>
                         </div>
                     </div>
 

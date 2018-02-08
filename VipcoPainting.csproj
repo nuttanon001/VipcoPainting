@@ -40,10 +40,13 @@
     <None Remove="ClientApp\app\models\payment\payment-detail.model.ts" />
     <None Remove="ClientApp\app\models\payment\subpayment-detail.model.ts" />
     <None Remove="ClientApp\app\models\payment\subpayment-master.model.ts" />
+    <None Remove="ClientApp\app\models\project\project-mode-dialog.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\initial-require-paint-list.model.ts" />
+    <None Remove="ClientApp\app\models\require-paint\list-paint-blast-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <None Remove="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
+    <None Remove="ClientApp\app\models\standrad-time\standardtime-mode-dialog.model.ts" />
     <None Remove="ClientApp\app\models\stock\color-movement-stock.model.ts" />
     <None Remove="ClientApp\app\models\stock\finished-goods-master.model.ts" />
     <None Remove="ClientApp\app\models\stock\movement-stock-status.model.ts" />
@@ -72,10 +75,13 @@
     <TypeScriptCompile Include="ClientApp\app\models\payment\payment-detail.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\payment\subpayment-detail.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\payment\subpayment-master.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\project\project-mode-dialog.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\blast-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\initial-require-paint-list.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\require-paint\list-paint-blast-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\paint-workitem.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\require-paint\require-paint-schedule.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\standrad-time\standardtime-mode-dialog.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\stock\color-movement-stock.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\stock\finished-goods-master.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\stock\movement-stock-status.model.ts" />

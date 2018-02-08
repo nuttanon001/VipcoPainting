@@ -1,0 +1,132 @@
+﻿<div *ngIf="RequirePaintList; else elseBlock">
+    <div>
+        <button type="button" mat-icon-button color="primary" (click)="onNewOrUpdateClick()"
+                [disabled]="!isCheckForm || !isPaintValid" matTooltip="New/Update">
+            <i class="fa fa-2x fa-plus-square-o" aria-hidden="true"></i>
+        </button>
+        <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"
+                matTooltip="Cancel">
+            <i class="fa fa-2x fa-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>WorkItem Information</b>
+            </ng-template>
+            <div class="edit-container mx-3">
+                <form [formGroup]="RequirePaintListForm">
+                    <div class="my-form">
+                        <label for="DrawingNo" class="my-label">Plan:</label>
+                        <div class="edit-form-content col-sm-6">
+                            {{(RequirePaintListForm.controls.PlanStart.value | date:'dd/MM/yyyy') || ''}}
+                            <span class="mx-3">|</span>
+                            {{(RequirePaintListForm.controls.PlanEnd.value | date:'dd/MM/yyyy') || ''}}
+                        </div>
+                    </div>
+                    <div class="my-form">
+                        <label for="DrawingNo" class="my-label">DrawingNo:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-read-only" placeholder="Insert drawing-no of work item."
+                                   readonly
+                                   id="DrawingNo" formControlName="DrawingNo">
+                        </div>
+
+                        <label for="UnitNo" class="my-label">UnitNo:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input-read-only" placeholder="Insert unit-no of work item."
+                                   readonly
+                                   id="UnitNo" formControlName="UnitNo">
+                        </div>
+                    </div>
+                    <hr class="w-75"/>
+                    <div class="my-form">
+                        <label for="SendWorkItem" class="my-label">Send-Date:</label>
+                        <div class="edit-form-content col-sm-5">
+                            <p-calendar formControlName="SendWorkItem" [showIcon]="true"
+                                        id="SendWorkItem" dateFormat="dd/mm/yy" placeholder="  Date send work item."
+                                        appendTo="body">
+                            </p-calendar>
+                        </div>
+                    </div>
+                    <div class="my-form">
+                        <label for="Quantity" class="my-label">Quantity:</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert quantity of work item."
+                                   required
+                                   id="Quantity" formControlName="Quantity">
+                            <validation-messages [control]="RequirePaintListForm.controls.Quantity"></validation-messages>
+                        </div>
+
+                        <label for="Weight" class="my-label">Weight (kg):</label>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" class="my-input" placeholder="Insert weight of work item."
+                                   required
+                                   id="Weight" formControlName="Weight">
+                            <validation-messages [control]="RequirePaintListForm.controls.Weight"></validation-messages>
+                        </div>
+                    </div>
+                    <div class="my-form">
+                        <label class="my-label">Dimension L x W x H (mm):</label>
+                        <div class="edit-form-content col-sm-6">
+                            <input type="number" min="1" class="my-input" placeholder="length work item."
+                                   id="SizeL" formControlName="SizeL">
+                            <span class="mx-1">X</span>
+                            <input type="number" min="1" class="my-input" placeholder="width work iitem."
+                                   id="SizeW" formControlName="SizeW">
+                            <span class="mx-1">X</span>
+                            <input type="number" min="1" class="my-input" placeholder="height work item."
+                                   id="SizeH" formControlName="SizeH">
+                        </div>
+                    </div>
+                    <div class="my-form">
+                        <label for="Description" class="my-label">Description:</label>
+                        <div class="col-sm-4">
+                            <textarea class="my-input" placeholder="Insert description of work item here."
+                                      id="Description" formControlName="Description" rows="4" required>
+                            </textarea>
+                            <validation-messages [control]="RequirePaintListForm.controls.Description"></validation-messages>
+                        </div>
+
+                        <label for="MarkNo" class="my-label">MarkNo:</label>
+                        <div class="col-sm-4">
+                            <textarea class="my-input" placeholder="Insert mark-no of work item here."
+                                      id="MarkNo" formControlName="MarkNo" rows="4" required>
+                            </textarea>
+                            <validation-messages [control]="RequirePaintListForm.controls.MarkNo"></validation-messages>
+                        </div>
+                    </div>
+                    <hr class="w-75" />
+                    <div class="my-form">
+                        <label class="my-label">Option-1:</label>
+                        <div class="col-sm-2">
+                            <p-checkbox name="group2" formControlName="FieldWeld" binary="true" label="FieldWeld" inputId="fieldWeld"></p-checkbox>
+                        </div>
+                        <div class="col-sm-2">
+                            <p-checkbox name="group2" formControlName="Insulation" binary="true" label="Insulation" inputId="insulation"></p-checkbox>
+                        </div>
+                        <div class="col-sm-2">
+                            <p-checkbox name="group2" formControlName="ITP" binary="true" label="ITP" inputId="iTP"></p-checkbox>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>WorkItem</b>
+            </ng-template>
+            <div class="edit-container">
+                <list-paint-blast-workitem [(ListPaintBlastWorks)]="paintBlastWorkItems" 
+                                            (isValid)="isPaintBlastValid=$event"
+                                            (paintCheckBox)="paintCheckBox=$event">
+                </list-paint-blast-workitem>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

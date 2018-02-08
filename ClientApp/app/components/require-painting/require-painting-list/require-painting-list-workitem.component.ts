@@ -1,13 +1,12 @@
-﻿// angular
+﻿// angular core
 import { Component, ViewContainerRef, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormControl, Validators, FormGroup, AbstractControl } from "@angular/forms";
 // models
 import {
     RequirePaintMaster, RequirePaintList,
-    PaintWorkItem, BlastWorkItem,IDictionary
+    ListPaintBlastWorkItem,
+    PaintWorkItem,
 } from "../../../models/model.index";
-// components
-import { BaseEditComponent } from "../../base-component/base-edit.component";
 // services
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
@@ -15,98 +14,52 @@ import { RequirePaintListService } from "../../../services/require-paint/require
 import { Calendar } from "primeng/components/calendar/calendar";
 
 @Component({
-    selector: "require-list-edit",
-    templateUrl: "./require-list-edit.component.html",
+    selector: "require-painting-list-workitem",
+    templateUrl: "./require-painting-list-workitem.component.html",
     styleUrls: ["../../../styles/edit.style.scss"],
 })
-
-// require-list-edit component*/
-export class RequireListEditComponent implements OnInit {
-    /** require-list-edit ctor */
+/** require-painting-list-workitem component*/
+export class RequirePaintingListWorkitemComponent implements OnInit {
+    /** require-painting-list-workitem ctor */
     constructor(
         private service: RequirePaintListService,
         private fb: FormBuilder,
     ) { }
 
     // Parameter
-    paintWorks: Array<PaintWorkItem>;
-    listBoxs: Array<boolean>;
     maxDate: Date = new Date;
-    // Blast
-    blastWork: boolean;
-    blastWorkItem: BlastWorkItem;
+    paintBlastWorkItems: ListPaintBlastWorkItem;
     // Form
     RequirePaintListForm: FormGroup;
-    // levelPaints
-    levelPaints: Array<string>;
-
+    //@Output @Input
     @Output("ComplateOrCancel") ComplateOrCancel = new EventEmitter<RequirePaintList>();
     @Input("RequirePaintList") RequirePaintList: RequirePaintList;
+
     // isCheckForm
-    get isCheckForm(): boolean {
-        if (this.blastWork) {
-            if (this.blastWorkItem) {
-                if (this.blastWorkItem.ExtArea || this.blastWorkItem.IntArea) {
-                    return this.blastWorkItem.IsValid || false;
-                }
-            }
-        }
-        return false;
-    }
-    isPaintValid: boolean;
+    isPaintBlastValid: boolean;
+    paintCheckBox: Array<boolean>;
 
-    // on Init
+    // on Init angular core
     ngOnInit(): void {
-        this.isPaintValid = true;
-
-        if (!this.levelPaints) {
-            this.levelPaints = new Array;
-        }
-
-        if (!this.paintWorks) {
-            this.paintWorks = new Array;
-        }
-
-        if (!this.listBoxs) {
-            this.listBoxs = new Array;
-            this.listBoxs.push(false);
-            this.listBoxs.push(false);
-            this.listBoxs.push(false);
-            this.listBoxs.push(false);
+        // Debug here
+        // console.log(JSON.stringify(this.RequirePaintList));
+        if (!this.paintBlastWorkItems) {
+            this.paintBlastWorkItems = {
+                BlastWorkItems: new Array,
+                PaintWorkItems: new Array
+            };
         }
 
         if (this.RequirePaintList) {
             this.buildForm();
 
             if (this.RequirePaintList.BlastWorkItems) {
-                if (this.RequirePaintList.BlastWorkItems[0]) {
-                    this.blastWork = true;
-                    this.blastWorkItem = this.RequirePaintList.BlastWorkItems[0];
-                    this.blastWorkItem.IsValid = true;
-                }
-            }
+                this.paintBlastWorkItems.BlastWorkItems.push(...this.RequirePaintList.BlastWorkItems);
+            } 
 
             if (this.RequirePaintList.PaintWorkItems) {
-                if (this.RequirePaintList.PaintWorkItems.length > 0) {
-                    this.RequirePaintList.PaintWorkItems.forEach(item => {
-                        if (item.PaintLevel) {
-                            item.IsValid = true;
-                            this.listBoxs[item.PaintLevel - 1] = true;
-                            this.paintWorks[item.PaintLevel - 1] = item;
-
-                            if (item.PaintLevel === 1) {
-                                this.levelPaints.push("PrimerCoat");
-                            } else if (item.PaintLevel === 2) {
-                                this.levelPaints.push("MidCoat");
-                            } else if (item.PaintLevel === 3) {
-                                this.levelPaints.push("IntermediateCoat");
-                            } else {
-                                this.levelPaints.push("TopCoat");
-                            }
-                        }
-                    });
-                }
-            }
+                this.paintBlastWorkItems.PaintWorkItems.push(...this.RequirePaintList.PaintWorkItems);
+            } 
         }
     }
 
@@ -224,82 +177,22 @@ export class RequireListEditComponent implements OnInit {
 
             let tempPaint: Array<PaintWorkItem> = new Array;
             // get only paint selected
-            this.listBoxs.forEach((item, index) => {
-                if (item === true) {
-                    tempPaint.push(this.paintWorks[index]);
+            this.paintCheckBox.forEach((item, index) => {
+                if (item === true && index != 0) {
+                    if (this.paintBlastWorkItems.PaintWorkItems) {
+                        tempPaint.push(this.paintBlastWorkItems.PaintWorkItems[index - 1]);
+                    }
                 }
             });
 
             // set BlastWorks
             this.RequirePaintList.BlastWorkItems = new Array;
-            this.RequirePaintList.BlastWorkItems.push(this.blastWorkItem);
+            this.RequirePaintList.BlastWorkItems.push(...this.paintBlastWorkItems.BlastWorkItems);
             // set PaintWorks
             this.RequirePaintList.PaintWorkItems = new Array;
             this.RequirePaintList.PaintWorkItems = tempPaint.slice();
 
             this.ComplateOrCancel.emit(this.RequirePaintList);
-        }
-    }
-
-    // on Cancel
-    onCancelClick(): void {
-        this.ComplateOrCancel.emit(undefined);
-    }
-
-    // on Add level of paint
-    onShowOrDidNotLevelOfPaint(checkBox:boolean,index:number,paintWorkItem:PaintWorkItem) {
-        this.paintWorks[index] = this.paintWorks[index] ? (checkBox ? this.paintWorks[index] : paintWorkItem) : paintWorkItem;
-        this.listBoxs[index] = checkBox;
-    }
-
-    // on Change
-    checkBoxChage(isChange?: boolean, levelPaint?: string): void {
-        if (isChange !== undefined && levelPaint) {
-
-            let paintWorkItem: PaintWorkItem = {
-                PaintWorkItemId: 0
-            };
-
-            if (levelPaint.indexOf("PrimerCoat") !== -1) {
-                paintWorkItem.PaintLevel = 1;
-                paintWorkItem.PaintLevelString = "PrimerCoat";
-
-                this.onShowOrDidNotLevelOfPaint(isChange, 0, paintWorkItem);
-            } else if (levelPaint.indexOf("MidCoat") !== -1) {
-                paintWorkItem.PaintLevel = 2;
-                paintWorkItem.PaintLevelString = "MidCoat";
-
-                this.onShowOrDidNotLevelOfPaint(isChange, 1, paintWorkItem);
-            } else if (levelPaint.indexOf("IntermediateCoat") !== -1) {
-                paintWorkItem.PaintLevel = 3;
-                paintWorkItem.PaintLevelString = "IntermediateCoat";
-
-                this.onShowOrDidNotLevelOfPaint(isChange, 2, paintWorkItem);
-
-            } else if (levelPaint.indexOf("TopCoat") !== -1) {
-                paintWorkItem.PaintLevel = 4;
-                paintWorkItem.PaintLevelString = "TopCoat";
-
-                this.onShowOrDidNotLevelOfPaint(isChange, 3, paintWorkItem);
-            } else if (levelPaint.indexOf("BlastWork") !== -1) {
-                if (!this.blastWorkItem || isChange === false) {
-                    this.blastWorkItem = {
-                        BlastWorkItemId: 0,
-                    };
-                }
-                this.blastWork = isChange;
-            }
-        }
-    }
-
-    //onHasChange
-    onHasChange(hasChange: boolean) {
-        if (this.paintWorks) {
-            if (this.paintWorks.findIndex(item => item.IsValid === false) > -1) {
-                this.isPaintValid = false;
-            } else {
-                this.isPaintValid = true;
-            }
         }
     }
 
@@ -309,4 +202,3 @@ export class RequireListEditComponent implements OnInit {
         calendar.updateUI();
     }
 }
-

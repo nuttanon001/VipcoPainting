@@ -189,7 +189,7 @@ export class RequirePaintingEditComponent
                         }
                     });
             } else if (type === "Project") {
-                this.serviceDialogs.dialogSelectProject(this.viewContainerRef)
+                this.serviceDialogs.dialogSelectProject(this.viewContainerRef,2)
                     .subscribe(project => {
                         if (project) {
                             this.editValueForm.patchValue({
@@ -231,6 +231,10 @@ export class RequirePaintingEditComponent
                         if (listItem.PlanEnd) {
                             listItem.PlanEnd = listItem.PlanEnd != null ?
                                 new Date(listItem.PlanEnd) : new Date();
+                        }
+                        if (listItem.SendWorkItem) {
+                            listItem.SendWorkItem = listItem.SendWorkItem != null ?
+                                new Date(listItem.SendWorkItem) : new Date();
                         }
                     } else {
                         this.indexListItem = -1;
