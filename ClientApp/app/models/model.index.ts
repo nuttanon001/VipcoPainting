@@ -6,6 +6,7 @@ export { SurfaceType } from "./surface-type/surface-type.model";
 export { ValidationMaster, ValidationResult, FormErrors } from "./vaildation/validation.model";
 export { User } from "./user/user.model";
 export { IDictionary } from "./dictionary/idictionary.model";
+export { AttachFile } from "./attach-file/attach-file.model";
 // StandardTime
 export { StandradTime } from "./standrad-time/standard-time.model";
 export { StandardTimeModeDialog } from "./standrad-time/standardtime-mode-dialog.model";
@@ -21,6 +22,7 @@ export { BlastWorkItem } from "./require-paint/blast-workitem.model";
 export { RequirePaintSchedule } from "./require-paint/require-paint-schedule.model";
 export { InitialRequirePaint } from "./require-paint/initial-require-paint-list.model";
 export { ListPaintBlastWorkItem } from "./require-paint/list-paint-blast-workitem.model";
+export { InitialRequireWorkItem } from "./require-paint/initial-require-workitem.model";
 // Task
 export { BlastRoom } from "./task/blast-room.model";
 export { PaintTeam } from "./task/paint-team.model";

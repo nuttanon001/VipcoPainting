@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand navbar-dark bg-bar">
     <!--<a class="navbar-brand" href="#">Always expand</a>-->
     <a class="navbar-brand" [routerLink]="['/home']">
-        <img src="/images/logoVIPCO.png" alt="Vipco" width="36" height="36" class="d-inline-block align-top">
+        <img src="/paint/images/logoVIPCO.png" width="36" height="36" class="d-inline-block align-top">
         Vipco Painting System
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Mynavbars"
@@ -20,20 +20,24 @@
             <li class="nav-item" *ngIf="GetLevel1">
                 <a #mainMenu="matMenuTrigger" [matMenuTriggerFor]="menu1"
                    (onMenuOpen)="menuOnCloseMenu(1)" (mouseover)="menuOnOpenMenu(1)"
-                   class="nav-link" [routerLink]="['/require-painting']" routerLinkActive="active">
+                   class="nav-link" [routerLink]="['/initial-painting/workitem-master']" routerLinkActive="active">
                     <i class="fa fa-flag" aria-hidden="true"></i>
-                    <span></span> Request Painting
+                    <span>Request Painting</span> 
                 </a>
                 <!--initial-painting-->
                 <mat-menu #menu1="matMenu" [overlapTrigger]="false">
+                    <button mat-menu-item [routerLink]="['/initial-painting/workitem-master']" routerLinkActive="active">
+                        <i class="fa fa-clone" aria-hidden="true"></i>
+                        <span>Request Painting By initial</span>
+                    </button>
+                    <hr />
+                    <button mat-menu-item [routerLink]="['/initial-painting']" routerLinkActive="active" [disabled]="!GetLevel2">
+                        <i class="fa fa-assistive-listening-systems" aria-hidden="true"></i>
+                        <span>initial Painting</span>
+                    </button>
                     <button mat-menu-item [routerLink]="['/require-painting']" routerLinkActive="active">
                         <i class="fa fa-flag" aria-hidden="true"></i>
                         <span>Request Painting</span>
-                    </button>
-
-                    <button mat-menu-item [routerLink]="['/initial-painting']" routerLinkActive="active" [disabled]="!GetLevel2">
-                        <i class="fa fa-eraser" aria-hidden="true"></i>
-                        <span>initial Painting</span>
                     </button>
                 </mat-menu>
             </li>

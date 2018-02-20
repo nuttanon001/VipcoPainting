@@ -1,5 +1,5 @@
 ﻿import { BaseModel } from "../base.model";
-import { BlastWorkItem,PaintWorkItem } from "../model.index";
+import { BlastWorkItem,PaintWorkItem,RequirePaintMaster } from "../model.index";
 
 export interface InitialRequirePaint extends BaseModel {
     InitialRequireId: number;
@@ -13,4 +13,7 @@ export interface InitialRequirePaint extends BaseModel {
     BlastWorkItems?: Array<BlastWorkItem>
     // PaintWorkItem
     PaintWorkItems?: Array<PaintWorkItem>
+    //ViewModel
+    NeedInternal?: boolean;
+    NeedExternal?: boolean;
 }

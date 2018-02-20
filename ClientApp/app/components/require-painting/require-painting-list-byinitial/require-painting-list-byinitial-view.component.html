@@ -1,0 +1,173 @@
+﻿<div *ngIf="displayValue,else elseBlock">
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <b>WorkItem Information</b>
+            </ng-template>
+            <div class="view-container">
+                <div class="row my-1">
+                    <div class="my-label">
+                        RequireNo :
+                    </div>
+                    <div class="my-value">
+                        {{requirePaintMaster.RequireNo || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        PaintSchedule :
+                    </div>
+                    <div class="my-value">
+                        {{requirePaintMaster.PaintingSchedule || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        JobNumber :
+                    </div>
+                    <div class="my-value">
+                        {{requirePaintMaster.ProjectCodeSubString || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Plan :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue.PlanStart | date:'dd/MM/yyyy') || ''}}
+                        <span class="mx-3">|</span>
+                        {{(displayValue.PlanEnd | date:'dd/MM/yyyy') || ''}}
+                    </div>
+
+                    <div class="my-label">
+                        Drawing/Unit :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.DrawingNo || ''}}
+                        &nbsp;/&nbsp;
+                        {{displayValue.UnitNo || ''}}
+                    </div>
+                </div>
+
+                <hr class="w-75" />
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Send-Date :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.SendWorkItem || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Internal/External m² :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.IntArea || "Internal"}}
+                        &nbsp;/&nbsp;
+                        {{displayValue.ExtArea || "External"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Quantity/Weight :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.Quantity || "-"}}
+                        &nbsp;/&nbsp;
+                        {{displayValue.Weight || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Dimension LxWxH (mm):
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.SizeL || "-"}}
+                        X
+                        {{displayValue.SizeL || "-"}}
+                        X
+                        {{displayValue.SizeL || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        Description :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.Description || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        MarkNo :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.MarkNo || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        FieldWeld :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.FieldWeld || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        Insulation :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.Insulation || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        ITP :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue.ITP || "-"}}
+                    </div>
+                </div>
+
+
+                <fieldset>AttachFile</fieldset>
+                <div *ngIf="attachFiles.length > 0,else elseAttact">
+                    <table class="table table-hover table-sm small">
+                        <colgroup>
+                            <col span="1" style="width: 80%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let file of attachFiles;let num = index">
+                                <!--<td (click)="onOpenNewLink(file.FileAddress)" style="cursor:pointer;">-->
+                                <td>
+                                    <a [href]="file.FileAddress" arget="_self" download>
+                                        <i class="fa fa-download text-primary" aria-hidden="true"></i>
+                                        {{num + 1}}. {{file.FileName}}
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <ng-template #elseAttact>
+                    <p>No attach file !</p>
+                </ng-template>
+
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #elseBlock>
+    <mat-progress-bar mode="indeterminate" style="margin-top:50px;"></mat-progress-bar>
+    Waiting... for loading
+</ng-template>

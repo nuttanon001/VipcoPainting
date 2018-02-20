@@ -13,6 +13,8 @@ import {
     RequirePaintingListWorkitemComponent, ListPaintBlastWorkitemComponent,
     InitialRequirePaintingCenterComponent, InitialRequirePaintingEditComponent,
     InitialRequirePaintingMasterComponent, InitialRequirePaintingViewComponent,
+    InitialRequirePaintingListComponent, InitialRequirePaintingScheduleComponent,
+    InitialRequireWorkitemMasterComponent
 } from "../../components/require-painting/require.index";
 // modules
 import { RequirePaintingRoutingModule } from "./require-painting-routing.module";
@@ -42,6 +44,9 @@ import { InitialRequirePaintService, InitialRequirePaintServiceCommunicate } fro
         InitialRequirePaintingEditComponent,
         InitialRequirePaintingMasterComponent,
         InitialRequirePaintingViewComponent,
+        InitialRequirePaintingListComponent,
+        InitialRequirePaintingScheduleComponent,
+        InitialRequireWorkitemMasterComponent
     ],
     imports: [
         // angular

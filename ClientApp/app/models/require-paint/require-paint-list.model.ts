@@ -25,4 +25,10 @@ export interface RequirePaintList extends BaseModel {
     RequirePaintingMasterId?: number;
     BlastWorkItems?: Array<BlastWorkItem>;
     PaintWorkItems?: Array<PaintWorkItem>;
+    // ViewModel
+    IsReceive?: boolean;
+    IntArea?: number;
+    ExtArea?: number;
+    AttachFile?: FileList;
+    RemoveAttach?: Array<number>;
 }

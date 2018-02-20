@@ -28,6 +28,17 @@
     flex-flow: column;
 }
 
+.edit-right-content {
+    /* We first create a flex layout context */
+    display: flex;
+    /* flex direction */
+    flex-direction: column;
+    /* flex grow 0 is upper item have container size */
+    flex-grow: 0;
+    /* flex order of position container */
+    order: 3;
+    margin-top: 15px;
+}
 
 .chlid-edit-container {
     display: flex;

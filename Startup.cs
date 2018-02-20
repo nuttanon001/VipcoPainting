@@ -50,6 +50,10 @@ namespace VipcoPainting
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            String pathBase = Configuration.GetSection("Hosting")["PathBase"];
+            if (String.IsNullOrEmpty(pathBase) == false)
+                app.UsePathBase(pathBase);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

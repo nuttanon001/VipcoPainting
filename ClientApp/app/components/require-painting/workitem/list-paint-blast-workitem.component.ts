@@ -38,7 +38,7 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
     @Input()
     set ListPaintBlastWorks(value: ListPaintBlastWorkItem) {
         // debug here
-        // console.log(JSON.stringify(value));
+        // console.log("set ListPaintBlastWorks");
 
         if (value !== this._listPaintBlastWorks) {
             this._listPaintBlastWorks = value;
@@ -81,38 +81,49 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
     // define parameter
     defineData(): void {
         // debug here
-        // console.log("define Data !!!");
+        //console.log("define Data !!!",);
+        try {
+            // Define BlastWorkItem
+            if (this.ListPaintBlastWorks.BlastWorkItems) {
+                if (this.ListPaintBlastWorks.BlastWorkItems.length > 0) {
+                    if (this.ListPaintBlastWorks.BlastWorkItems[0]) {
+                        this.checkBoxs[0] = true;
+                        this.ListPaintBlastWorks.BlastWorkItems[0].IsValid = true;
+                    }
+                }
+            }
 
-        // Define BlastWorkItem
-        if (this.ListPaintBlastWorks.BlastWorkItems) {
-            if (this.ListPaintBlastWorks.BlastWorkItems.length > 0) {
-                if (this.ListPaintBlastWorks.BlastWorkItems[0]) {
-                    this.checkBoxs[0] = true;
-                    this.ListPaintBlastWorks.BlastWorkItems[0].IsValid = true;
+            // Define PaintWorkItem
+            if (this.ListPaintBlastWorks.PaintWorkItems) {
+                this.layerPaints = new Array;
+                console.log("Layer", JSON.stringify(this.ListPaintBlastWorks.PaintWorkItems));
+
+                if (this.ListPaintBlastWorks.PaintWorkItems.length > 0) {
+                    let tempPaint: Array<PaintWorkItem> = new Array;
+
+                    this.ListPaintBlastWorks.PaintWorkItems.forEach(item => {
+                        if (item.PaintLevel) {
+                            item.IsValid = true;
+                            this.checkBoxs[item.PaintLevel] = true;
+                            tempPaint[item.PaintLevel - 1] = item;
+                            if (item.PaintLevel === 1) {
+                                this.layerPaints.push("PrimerCoat");
+                            } else if (item.PaintLevel === 2) {
+                                this.layerPaints.push("MidCoat");
+                            } else if (item.PaintLevel === 3) {
+                                this.layerPaints.push("IntermediateCoat");
+                            } else {
+                                this.layerPaints.push("TopCoat");
+                            }
+                        }
+                    });
+
+                    this.ListPaintBlastWorks.PaintWorkItems = tempPaint.slice();
                 }
             }
         }
-
-        // Define PaintWorkItem
-        if (this.ListPaintBlastWorks.PaintWorkItems) {
-            if (this.ListPaintBlastWorks.PaintWorkItems.length > 0) {
-                this.ListPaintBlastWorks.PaintWorkItems.forEach(item => {
-                    if (item.PaintLevel) {
-                        item.IsValid = true;
-                        this.checkBoxs[item.PaintLevel] = true;
-
-                        if (item.PaintLevel === 1) {
-                            this.layerPaints.push("PrimerCoat");
-                        } else if (item.PaintLevel === 2) {
-                            this.layerPaints.push("MidCoat");
-                        } else if (item.PaintLevel === 3) {
-                            this.layerPaints.push("IntermediateCoat");
-                        } else {
-                            this.layerPaints.push("TopCoat");
-                        }
-                    }
-                });
-            }
+        catch(error){
+            console.log("Error", error);
         }
     }
 
@@ -159,6 +170,9 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
                 }
                 this.checkBoxs[0] = isChange;
             }
+
+            // Update CheckBox List to Remove Item
+            this.onHasChange(isChange);
         }
     }
 
@@ -174,6 +188,7 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
                 this.isValid.emit(true);
             }
 
+            // console.log("checkBox",JSON.stringify(this.checkBoxs));
             this.paintCheckBox.emit(this.checkBoxs);
         }
     }

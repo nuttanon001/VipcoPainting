@@ -5,11 +5,12 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Observable } from "rxjs/Rx";
 import { Subscription } from "rxjs/Subscription";
 // model
-import { RequirePaintSchedule,RequirePaintMaster } from "../../../models/model.index";
+import { RequirePaintSchedule,RequirePaintMaster, RequirePaintList } from "../../../models/model.index";
 // 3rd patry
 import { Column, SelectItem, LazyLoadEvent } from "primeng/primeng";
 // service
 import { RequirePaintMasterService } from "../../../services/require-paint/require-paint-master.service";
+import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { AuthService } from "../../../services/auth/auth.service";
 
@@ -24,7 +25,9 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
     /** require-painting-schedule ctor */
     constructor(
         private service: RequirePaintMasterService,
+        private serviceList: RequirePaintListService,
         private serviceDialogs: DialogsService,
+        private serviceAuth: AuthService,
         private viewContainerRef: ViewContainerRef,
         private fb: FormBuilder,
         private router: Router,
@@ -35,7 +38,6 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
     // model
     columns: Array<any>;
     requirePaintings: Array<any>;
-    requireMaster: RequirePaintMaster;
     scrollHeight: string;
     subscription: Subscription;
     // time
@@ -102,7 +104,7 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
 
     // get request data
     onGetData(schedule: RequirePaintSchedule): void {
-        this.service.getRequirePaintSchedule(schedule)
+        this.serviceList.getRequirePaintSchedule(schedule)
             .subscribe(dbDataSchedule => {
                 // console.log("Api Send is", dbDataSchedule);
 
@@ -194,12 +196,12 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
     }
 
     // on selected data
-    onSelectRequirePaintMaster(RequirePaintMasterId?: number): void {
-        if (RequirePaintMasterId) {
-            this.serviceDialogs.dialogRequestPaintView(this.viewContainerRef, RequirePaintMasterId)
-                .subscribe(RequirePaintListId => {
-                    if (RequirePaintListId === -99) {
-                        this.service.getTryToCloseRequirePaintingMaster(RequirePaintMasterId)
+    onSelectRequirePaintMaster(master?: RequirePaintList): void {
+        if (master) {
+            this.serviceDialogs.dialogRequestPaintViewByDetail(this.viewContainerRef, master)
+                .subscribe(ConditionNumber => {
+                    if (ConditionNumber === -99) {
+                        this.service.getTryToCloseRequirePaintingMaster(ConditionNumber)
                             .subscribe(result => {
                                 if (result.Complate) {
                                     this.serviceDialogs.context("Complate Message",
@@ -211,10 +213,21 @@ export class RequirePaintingScheduleComponent implements OnInit, OnDestroy {
                                     this.viewContainerRef);
                             });
                     }
-                    else if (RequirePaintListId) {
+                    else if (ConditionNumber === -98) { // Go to plan painting
                         // Debug here
                         // console.log("RequirePaintListId is:", RequirePaintListId);
-                        this.router.navigate(["paint-task/paint-task-master/", RequirePaintListId]);
+                        this.router.navigate(["paint-task/paint-task-master/", master.RequirePaintingListId]);
+                    } else if (ConditionNumber === -97) { // Go to Receive WorkItem
+                        let createBy: string = "someone";
+                        if (this.serviceAuth.getAuth) {
+                            createBy = this.serviceAuth.getAuth.UserName || createBy;
+                        }
+                        this.serviceList.setReceiveWorkItem(master.RequirePaintingListId, createBy)
+                            .subscribe(dbComplate => {
+                                this.serviceDialogs.context("Complate Message",
+                                    "Update status of workitem is complated.", this.viewContainerRef)
+                                    .subscribe(result => this.onGetData(this.reportForm.value));
+                            });
                     }
                 });
         }

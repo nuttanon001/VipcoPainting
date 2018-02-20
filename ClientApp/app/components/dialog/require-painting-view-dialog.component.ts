@@ -48,7 +48,7 @@ export class RequirePaintingViewDialogComponent implements OnInit {
         if (mode === 0) {
             this.dialogRef.close();
         } else {
-            this.dialogRef.close(-99);
+            this.dialogRef.close(mode);
         }
     }
 }

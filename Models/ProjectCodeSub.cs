@@ -17,12 +17,18 @@ namespace VipcoPainting.Models
         [StringLength(200)]
         public string Name { get; set; }
         // FK
+
         //ProjectCodeSub
         public int? ProjectSubParentId { get; set; }
         [ForeignKey("ProjectSubParentId")]
         public ProjectCodeSub ProjectSubParent { get; set; }
+
         //ProjectMasterCode
         public int? ProjectCodeMasterId { get; set; }
         // public ProjectCodeMaster ProjectCodeMaster { get; set; }
+
+        // RequirePaintingMaster
+        public ICollection<RequirePaintingMaster> RequirePaintingMasters { get; set; }
+
     }
 }

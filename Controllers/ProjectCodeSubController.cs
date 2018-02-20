@@ -22,6 +22,7 @@ namespace VipcoPainting.Controllers
         #region PrivateMenbers
 
         private IRepositoryPainting<ProjectCodeSub> repository;
+        private IRepositoryPainting<RequirePaintingMaster> repositoryReqMaster;
         private IRepositoryMachine<ProjectCodeDetail> repositoryDetail;
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
@@ -34,10 +35,12 @@ namespace VipcoPainting.Controllers
 
         public ProjectCodeSubController(
             IRepositoryPainting<ProjectCodeSub> repo, 
+            IRepositoryPainting<RequirePaintingMaster> repoReqMaster,
             IRepositoryMachine<ProjectCodeDetail> repoDetail,
             IMapper map)
         {
             this.repository = repo;
+            this.repositoryReqMaster = repoReqMaster;
             this.repositoryDetail = repoDetail;
             this.mapper = map;
             this.helpers = new HelpersClass<ProjectCodeSub>();
@@ -132,6 +135,40 @@ namespace VipcoPainting.Controllers
             }
             return NotFound(new { Error = Message });
         }
+
+        // GET: api/ProjectCodeSub/CanRemoveProjectSub/
+        [HttpGet("CanRemoveProjectSub/{key}")]
+        public async Task<IActionResult> CanRemoveProjectSub(int key)
+        {
+            var Message = "Has error data not been found.";
+
+            try
+            {
+                if (key > 0)
+                {
+                    var HasUseProject = await this.repositoryReqMaster.GetAllAsQueryable()
+                                                  .AnyAsync(x => x.ProjectCodeSubId == key);
+
+                    if (!HasUseProject)
+                    {
+                        var HasProjectSub = await this.repository.GetAsync(key);
+
+                        if (HasProjectSub != null)
+                        {
+                            // await this.repository.DeleteAsync(key);
+                            return new JsonResult(new { Complate = true }, this.DefaultJsonSettings);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+
+            return NotFound(new { Error = Message });
+        }
+
         #endregion GET
 
         #region POST

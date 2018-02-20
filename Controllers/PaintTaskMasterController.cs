@@ -22,13 +22,15 @@ namespace VipcoPainting.Controllers
     public class PaintTaskMasterController : Controller
     {
         #region PrivateMembers
-        // Repository
+        // Repository Painting
         private IRepositoryPainting<PaintTaskMaster> repository;
         private IRepositoryPainting<PaintTaskDetail> repositoryDetail;
-        private IRepositoryMachine<Employee> repositoryEmp;
-        private IRepositoryMachine<ProjectCodeMaster> repositoryProMaster;
         private IRepositoryPainting<RequirePaintingMaster> repositoryReqPaintingMaster;
         private IRepositoryPainting<RequirePaintingList> repositoryReqPaintingList;
+        private IRepositoryPainting<RequirePaintingListOption> repositoryReqPaintingListOption;
+        // Repository Machine
+        private IRepositoryMachine<Employee> repositoryEmp;
+        private IRepositoryMachine<ProjectCodeMaster> repositoryProMaster;
         // Mapper
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
@@ -119,17 +121,19 @@ namespace VipcoPainting.Controllers
             IRepositoryPainting<PaintTaskMaster> repo,
             IRepositoryPainting<PaintTaskDetail> repoDetail,
             IRepositoryPainting<RequirePaintingList> repoPaintingList,
-            IRepositoryMachine<ProjectCodeMaster> repoProMaster,
             IRepositoryPainting<RequirePaintingMaster> repoPaintingMaster,
+            IRepositoryPainting<RequirePaintingListOption> repoPaintingListOption,
+            IRepositoryMachine<ProjectCodeMaster> repoProMaster,
             IRepositoryMachine<Employee> repoEmp, IMapper map)
         {
             // Repository
             this.repository = repo;
             this.repositoryDetail = repoDetail;
             this.repositoryReqPaintingList = repoPaintingList;
+            this.repositoryReqPaintingMaster = repoPaintingMaster;
+            this.repositoryReqPaintingListOption = repoPaintingListOption;
             this.repositoryEmp = repoEmp;
             this.repositoryProMaster = repoProMaster;
-            this.repositoryReqPaintingMaster = repoPaintingMaster;
             // Mapper
             this.mapper = map;
             this.helpers = new HelpersClass<PaintTaskMaster>();
@@ -202,12 +206,20 @@ namespace VipcoPainting.Controllers
                 var QueryData = this.repository.GetAllAsQueryable()
                                                .Include(x => x.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
                                                .Include(x => x.PaintTaskDetails)
+                                               .Where(x => x.RequirePaintingList.PlanStart != null && 
+                                                           x.RequirePaintingList.PlanEnd != null)
                                                .AsQueryable();
                 int TotalRow;
 
                 if (Scehdule != null)
                 {
-                    QueryData = QueryData.OrderByDescending(x => x.RequirePaintingList.PlanStart);
+                    if (Scehdule.Mode.HasValue)
+                    {
+                        if (Scehdule.Mode == 1)
+                            QueryData = QueryData.OrderByDescending(x => x.RequirePaintingList.PlanStart);
+                        else
+                            QueryData = QueryData.OrderBy(x => x.RequirePaintingList.PlanStart);
+                    }
 
                     if (Scehdule.TaskMasterId.HasValue)
                         QueryData = QueryData.Where(x => x.PaintTaskMasterId == Scehdule.TaskMasterId);
@@ -467,6 +479,7 @@ namespace VipcoPainting.Controllers
                             // PaintTeam
                             if (Scehdule.PaintTeamId.HasValue)
                                 QueryData = QueryData.Where(x => x.PaintTeamId == Scehdule.PaintTeamId);
+
                             // BlastTeam
                             if (Scehdule.BlastTeamId.HasValue)
                                 QueryData = QueryData.Where(x => x.BlastRoomId == Scehdule.BlastTeamId);
@@ -727,6 +740,23 @@ namespace VipcoPainting.Controllers
                     {
                         await this.ChangeRequirePaintingListStatus(nPaintTaskMaster.RequirePaintingListId.Value, nPaintTaskMaster.Creator);
                         nPaintTaskMaster.TaskPaintNo = await this.GeneratedCode(nPaintTaskMaster.RequirePaintingListId.Value);
+
+                        // Update Require Painting List Option
+                        var RequireListOption = await this.repositoryReqPaintingListOption.GetAllAsQueryable()
+                                                          .Where(x => x.RequirePaintingListId == nPaintTaskMaster.RequirePaintingListId)
+                                                          .AnyAsync();
+                        if (!RequireListOption)
+                        {
+                            var newRequireListOption = new RequirePaintingListOption()
+                            {
+                                CreateDate = nPaintTaskMaster.CreateDate,
+                                Creator = nPaintTaskMaster.Creator,
+                                ReceiveWorkItem = nPaintTaskMaster.CreateDate.Value,
+                                RequirePaintingListId = nPaintTaskMaster.RequirePaintingListId.Value,
+                            };
+
+                            await this.repositoryReqPaintingListOption.AddAsync(newRequireListOption);
+                        }
                     }
 
                     if (nPaintTaskMaster.RequirePaintingList != null)
@@ -775,7 +805,24 @@ namespace VipcoPainting.Controllers
                     else
                         return NotFound(new { Error = Message });
 
-                    return new JsonResult(await this.repository.AddAsync(nPaintTaskMaster), this.DefaultJsonSettings);
+                    var InsertComplate = await this.repository.AddAsync(nPaintTaskMaster);
+
+                    if (InsertComplate != null)
+                    {
+                        Expression<Func<RequirePaintingListOption, bool>> match = e => e.RequirePaintingListId == InsertComplate.RequirePaintingListId;
+                        if (!(await this.repositoryReqPaintingListOption.AnyDataAsync(match)))
+                        {
+                            await this.repositoryReqPaintingListOption.AddAsync(new RequirePaintingListOption()
+                            {
+                                CreateDate = DateTime.Now,
+                                Creator = InsertComplate.Creator,
+                                ReceiveWorkItem = DateTime.Now,
+                                RequirePaintingListId = InsertComplate.RequirePaintingListId,
+                            });
+                        }
+                    }
+
+                    return new JsonResult(InsertComplate, this.DefaultJsonSettings);
                 }
 
             }

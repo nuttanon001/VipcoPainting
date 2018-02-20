@@ -9,6 +9,6 @@ namespace VipcoPainting.ViewModels
 {
     public class RequirePaintingListViewModel:RequirePaintingList
     {
-
+        public bool IsReceive { get; set; }
     }
 }

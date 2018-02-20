@@ -30,7 +30,7 @@ export class RequirePaintMasterService extends BaseRestService<RequirePaintMaste
         let url: string = `${this.actionUrl}CloseRequirePaintingMaster/${RequirePainingMasterId}/`;
         return this.http.get(url).map(this.extractData).catch(this.handleError);
     }
-    // ===================== OverTime Schedule ===========================\\
+    // ===================== Require Paint Master Schedule ===========================\\
     // get RequirePaint Schedule
     getRequirePaintSchedule(option: RequirePaintSchedule): Observable<any> {
         let url: string = `${this.actionUrl}RequirePaintSchedule/`;

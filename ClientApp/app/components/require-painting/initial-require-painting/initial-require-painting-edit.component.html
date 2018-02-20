@@ -53,41 +53,43 @@
                         </div>
                     </form>
                     <hr class="w-75" />
-                    <form [formGroup]="initialRequireForm">
-                        <div class="my-form">
-                            <label for="PlanStart" class="my-label">DatePlan:</label>
-                            <div class="edit-form-content col-sm-5">
-                                <p-calendar #PlanStart formControlName="PlanStart" [showIcon]="true"
-                                            id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
-                                            appendTo="body" (onFocus)="updateCalendarUI(PlanStart)"
-                                            [maxDate]="initialRequireForm.controls.PlanEnd.value">
-                                </p-calendar>
-                                <span style="margin-left:6px;margin-right:7px;">|</span>
-                                <p-calendar #PlanEnd formControlName="PlanEnd" [showIcon]="true"
-                                            id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  End plane date"
-                                            appendTo="body" (onFocus)="updateCalendarUI(PlanEnd)"
-                                            [minDate]="initialRequireForm.controls.PlanStart.value">
-                                </p-calendar>
-                            </div>
-                        </div>
-
-                        <div class="my-form">
-                            <label for="DrawingNo" class="my-label">DrawingNo:</label>
-                            <div class="col-sm-4">
-                                <input type="text" class="my-input" placeholder="Insert drawing-no of work item."
-                                       id="DrawingNo" formControlName="DrawingNo">
-                                <validation-messages [control]="initialRequireForm.controls.DrawingNo"></validation-messages>
+                    <div *ngIf="initialRequirePaint">
+                        <form [formGroup]="initialRequireForm">
+                            <div class="my-form">
+                                <label for="PlanStart" class="my-label">DatePlan:</label>
+                                <div class="edit-form-content col-sm-5">
+                                    <p-calendar #PlanStart formControlName="PlanStart" [showIcon]="true"
+                                                id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
+                                                appendTo="body" (onFocus)="updateCalendarUI(PlanStart)"
+                                                [maxDate]="initialRequireForm.controls.PlanEnd.value">
+                                    </p-calendar>
+                                    <span style="margin-left:6px;margin-right:7px;">|</span>
+                                    <p-calendar #PlanEnd formControlName="PlanEnd" [showIcon]="true"
+                                                id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  End plane date"
+                                                appendTo="body" (onFocus)="updateCalendarUI(PlanEnd)"
+                                                [minDate]="initialRequireForm.controls.PlanStart.value">
+                                    </p-calendar>
+                                </div>
                             </div>
 
-                            <label for="UnitNo" class="my-label">UnitNo:</label>
-                            <div class="col-sm-4">
-                                <input type="number" min="1" class="my-input" placeholder="Insert unit-no of work item."
-                                       required
-                                       id="UnitNo" formControlName="UnitNo">
-                                <validation-messages [control]="initialRequireForm.controls.UnitNo"></validation-messages>
+                            <div class="my-form">
+                                <label for="DrawingNo" class="my-label">DrawingNo:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="my-input" placeholder="Insert drawing-no of work item."
+                                           id="DrawingNo" formControlName="DrawingNo">
+                                    <validation-messages [control]="initialRequireForm.controls.DrawingNo"></validation-messages>
+                                </div>
+
+                                <label for="UnitNo" class="my-label">UnitNo:</label>
+                                <div class="col-sm-4">
+                                    <input type="number" min="1" class="my-input" placeholder="Insert unit-no of work item."
+                                           required
+                                           id="UnitNo" formControlName="UnitNo">
+                                    <validation-messages [control]="initialRequireForm.controls.UnitNo"></validation-messages>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </mat-tab>
             <mat-tab>
@@ -96,7 +98,7 @@
                 </ng-template>
                 <div class="edit-container">
                     <list-paint-blast-workitem [(ListPaintBlastWorks)]="paintBlastWorkItems"
-                                               (isValid)="isPaintBlastValid=$event"
+                                               (isValid)="updatePaintBlastWorkitem($event)"
                                                (paintCheckBox)="paintCheckBox=$event"
                                                [noRequest]="true">
                     </list-paint-blast-workitem>

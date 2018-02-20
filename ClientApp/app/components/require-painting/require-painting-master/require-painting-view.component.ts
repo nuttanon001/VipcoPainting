@@ -28,7 +28,7 @@ export class RequirePaintingViewComponent extends BaseViewComponent<RequirePaint
 
     //parameter
     requireLists: Array<RequirePaintList> = new Array;
-    @Input("height") height: string = "calc(100vh - 184px)";
+    @Input("height") height: string = "60vh";
 
     columns: Array<TableColumn> = [
         { prop: "Description", name: "Description", width: 250 },

@@ -16,3 +16,6 @@ export { InitialRequirePaintingCenterComponent } from "./initial-require-paintin
 export { InitialRequirePaintingEditComponent } from "./initial-require-painting/initial-require-painting-edit.component";
 export { InitialRequirePaintingMasterComponent } from "./initial-require-painting/initial-require-painting-master.component";
 export { InitialRequirePaintingViewComponent } from "./initial-require-painting/initial-require-painting-view.component";
+export { InitialRequirePaintingScheduleComponent } from "./initial-require-painting/initial-require-painting-schedule.component";
+export { InitialRequirePaintingListComponent } from "./initial-require-painting/initial-require-workitem.component";
+export { InitialRequireWorkitemMasterComponent } from "./initial-require-painting/initial-require-workitem-master.component";

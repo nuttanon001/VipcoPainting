@@ -28,6 +28,8 @@ namespace VipcoPainting.Models
             modelBuilder.Entity<Permission>().ToTable("Permission");
             modelBuilder.Entity<ProjectCodeSub>().ToTable("ProjectCodeSub");
             modelBuilder.Entity<RequirePaintingList>().ToTable("RequirePaintingList");
+            modelBuilder.Entity<RequirePaintingListHasAttach>().ToTable("RequirePaintingListHasAttach");
+            modelBuilder.Entity<RequirePaintingListOption>().ToTable("RequirePaintingListOption");
             modelBuilder.Entity<RequirePaintingMaster>().ToTable("RequirePaintingMaster");
             modelBuilder.Entity<RequisitionMaster>().ToTable("RequisitionMaster");
             modelBuilder.Entity<StandradTime>().ToTable("StandradTime");
@@ -51,6 +53,8 @@ namespace VipcoPainting.Models
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<ProjectCodeSub> ProjectCodeSubs { get; set; }
         public DbSet<RequirePaintingList> RequirePaintingLists { get; set; }
+        public DbSet<RequirePaintingListHasAttach> RequirePaintingListHasAttachs { get; set; }
+        public DbSet<RequirePaintingListOption> RequirePaintingListOptions { get; set; }
         public DbSet<RequirePaintingMaster> RequirePaintingMasters { get; set; }
         public DbSet<RequisitionMaster> RequisitionMasters { get; set; }
         public DbSet<StandradTime> StandradTimes { get; set; }

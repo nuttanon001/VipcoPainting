@@ -34,23 +34,23 @@ export class RequirePaintingDialogComponent implements OnInit, OnDestroy {
 
     // Parameter
     columnsBlastWork: Array<TableColumn> = [
-        { prop: "IntArea", name: "IntArea", width: 70 },
-        { prop: "IntSurfaceTypeString", name: "IntSurface", width: 120 },
-        { prop: "IntStandradTimeString", name: "IntStd", width: 120 },
-        { prop: "ExtArea", name: "ExtArea", width: 70 },
-        { prop: "ExtSurfaceTypeString", name: "ExtSurface", width: 120 },
-        { prop: "ExtStandradTimeString", name: "ExtStd", width: 120 },
+        { prop: "IntArea", name: "Int Area", width: 70 },
+        { prop: "IntSurfaceTypeString", name: "Int Surface", width: 120 },
+        { prop: "IntStandradTimeString", name: "Internal Std", width: 200 },
+        { prop: "ExtArea", name: "Ext Area", width: 70 },
+        { prop: "ExtSurfaceTypeString", name: "Ext Surface", width: 120 },
+        { prop: "ExtStandradTimeString", name: "External Std", width: 200 },
     ];
 
     columnsPaintWork: Array<TableColumn> = [
         { prop: "PaintLevelString", name: "Level", width: 120 },
-        { prop: "IntAreaString", name: "IntArea", width: 150 },
-        { prop: "IntColorString", name: "IntColor", width: 120 },
-        { prop: "IntStandradTimeString", name: "IntStd", width: 120 },
+        { prop: "IntAreaString", name: "Int Area", width: 150 },
+        { prop: "IntColorString", name: "Int Color", width: 120 },
+        { prop: "IntStandradTimeString", name: "Int Std", width: 120 },
 
-        { prop: "ExtAreaString", name: "ExtArea", width: 150 },
-        { prop: "ExtColorString", name: "ExtColor", width: 120 },
-        { prop: "ExtStandradTimeString", name: "ExtStd", width: 120 },
+        { prop: "ExtAreaString", name: "Ext Area", width: 150 },
+        { prop: "ExtColorString", name: "Ext Color", width: 120 },
+        { prop: "ExtStandradTimeString", name: "Ext Std", width: 120 },
     ];
 
     blastWorkItems: Array<BlastWorkItem>;

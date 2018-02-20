@@ -39,10 +39,11 @@
                           [header]="column.header" [style]="column.style" [sortable]="true">
                     <ng-template *ngIf="column.isCol" let-col let-data1="rowData" pTemplate="body">
                         <ol type="I">
-                            <li *ngFor="let master of data1[col.field];index as i;" class="text-success">
-                                <i class="fa fa-search" (click)="onSelectRequirePaintMaster(master.RequirePaintingMasterId)"
+                            <li *ngFor="let master of data1[col.field];index as i;" 
+                                [ngClass]="master.IsReceive ? 'text-success' : 'text-danger' ">
+                                <i class="fa fa-search" (click)="onSelectRequirePaintMaster(master)"
                                    style="cursor:pointer;">
-                                    <span>{{master.RequireString}}</span> 
+                                    <span>{{master.MarkNo}}</span> 
                                 </i>
                             </li>
                         </ol>

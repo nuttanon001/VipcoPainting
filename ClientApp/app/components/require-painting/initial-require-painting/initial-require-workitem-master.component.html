@@ -1,0 +1,11 @@
+﻿<div class="master-container">
+    <div *ngIf="showSchedule && !initialRequirePaintId;else WorkItemBlock">
+        <initial-require-painting-schedule (initialRequireId)="onScheduleSendId($event)">
+        </initial-require-painting-schedule>
+    </div>
+    <ng-template #WorkItemBlock>
+        <initial-require-workitem [(initialRequirePaintId)]="initialRequirePaintId" 
+                                  (ComplateOrFailed)="onInitialWorkItemSendStatus($event)">
+        </initial-require-workitem>
+    </ng-template>
+</div>

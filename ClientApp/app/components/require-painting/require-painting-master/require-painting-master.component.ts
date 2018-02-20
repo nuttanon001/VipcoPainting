@@ -141,6 +141,9 @@ export class RequirePaintingMasterComponent
             if (value.PlanStart !== null) {
                 value.PlanStart = moment.tz(value.PlanStart, zone).toDate();
             }
+            if (value.SendWorkItem !== null) {
+                value.SendWorkItem = moment.tz(value.SendWorkItem, zone).toDate();
+            }
         }
         return value;
     }

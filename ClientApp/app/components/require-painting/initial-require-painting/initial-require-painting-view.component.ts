@@ -33,23 +33,18 @@ export class InitialRequirePaintingViewComponent extends BaseViewComponent<Requi
 
     // parameter
     initialRequirePaint: InitialRequirePaint;
-    // Parameter
     columnsBlastWork: Array<TableColumn> = [
-        { prop: "IntArea", name: "IntArea", width: 70 },
-        { prop: "IntSurfaceTypeString", name: "IntSurface", width: 120 },
-        { prop: "IntStandradTimeString", name: "IntStd", width: 120 },
-        { prop: "ExtArea", name: "ExtArea", width: 70 },
-        { prop: "ExtSurfaceTypeString", name: "ExtSurface", width: 120 },
-        { prop: "ExtStandradTimeString", name: "ExtStd", width: 120 },
+        { prop: "IntSurfaceTypeString", name: "Internal Surface", width: 150 },
+        { prop: "IntStandradTimeString", name: "Internal Std", width: 200 },
+        { prop: "ExtSurfaceTypeString", name: "External Surface", width: 150 },
+        { prop: "ExtStandradTimeString", name: "External Std", width: 200 },
     ];
     columnsPaintWork: Array<TableColumn> = [
-        { prop: "PaintLevelString", name: "Level", width: 120 },
-        { prop: "IntAreaString", name: "IntArea", width: 150 },
-        { prop: "IntColorString", name: "IntColor", width: 120 },
-        { prop: "IntStandradTimeString", name: "IntStd", width: 120 },
-        { prop: "ExtAreaString", name: "ExtArea", width: 150 },
-        { prop: "ExtColorString", name: "ExtColor", width: 120 },
-        { prop: "ExtStandradTimeString", name: "ExtStd", width: 120 },
+        { prop: "PaintLevelString", name: "Level", width: 150 },
+        { prop: "IntColorString", name: "Internal Color", width: 200 },
+        { prop: "IntStandradTimeString", name: "Internal Std", width: 200 },
+        { prop: "ExtColorString", name: "External Color", width: 200 },
+        { prop: "ExtStandradTimeString", name: "External Std", width: 200 },
     ];
 
     blastWorkItems: Array<BlastWorkItem>;
@@ -59,6 +54,9 @@ export class InitialRequirePaintingViewComponent extends BaseViewComponent<Requi
     onLoadMoreData(value: RequirePaintMaster) {
         this.service.getByMasterId(value.RequirePaintingMasterId)
             .subscribe(dbInitials => {
+                // Debug here
+                // console.log("Data ", JSON.stringify(dbInitials));
+
                 if (dbInitials) {
                     if (dbInitials.length > 0) {
                         this.initialRequirePaint = dbInitials[0];

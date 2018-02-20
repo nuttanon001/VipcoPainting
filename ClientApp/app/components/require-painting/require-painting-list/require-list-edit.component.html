@@ -18,7 +18,7 @@
                 <form [formGroup]="RequirePaintListForm">
                     <div class="my-form">
                         <label for="PlanStart" class="my-label">DatePlan:</label>
-                        <div class="edit-form-content col-sm-5">
+                        <div class="edit-form-content col-sm-4">
                             <p-calendar #PlanStart formControlName="PlanStart" [showIcon]="true"
                                         id="PlanStart" dateFormat="dd/mm/yy" placeholder="  Start plane date"
                                         appendTo="body" (onFocus)="updateCalendarUI(PlanStart)"
@@ -29,6 +29,14 @@
                                         id="PlanEnd" dateFormat="dd/mm/yy" placeholder="  End plane date"
                                         appendTo="body" (onFocus)="updateCalendarUI(PlanEnd)"
                                         [minDate]="RequirePaintListForm.controls.PlanStart.value">
+                            </p-calendar>
+                        </div>
+
+                        <label for="SendWorkItem" class="my-label">Send-Date:</label>
+                        <div class="edit-form-content col-sm-4 ">
+                            <p-calendar formControlName="SendWorkItem" [showIcon]="true"
+                                        id="SendWorkItem" dateFormat="dd/mm/yy" placeholder="  Date send work item."
+                                        appendTo="body">
                             </p-calendar>
                         </div>
                     </div>

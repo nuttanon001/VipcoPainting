@@ -1,5 +1,6 @@
 ﻿import { Component, ViewContainerRef } from "@angular/core";
 import { Router, ActivatedRoute, ParamMap } from "@angular/router";
+import { Location } from "@angular/common";
 // components
 import { BaseMasterComponent } from "../../base-component/base-master.component";
 // models
@@ -33,6 +34,7 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
         serviceComDataTable: DataTableServiceCommunicate<PaintTaskMaster>,
         dialogsService: DialogsService,
         viewContainerRef: ViewContainerRef,
+        private location: Location,
         private serverAuth: AuthService,
         private router: Router,
         private route: ActivatedRoute,
@@ -59,9 +61,11 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
     PaintTaskDetailId?: number;
     ReportType?: string;
     onlyUser: boolean;
+    goToSchedule: boolean;
 
     // on inti override
     ngOnInit(): void {
+        this.goToSchedule = false;
         // override class
         super.ngOnInit();
 
@@ -69,6 +73,9 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
             let key: number = Number(param.get("condition") || 0);
 
             if (key) {
+                // can go back to last page
+                this.goToSchedule = true;
+
                 let newTaskMaster: PaintTaskMaster = {
                     PaintTaskMasterId: 0,
                     PaintTaskStatus: 1,
@@ -197,6 +204,10 @@ export class PaintTaskMasterComponent extends BaseMasterComponent<PaintTaskMaste
             (complete: any) => {
                 this.displayValue = complete;
                 this.onSaveComplete();
+
+                if (this.goToSchedule) {
+                    this.location.back();
+                }
             },
             (error: any) => {
                 console.error(error);

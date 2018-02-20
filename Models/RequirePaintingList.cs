@@ -38,11 +38,12 @@ namespace VipcoPainting.Models
         // RequirePaintingMaster
         public int? RequirePaintingMasterId { get; set; }
         public RequirePaintingMaster RequirePaintingMaster { get; set; }
-
         // BlastWorkItem
         public ICollection<BlastWorkItem> BlastWorkItems { get; set; }
         // PaintWorkItem
         public ICollection<PaintWorkItem> PaintWorkItems { get; set; }
+        // RequirePaintListOption
+        public RequirePaintingListOption RequirePaintingListOption { get; set; }
     }
 
     public enum RequirePaintingListStatus

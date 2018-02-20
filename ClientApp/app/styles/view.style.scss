@@ -8,6 +8,12 @@
     @extend .mx-3;
 }
 
+.view-container-scroll {
+    @extend .view-container;
+    overflow:scroll;
+    height:70vh;
+}
+
 .chlid-view-container {
     display: flex;
     flex-direction: row;

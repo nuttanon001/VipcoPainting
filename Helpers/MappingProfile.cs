@@ -217,6 +217,14 @@ namespace VipcoPainting.Helpers
 
             CreateMap<SubPaymentMasterViewModel, SubPaymentMaster>();
             #endregion
+
+            #region InitialRequireWorkItem
+
+            CreateMap<InitialRequirePaintingList, InitialRequirePaintingViewModel>()
+                .ForMember(x => x.BlastWorkItems, o => o.Ignore())
+                .ForMember(x => x.PaintWorkItems, o => o.Ignore());
+
+            #endregion
         }
     }
 }

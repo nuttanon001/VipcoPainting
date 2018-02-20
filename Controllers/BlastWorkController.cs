@@ -78,7 +78,8 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> GetByMaster(int MasterId)
         {
             var QueryData = this.repository.GetAllAsQueryable()
-                                .Where(x => x.RequirePaintingListId == MasterId)
+                                .Where(x => x.RequirePaintingListId == MasterId &&
+                                            x.InitialRequireId == null)
                                 .Include(x => x.StandradTimeExt)
                                 .Include(x => x.StandradTimeInt)
                                 .Include(x => x.SurfaceTypeExt)
@@ -93,7 +94,8 @@ namespace VipcoPainting.Controllers
         public async Task<IActionResult> GetByMaster2(int MasterId)
         {
             var QueryData = this.repository.GetAllAsQueryable()
-                                .Where(x => x.InitialRequireId == MasterId)
+                                .Where(x => x.InitialRequireId == MasterId && 
+                                            x.RequirePaintingListId == null)
                                 .Include(x => x.StandradTimeExt)
                                 .Include(x => x.StandradTimeInt)
                                 .Include(x => x.SurfaceTypeExt)

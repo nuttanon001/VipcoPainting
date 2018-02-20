@@ -1,7 +1,10 @@
 ﻿// angular
 import { Component, Output, EventEmitter, Input, ViewContainerRef } from "@angular/core";
+// Models
 import { RequirePaintList, RequirePaintMaster } from "../../../models/model.index";
+// Components
 import { RequirePaintingViewComponent } from "./require-painting-view.component";
+// Services
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 
@@ -24,27 +27,38 @@ export class RequirePaintingViewScheduleComponent extends RequirePaintingViewCom
     }
 
     // Parameter
+    @Input() RequirePaintingListId: number;
     @Output("selected") selected = new EventEmitter<number>();
 
     // load more data OverRide
     onLoadMoreData(value: RequirePaintMaster) {
-        this.service.getByMasterId(value.RequirePaintingMasterId)
-            .subscribe(dbLists => {
-                this.requireLists = new Array;
-                dbLists.forEach(item => {
-                    if (item.RequirePaintingListStatus === 1) {
-                        this.requireLists.push(item);
-                    }
-                });
-                // this.requireLists = dbLists.slice(); //[...dbDetail];
-                // console.log("DataBase is :", this.details);
-            }, error => console.error(error));
+        if (this.RequirePaintingListId) {
+            this.service.getOneKeyNumber(this.RequirePaintingListId)
+                .subscribe(dbData => {
+                    this.requireLists = new Array;
+                    this.requireLists.push(dbData);
+                }, error => console.error(error));
+        } else {
+            this.service.getByMasterId(value.RequirePaintingMasterId)
+                .subscribe(dbLists => {
+                    this.requireLists = new Array;
+                    dbLists.forEach(item => {
+                        if (item.RequirePaintingListStatus === 1) {
+                            this.requireLists.push(item);
+                        }
+                    });
+                    // this.requireLists = dbLists.slice(); //[...dbDetail];
+                    // console.log("DataBase is :", this.details);
+                }, error => console.error(error));
+        }
     }
 
     // on Require-Workitem override
     onSelectedRequestWorkItem(value?: RequirePaintList) {
-        if (value) {
-            this.selected.emit(value.RequirePaintingListId);
+        if (!this.RequirePaintingListId) {
+            if (value) {
+                this.selected.emit(value.RequirePaintingListId);
+            }
         }
     }
 }

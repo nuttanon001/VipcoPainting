@@ -67,9 +67,11 @@ export class InitialRequirePaintingMasterComponent
 
         this.subscription1 = this.serviceCom.ToParent$.subscribe(
             (TypeValue: [RequirePaintMasterHasInitial, boolean]) => {
-                this.editValue = TypeValue[0].RequirePaintMaster;
-                this.InitialRequirePaint = TypeValue[0].InitialRequirePaint;
-                this.canSave = TypeValue[1];
+                setTimeout(() => {
+                    this.editValue = TypeValue[0].RequirePaintMaster;
+                    this.InitialRequirePaint = TypeValue[0].InitialRequirePaint;
+                    this.canSave = TypeValue[1];
+                }, 0)
             });
 
         this.subscription2 = this.dataTableServiceCom.ToParent$
@@ -225,7 +227,9 @@ export class InitialRequirePaintingMasterComponent
                                         // SurfaceTypeExt
                                         SurfaceTypeExtId: blastWork.SurfaceTypeExtId,
                                         // RequirePaintingList
-                                        RequirePaintingListId: blastWork.RequirePaintingListId
+                                        RequirePaintingListId: blastWork.RequirePaintingListId,
+                                        // InitialRequire
+                                        InitialRequireId: this.InitialRequirePaint.InitialRequireId,
                                     };
                                     this.InitialRequirePaint.BlastWorkItems[index] = newData;
                                 }
@@ -264,7 +268,9 @@ export class InitialRequirePaintingMasterComponent
                                         // StandradTimeExt
                                         StandradTimeExtId: paintWork.StandradTimeExtId,
                                         // RequirePaintingList
-                                        RequirePaintingListId: paintWork.RequirePaintingListId
+                                        RequirePaintingListId: paintWork.RequirePaintingListId,
+                                        // InitialRequire
+                                        InitialRequireId: this.InitialRequirePaint.InitialRequireId,
                                     };
                                     this.InitialRequirePaint.PaintWorkItems[index] = newData;
                                 }

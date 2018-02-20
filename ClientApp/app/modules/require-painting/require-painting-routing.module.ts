@@ -4,7 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 import {
     RequirePaintingCenterComponent, RequirePaintingMasterComponent,
     RequirePaintingScheduleComponent, InitialRequirePaintingCenterComponent,
-    InitialRequirePaintingMasterComponent,
+    InitialRequirePaintingMasterComponent, InitialRequireWorkitemMasterComponent
 } from "../../components/require-painting/require.index";
 
 // service
@@ -31,6 +31,10 @@ const requirePaintingRoutes: Routes = [
         component: InitialRequirePaintingCenterComponent,
         canActivate: [AuthGuard],
         children: [
+            {
+                path: "workitem-master",
+                component: InitialRequireWorkitemMasterComponent,
+            },
             {
                 path: "",
                 component: InitialRequirePaintingMasterComponent,

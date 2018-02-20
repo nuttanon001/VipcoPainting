@@ -632,6 +632,60 @@ namespace VipcoPainting.Migrations
                     b.ToTable("RequirePaintingList");
                 });
 
+            modelBuilder.Entity("VipcoPainting.Models.RequirePaintingListHasAttach", b =>
+                {
+                    b.Property<int>("RequirePaintingListHasAttachId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AttachFileId");
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("RequirePaintingListId");
+
+                    b.HasKey("RequirePaintingListHasAttachId");
+
+                    b.HasIndex("RequirePaintingListId");
+
+                    b.ToTable("RequirePaintingListHasAttach");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.RequirePaintingListOption", b =>
+                {
+                    b.Property<int>("RequirePaintingListOptionId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("ReceiveWorkItem");
+
+                    b.Property<int?>("RequirePaintingListId");
+
+                    b.HasKey("RequirePaintingListOptionId");
+
+                    b.HasIndex("RequirePaintingListId")
+                        .IsUnique()
+                        .HasFilter("[RequirePaintingListId] IS NOT NULL");
+
+                    b.ToTable("RequirePaintingListOption");
+                });
+
             modelBuilder.Entity("VipcoPainting.Models.RequirePaintingMaster", b =>
                 {
                     b.Property<int>("RequirePaintingMasterId")
@@ -1028,10 +1082,24 @@ namespace VipcoPainting.Migrations
                         .HasForeignKey("RequirePaintingMasterId");
                 });
 
+            modelBuilder.Entity("VipcoPainting.Models.RequirePaintingListHasAttach", b =>
+                {
+                    b.HasOne("VipcoPainting.Models.RequirePaintingList", "RequirePaintingList")
+                        .WithMany()
+                        .HasForeignKey("RequirePaintingListId");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.RequirePaintingListOption", b =>
+                {
+                    b.HasOne("VipcoPainting.Models.RequirePaintingList", "RequirePaintingList")
+                        .WithOne("RequirePaintingListOption")
+                        .HasForeignKey("VipcoPainting.Models.RequirePaintingListOption", "RequirePaintingListId");
+                });
+
             modelBuilder.Entity("VipcoPainting.Models.RequirePaintingMaster", b =>
                 {
                     b.HasOne("VipcoPainting.Models.ProjectCodeSub", "ProjectCodeSub")
-                        .WithMany()
+                        .WithMany("RequirePaintingMasters")
                         .HasForeignKey("ProjectCodeSubId");
                 });
 

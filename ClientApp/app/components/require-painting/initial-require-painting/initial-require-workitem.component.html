@@ -1,0 +1,162 @@
+﻿<div class="edit-container-row">
+    <div class="edit-center-content">
+        <mat-tab-group>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <b>WorkItem Information</b>
+                </ng-template>
+                <div *ngIf="initialWorkItemForm">
+                    <form [formGroup]="initialWorkItemForm">
+                        <div *ngIf="requirePaintMaster">
+                            <div class="my-form">
+                                <label class="my-label">RequireNo:</label>
+                                <div class="edit-form-content col-sm-4">
+                                    {{requirePaintMaster.RequireNo || "-"}}
+                                </div>
+
+                                <label class="my-label">PaintSchedule:</label>
+                                <div class="edit-form-content col-sm-4">
+                                    {{requirePaintMaster.PaintingSchedule || "-"}}
+                                </div>
+                            </div>
+
+                            <div class="my-form">
+                                <label class="my-label">JobNumber:</label>
+                                <div class="edit-form-content col-sm-4">
+                                    {{requirePaintMaster.ProjectCodeSubString || "-"}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-form" *ngIf="initialRequirePaint">
+                            <label class="my-label">Plan:</label>
+                            <div class="edit-form-content col-sm-4">
+                                {{(initialRequirePaint.PlanStart | date:'dd/MM/yyyy') || ''}}
+                                <span class="mx-3">|</span>
+                                {{(initialRequirePaint.PlanEnd | date:'dd/MM/yyyy') || ''}}
+                            </div>
+
+                            <label class="my-label">Drawing/Unit:</label>
+                            <div class="edit-form-content col-sm-4">
+                                {{initialRequirePaint.DrawingNo || ''}}
+                                &nbsp;/&nbsp;
+                                {{initialRequirePaint.UnitNo || ''}}
+                            </div>
+                        </div>
+                        <hr class="w-75" />
+                        <div class="my-form">
+                            <label for="SendWorkItem" class="my-label">Send-Date:</label>
+                            <div class="edit-form-content col-sm-4">
+                                <p-calendar formControlName="SendWorkItem" [showIcon]="true"
+                                            id="SendWorkItem" dateFormat="dd/mm/yy" placeholder="  Date send work item."
+                                            appendTo="body">
+                                </p-calendar>
+                            </div>
+
+                            <label for="IntArea" class="my-label">Internal/External m²:</label>
+                            <div class="edit-form-content col-sm-4">
+                                <input type="number" min="1" class="my-input" placeholder="Internal of work item."
+                                       id="IntArea" formControlName="IntArea" [readonly]="!initialRequirePaint.NeedInternal">
+                                <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+                                <input type="number" min="1" class="my-input" placeholder="External of work item."
+                                       id="ExtArea" formControlName="ExtArea" [readonly]="!initialRequirePaint.NeedExternal">
+                            </div>
+                        </div>
+
+                        <div class="my-form">
+                            <label for="Quantity" class="my-label">Quantity:</label>
+                            <div class="col-sm-4">
+                                <input type="number" min="1" class="my-input" placeholder="Insert quantity of work item."
+                                       required
+                                       id="Quantity" formControlName="Quantity">
+                                <validation-messages [control]="initialWorkItemForm.controls.Quantity"></validation-messages>
+                            </div>
+
+                            <label for="Weight" class="my-label">Weight (kg):</label>
+                            <div class="col-sm-4">
+                                <input type="number" min="1" class="my-input" placeholder="Insert weight of work item."
+                                       required
+                                       id="Weight" formControlName="Weight">
+                                <validation-messages [control]="initialWorkItemForm.controls.Weight"></validation-messages>
+                            </div>
+                        </div>
+                        <div class="my-form">
+                            <label class="my-label">Dimension L x W x H (mm):</label>
+                            <div class="edit-form-content col-sm-6">
+                                <input type="number" min="1" class="my-input" placeholder="length work item."
+                                       id="SizeL" formControlName="SizeL">
+                                <span class="mx-1">X</span>
+                                <input type="number" min="1" class="my-input" placeholder="width work iitem."
+                                       id="SizeW" formControlName="SizeW">
+                                <span class="mx-1">X</span>
+                                <input type="number" min="1" class="my-input" placeholder="height work item."
+                                       id="SizeH" formControlName="SizeH">
+                            </div>
+                        </div>
+                        <div class="my-form">
+                            <label for="Description" class="my-label">Description:</label>
+                            <div class="col-sm-4">
+                                <textarea class="my-input" placeholder="Insert description of work item here."
+                                          id="Description" formControlName="Description" rows="4" required>
+                            </textarea>
+                                <validation-messages [control]="initialWorkItemForm.controls.Description"></validation-messages>
+                            </div>
+
+                            <label for="MarkNo" class="my-label">MarkNo:</label>
+                            <div class="col-sm-4">
+                                <textarea class="my-input" placeholder="Insert mark-no of work item here."
+                                          id="MarkNo" formControlName="MarkNo" rows="4" required>
+                            </textarea>
+                                <validation-messages [control]="initialWorkItemForm.controls.MarkNo"></validation-messages>
+                            </div>
+                        </div>
+                        <hr class="w-75 my-0" />
+                        <div class="my-form">
+                            <label class="my-label">Option-1:</label>
+                            <div class="col-sm-2">
+                                <p-checkbox name="group2" formControlName="FieldWeld" binary="true" label="FieldWeld" inputId="fieldWeld"></p-checkbox>
+                            </div>
+                            <div class="col-sm-2">
+                                <p-checkbox name="group2" formControlName="Insulation" binary="true" label="Insulation" inputId="insulation"></p-checkbox>
+                            </div>
+                            <div class="col-sm-2">
+                                <p-checkbox name="group2" formControlName="ITP" binary="true" label="ITP" inputId="iTP"></p-checkbox>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="my-form">
+                        <label for="AttactFile" class="my-label">AttactFile:</label>
+                        <div class="col-4">
+                            <attact-file id="AttactFile" (results)="onUpdateAttachResults($event)">
+                            </attact-file>
+                        </div>
+                    </div>
+                    <hr class="w-75 my-1" />
+                    <div class="my-form">
+                        <div class="col-2">
+                        </div>
+                        <div *ngIf="attachFiles" class="col-6">
+                            <h5>List of File {{attachFiles?.length || 0}}</h5>
+                            <p style="color:red;">** 5MB Maximum for Attachment File Size **</p>
+                            <div *ngFor="let file of attachFiles;let num = index">
+                                <a class="item" style="padding:0;margin:1px;">
+                                    {{num + 1}}. {{file.name}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+    <div class="edit-right-content mx-1">
+        <button type="button" mat-icon-button color="warn" (click)="onCancel()"
+                 matTooltip="Cancel" matTooltipPosition="left">
+            <i class="fa fa-2x fa-minus" aria-hidden="true"></i>
+        </button>
+        <button type="button" mat-icon-button color="primary" (click)="onSubmitted()"
+                [disabled]="disabledSave" matTooltip="Save" matTooltipPosition="left">
+            <i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>

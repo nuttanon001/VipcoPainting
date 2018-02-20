@@ -151,14 +151,28 @@ export class ProjectEditComponent
     // remove Detail
     onRemoveDetail(projectSub?: ProjectSub): void {
         if (projectSub) {
-            if (projectSub.ProjectCodeSubId < 1) {
+            // console.log("Project:", projectSub.ProjectCodeSubId);
+
+            if (projectSub.ProjectCodeSubId > 0) {
+                // console.log("Number:", projectSub.ProjectCodeSubId);
+                this.serviceSub.CanRemoveProjectSub(projectSub.ProjectCodeSubId)
+                    .subscribe(result => {
+                        if (this.editValue.ProjectSubs) {
+                            let index = this.editValue.ProjectSubs.indexOf(projectSub);
+                            this.editValue.ProjectSubs.splice(index, 1);
+                        }
+                    }, error => {
+                        this.serviceDialogs.error("Warning Message", "Can't remove job-level2/3 if already use data !!!",
+                        this.viewContainerRef);
+                    });
+            } else {
+                // console.log("Error:", projectSub.ProjectCodeSubId);
                 if (this.editValue.ProjectSubs) {
                     let index = this.editValue.ProjectSubs.indexOf(projectSub);
                     this.editValue.ProjectSubs.splice(index, 1);
                 }
-            } else {
-                this.serviceDialogs.error("Warning Message", "Can't remove job-level2/3 if already use data !!!",
-                    this.viewContainerRef);
+                //this.serviceDialogs.error("Warning Message", "Can't remove job-level2/3 if already use data !!!",
+                //    this.viewContainerRef);
             }
         }
     }

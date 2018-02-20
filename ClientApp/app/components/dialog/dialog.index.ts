@@ -10,3 +10,4 @@ export { RequirePaintingDialogComponent } from "./require-painting-dialog.compon
 export { RequirePaintingViewDialogComponent } from "./require-painting-view-dialog.component";
 export { ScheduleDialogComponent } from "./schedule-dialog.component";
 export { RequisitionListDialogComponent } from "./requisition-list-dialog.component";
+export { RequirePaintingBydetailViewComponent } from "./require-painting-bydetail-view.component";

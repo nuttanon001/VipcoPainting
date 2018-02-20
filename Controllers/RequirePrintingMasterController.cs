@@ -48,7 +48,7 @@ namespace VipcoPainting.Controllers
                                                .CountAsync(x => ListSubId.Contains(x.ProjectCodeSubId ?? 0)) + 1;
 
                         var Code = ProjectMaster.ProjectCode;
-                        if (Code.Trim().IndexOf("misc") != -1)
+                        if (Code.ToLower().Trim().IndexOf("misc") != -1)
                         {
                             Code = Code.ToLower().Replace("misc", "").Trim();
                             Code = "M" + Code;
@@ -553,8 +553,8 @@ namespace VipcoPainting.Controllers
                         if (Data.RequireDate != null)
                         {
                             //Get Employee Name
-                            var Employee = await this.repositoryEmp.GetAsync(Data.RequireEmp);
-                            var EmployeeReq = Employee != null ? $"คุณ{(Employee?.NameThai ?? "")}" : "No-Data";
+                            // var Employee = await this.repositoryEmp.GetAsync(Data.RequireEmp);
+                            // var EmployeeReq = Employee != null ? $"คุณ{(Employee?.NameThai ?? "")}" : "No-Data";
 
                             var Key = Data.RequireDate.Value.ToString("dd/MM/yy");
                             if (rowData.Any(x => x.Key == Key))
@@ -564,7 +564,8 @@ namespace VipcoPainting.Controllers
                                 ListMaster.Add(new RequirePaintingMasterViewModel
                                 {
                                     RequirePaintingMasterId = Data.RequirePaintingMasterId,
-                                    RequireString = $"{EmployeeReq} | No.{Data.RequireNo}",
+                                    // RequireString = $"{EmployeeReq} | No.{Data.RequireNo}",
+                                    RequireString = $"No.{Data.RequireNo}",
                                 });
 
                                 rowData[Key] = ListMaster;
@@ -574,7 +575,8 @@ namespace VipcoPainting.Controllers
                                 var Master = new RequirePaintingMasterViewModel()
                                 {
                                     RequirePaintingMasterId = Data.RequirePaintingMasterId,
-                                    RequireString = $"{EmployeeReq} | No.{Data.RequireNo}",
+                                    // RequireString = $"{EmployeeReq} | No.{Data.RequireNo}",
+                                    RequireString = $"No.{Data.RequireNo}",
                                 };
                                 rowData.Add(Key, new List<RequirePaintingMasterViewModel>() { Master });
                             }

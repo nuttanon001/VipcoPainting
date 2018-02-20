@@ -2,24 +2,30 @@
     <H5 style="color:cadetblue">Information of Request Blast&Paint</H5>
     <div class="child-container">
         <div class="center-content">
+            <div *ngIf="displayMode2" class="child-container">
+                <button type="button" mat-raised-button color="primary" matTooltip="Go to receive this workitem"
+                        (click)="onCancelClick(-97)" [disabled]="isReceive">ลงรับชิ้นงาน</button>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                <button type="button" mat-raised-button color="warn" matTooltip="Go to plan this workitem"
+                        (click)="onCancelClick(-98)">ดำเนินการวางแผน</button>
+                <span class="mx-2"></span>
+                <button type="button" mat-raised-button color="accent" (click)="onCancelClick()"
+                        matTooltip="Go Back">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+            <hr class="w-75 mt-1"/>
             <div *ngIf="displayValue">
                 <require-painting-view-schedule [displayValue]="displayValue" (selected)="onSelectedValue($event)"
-                                                [height]="'55vh'">
+                                                [height]="'35vh'" [RequirePaintingListId]="RequireListId">
                 </require-painting-view-schedule>
             </div>
         </div>
-        <div class="right-content">
+        <!--<div class="right-content">
             <button type="button" mat-icon-button color="accent" (click)="onCancelClick()"
                     matTooltip="Go Back" matTooltipPosition="left">
                 <i class="fa fa-2x fa-reply-all" aria-hidden="true"></i>
             </button>
-            <!--<
-            hr class="w-75"/>
-            <button type="button" mat-icon-button color="warn" (click)="onCancelClick(-99)"
-                    matTooltip="Close this Paint-Request" matTooltipPosition="left">
-                <i class="fa fa-2x fa-close" aria-hidden="true"></i>
-            </button>
-            -->
-        </div>
+        </div>-->
     </div>
 </div>

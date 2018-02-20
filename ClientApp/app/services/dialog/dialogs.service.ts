@@ -13,7 +13,8 @@ import {
     RequirePaintingDialogComponent,
     RequirePaintingViewDialogComponent,
     ScheduleDialogComponent,
-    RequisitionListDialogComponent
+    RequisitionListDialogComponent,
+    RequirePaintingBydetailViewComponent
 } from "../../components/dialog/dialog.index";
 // models
 import {
@@ -24,6 +25,7 @@ import {
     OptionTaskMasterSchedule,
     ProjectModeDialog,
     StandardTimeModeDialog,
+    RequirePaintList,
 } from "../../models/model.index";
 
 @Injectable()
@@ -193,6 +195,23 @@ export class DialogsService {
 
         // open dialog
         dialogRef = this.dialog.open(RequirePaintingViewDialogComponent, config);
+        return dialogRef.afterClosed();
+    }
+
+    public dialogRequestPaintViewByDetail(viewContainerRef: ViewContainerRef, requirePaintList: RequirePaintList): Observable<number> {
+
+        let dialogRef: MatDialogRef<RequirePaintingBydetailViewComponent>;
+        let config: MatDialogConfig = new MatDialogConfig();
+
+        // config
+        config.viewContainerRef = viewContainerRef;
+        config.data = requirePaintList;
+        // config.height = this.height;
+        // config.width= this.width;
+        config.hasBackdrop = true;
+
+        // open dialog
+        dialogRef = this.dialog.open(RequirePaintingBydetailViewComponent, config);
         return dialogRef.afterClosed();
     }
 

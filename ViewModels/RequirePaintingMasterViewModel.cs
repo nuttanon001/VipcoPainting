@@ -12,5 +12,6 @@ namespace VipcoPainting.ViewModels
         public string JobCode { get; set; }
         public string RequireString { get; set; }
         public string ProjectCodeSubString { get; set; }
+        public int? InitialRequireId { get; set; }
     }
 }

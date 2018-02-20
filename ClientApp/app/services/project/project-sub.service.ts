@@ -10,6 +10,15 @@ import { BaseRestService, BaseCommunicateService } from "../base-service/base.in
 @Injectable()
 export class ProjectSubService extends BaseRestService<ProjectSub> {
     constructor(http: Http) { super(http, "api/ProjectCodeSub/"); }
+
+    // CanRemoveProjectSub
+    // get CanRemove ProjectSub
+    CanRemoveProjectSub(ProjectSubId: number, subAction: string = "CanRemoveProjectSub/"): Observable<any> {
+        let url: string = `${this.actionUrl}${subAction}${ProjectSubId}/`;
+        // console.log("Url", url);
+
+        return this.http.get(url).map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

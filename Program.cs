@@ -41,6 +41,8 @@ namespace VipcoPainting
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                // Change Urls Default port 5000
+                .UseUrls("http://localhost:5001/")
                 .Build();
     }
 }
