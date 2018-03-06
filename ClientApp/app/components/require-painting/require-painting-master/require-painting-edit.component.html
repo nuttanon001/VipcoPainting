@@ -45,11 +45,11 @@
                                        id="RequireString" formControlName="RequireString" required readonly>
                                 <validation-messages [control]="editValueForm.controls.RequireString"></validation-messages>
                             </div>
-
                         </div>
 
                         <div class="my-form">
-                            <!--<label for="FinishDate" class="my-label">FinishDate:</label>
+                            <!--
+                            <label for="FinishDate" class="my-label">FinishDate:</label>
                             <div class="col-sm-4">
                                 <p-calendar formControlName="FinishDate" [showIcon]="true"
                                             id="FinishDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
@@ -62,10 +62,11 @@
                             <label for="ReceiveString" class="my-label">ReceiveBy:</label>
                             <div class="col-sm-4">
                                 <input type="text" class="my-input-click" placeholder="Choose employee here"
-                                       (click)="openDialog('Employee')"
-                                       id="ReceiveString" formControlName="ReceiveString" required readonly>
+                                        (click)="openDialog('Employee')"
+                                        id="ReceiveString" formControlName="ReceiveString" required readonly>
                                 <validation-messages [control]="editValueForm.controls.ReceiveString"></validation-messages>
-                            </div>-->
+                            </div>
+                            -->
                         </div>
 
                         <div class="my-form">
@@ -78,6 +79,41 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="my-form">
+                        <label for="AttactFile" class="my-label">AttactFile:</label>
+                        <div class="col-4">
+                            <attact-file id="AttactFile" (results)="onUpdateAttachResults($event)">
+                            </attact-file>
+                        </div>
+                    </div>
+                    <div *ngIf="attachFiles.length > 0">
+                        <table class="table table-hover table-sm small">
+                            <colgroup>
+                                <col span="1" style="width: 80%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let file of attachFiles; let num2 = index">
+                                    <td (click)="onOpenNewLink(file.FileAddress)" style="cursor:pointer;">
+                                        {{num2 + 1}}. {{file.FileName}}
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <a class="btn btn-sm btn-danger" matTooltip="Remove Attach File" (click)="onDeleteAttachFile(file)">
+                                                <em class="fa fa-remove"></em>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </mat-tab>
             <mat-tab>

@@ -3,9 +3,21 @@
         <h4 class="text-primary">Paint Task Schedule </h4>
 
         <div class="child-row-container my-1">
-            <div class="plan-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan-1
-            <div class="plan2-col" style="border-bottom:none; margin-right:5px;">|||||</div> Plan-2
-            <div class="ml-1 actual-col" style="margin-right:5px;">|||||</div> Actual
+            <div style="margin-right:5px;color:forestgreen;">
+                <i class="fa fa-square" aria-hidden="true"></i>    
+            </div> Plan-1
+            <div style="margin-right:5px;margin-left:5px;color:limegreen;">
+                <i class="fa fa-square" aria-hidden="true"></i>
+            </div> Plan-2
+            <div style="margin-right:5px;margin-left:5px;color:steelblue;">
+                <i class="fa fa-square" aria-hidden="true"></i>
+            </div> Actual
+            <div style="margin-right:5px;margin-left:5px;">
+                <i class="fa fa-star text-danger" aria-hidden="true"></i>
+            </div> Team-Fab. send work-item
+            <div style="margin-right:5px;margin-left:5px;">
+                <i class="fa fa-circle text-danger" aria-hidden="true"></i>
+            </div> Paint receive work-item
         </div>
         <hr class="w-100 bg-info m-0" />
         <form [formGroup]="reportForm" class="form-content">
@@ -64,6 +76,8 @@
                         <!-- 1 -->
                         <div *ngSwitchCase="1">
                             <div class="plan-col">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="empty-col">
                             </div>
@@ -73,6 +87,8 @@
                         <!-- 2 -->
                         <div *ngSwitchCase="2">
                             <div class="empty-col">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="plan2-col">
                             </div>
@@ -82,6 +98,8 @@
                         <!-- 3 -->
                         <div *ngSwitchCase="3">
                             <div class="plan-col my-border">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="plan2-col">
                             </div>
@@ -91,6 +109,8 @@
                         <!-- 4 -->
                         <div *ngSwitchCase="4">
                             <div class="empty-col">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="empty-col">
                             </div>
@@ -100,6 +120,8 @@
                         <!-- 5 -->
                         <div *ngSwitchCase="5">
                             <div class="plan-col my-border">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="empty-col">
                             </div>
@@ -109,6 +131,8 @@
                         <!-- 6 -->
                         <div *ngSwitchCase="6">
                             <div class="empty-col">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="plan2-col my-border">
                             </div>
@@ -118,6 +142,8 @@
                         <!-- 7 -->
                         <div *ngSwitchCase="7">
                             <div class="plan-col my-border">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
                             </div>
                             <div class="plan2-col my-border">
                             </div>
@@ -126,7 +152,15 @@
                         </div>
                         <!-- Default -->
                         <div *ngSwitchDefault>
-                            -
+                            <div class="empty-col">
+                                <i class="fa fa-star text-danger" *ngIf="data1['Send'] == col.field" aria-hidden="true"></i>
+                                <i class="fa fa-circle text-danger" *ngIf="data1['Receive'] == col.field" aria-hidden="true"></i>
+                            </div>
+                            <div class="empty-col">
+                                -
+                            </div>
+                            <div class="empty-col">
+                            </div>
                         </div>
                     </div>
                 </ng-template>

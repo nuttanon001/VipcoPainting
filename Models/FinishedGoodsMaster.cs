@@ -11,9 +11,12 @@ namespace VipcoPainting.Models
         [Key]
         public int FinishedGoodsMasterId { get; set; }
         public DateTime FinishedGoodsDate { get; set; }
+        public DateTime? ExpiredDate { get; set; }
         [StringLength(50)]
         public string ReceiveBy { get; set; }
         public double? Quantity { get; set; }
+        [StringLength(200)]
+        public string LotNumber { get; set; }
         [StringLength(200)]
         public string Remark { get; set; }
 
@@ -24,5 +27,7 @@ namespace VipcoPainting.Models
         //ColorMovementStock
         public int? ColorMovementStockId { get; set; }
         public ColorMovementStock ColorMovementStock { get; set; }
+        // ProjectCodeMaster
+        public int? ProjectCodeMasterId { get; set; }
     }
 }

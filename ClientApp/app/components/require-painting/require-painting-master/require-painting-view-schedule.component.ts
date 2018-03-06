@@ -7,6 +7,7 @@ import { RequirePaintingViewComponent } from "./require-painting-view.component"
 // Services
 import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
+import { RequirePaintMasterService } from "../../../services/require-paint/require-paint-master.service";
 
 @Component({
     selector: "require-painting-view-schedule",
@@ -18,10 +19,12 @@ export class RequirePaintingViewScheduleComponent extends RequirePaintingViewCom
     /** require-painting-view-schedule ctor */
     constructor(
         service: RequirePaintListService,
+        serviceMaster: RequirePaintMasterService,
         dialogService: DialogsService,
         viewContainerRef: ViewContainerRef,
     ) {
         super(service,
+            serviceMaster,
             dialogService,
             viewContainerRef);
     }

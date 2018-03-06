@@ -32,6 +32,7 @@ namespace VipcoPainting.Controllers
         private IRepositoryPainting<BlastWorkItem> repositoryBlast;
         private IRepositoryPainting<StandradTime> repositoryStandradTime;
         private IRepositoryPainting<RequirePaintingListHasAttach> repositoryHasAttach;
+        private IRepositoryPainting<RequirePaintingMasterHasAttach> repositoryMasterHasAttach;
         private IRepositoryPainting<RequirePaintingListOption> repositoryOption;
         // Repository Machine
         private IRepositoryMachine<ProjectCodeMaster> repositoryProMaster;
@@ -54,11 +55,12 @@ namespace VipcoPainting.Controllers
         #region Constructor
 
         public RequirePaintingListController(
-            IRepositoryPainting<RequirePaintingList> repo, IRepositoryPainting<PaintWorkItem> repoPaint ,
+            IRepositoryPainting<RequirePaintingList> repo, IRepositoryPainting<PaintWorkItem> repoPaint,
             IRepositoryPainting<StandradTime> repoStandradTime,
             IRepositoryPainting<BlastWorkItem> repoBlast,
             IRepositoryPainting<RequirePaintingListHasAttach> repoHasAttach,
             IRepositoryPainting<RequirePaintingListOption> repoOptino,
+            IRepositoryPainting<RequirePaintingMasterHasAttach> repoMasterHasAttach,
             IRepositoryMachine<AttachFile> repoAttach,
             IRepositoryMachine<ProjectCodeMaster> repoProMaster,
             IHostingEnvironment appEnv,
@@ -70,6 +72,7 @@ namespace VipcoPainting.Controllers
             this.repositoryPaint = repoPaint;
             this.repositoryStandradTime = repoStandradTime;
             this.repositoryHasAttach = repoHasAttach;
+            this.repositoryMasterHasAttach = repoMasterHasAttach;
             this.repositoryOption = repoOptino;
             // Repositroy Machine
             this.repositoryProMaster = repoProMaster;
@@ -106,9 +109,54 @@ namespace VipcoPainting.Controllers
         {
             return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
             // var Includes = new List<string> { "BlastWorkItems","PaintWorkItems" };
-
             // return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "RequirePaintingListId", Includes),
             //                            this.DefaultJsonSettings);
+
+            
+        }
+
+        // GET: api/RequirePaintingList/5
+        [HttpGet("GetV2/{key}")]
+        public async Task<IActionResult> GetV2(int key)
+        {
+            // return new JsonResult(await this.repository.GetAsync(key), this.DefaultJsonSettings);
+            // var Includes = new List<string> { "BlastWorkItems","PaintWorkItems" };
+            // return new JsonResult(await this.repository.GetAsynvWithIncludes(key, "RequirePaintingListId", Includes),
+            //                            this.DefaultJsonSettings);
+
+            if (key > 0)
+            {
+                var hasData = await this.repository.GetAllAsQueryable()
+                                        .Where(x => x.RequirePaintingMaster.InitialRequirePaintingList != null)
+                                        .Include(x => x.BlastWorkItems)
+                                        .Include(x => x.PaintWorkItems)
+                                        .FirstOrDefaultAsync(x => x.RequirePaintingListId == key);
+
+                if (hasData != null)
+                {
+                    var mapData = this.mapper.Map<RequirePaintingList, RequirePaintingListViewModel>(hasData);
+                    List<double> Ints = new List<double>();
+                    List<double> Exts = new List<double>();
+
+                    if (hasData.PaintWorkItems.Any())
+                    {
+                        Ints.Add(hasData.PaintWorkItems.Max(x => x.IntArea ?? 0));
+                        Exts.Add(hasData.PaintWorkItems.Max(x => x.ExtArea ?? 0));
+                    }
+
+                    if (hasData.BlastWorkItems.Any())
+                    {
+                        Ints.Add(hasData.BlastWorkItems.Max(x => x.IntArea ?? 0));
+                        Exts.Add(hasData.BlastWorkItems.Max(x => x.ExtArea ?? 0));
+                    }
+
+                    mapData.IntArea = Ints.Any() ? Ints.Max(x => x) : 0;
+                    mapData.ExtArea = Exts.Any() ? Exts.Max(x => x) : 0;
+
+                    return new JsonResult(mapData, this.DefaultJsonSettings);
+                }
+            }
+            return NotFound(new { Error = "Not been found key." });
         }
 
         // GET: api/RequirePaintingList/GetByMaster/5
@@ -157,6 +205,7 @@ namespace VipcoPainting.Controllers
             try
             {
                 var QueryData = this.repository.GetAllAsQueryable()
+                                    .Where(x => x.RequirePaintingMaster.InitialRequirePaintingList != null)
                                     .Include(x => x.RequirePaintingMaster.ProjectCodeSub)
                                     .AsQueryable();
                 // Where
@@ -271,6 +320,102 @@ namespace VipcoPainting.Controllers
                 return new JsonResult(await this.repository.AddAsync(nRequirePaintingList), this.DefaultJsonSettings);
             }
             return NotFound(new { Error = "Not found RequirePaintingList data !!!" });
+        }
+
+        // POST: api/RequirePaintingList/PostV2
+        [HttpPost("PostV2")]
+        public async Task<IActionResult> PostV2([FromBody]RequirePaintingList nRequirePaintingList)
+        {
+            var Message = "Data not been found.";
+
+            try
+            {
+                // if (nRequirePaintingList.RequirePaintingListStatus.HasValue)
+                // {
+                //    if (nRequirePaintingList.RequirePaintingListStatus.Value == RequirePaintingListStatus.Cancel)
+                //        continue;
+                // }
+
+                nRequirePaintingList = helpers.AddHourMethod(nRequirePaintingList);
+
+                nRequirePaintingList.CreateDate = DateTime.Now;
+                nRequirePaintingList.Creator = nRequirePaintingList.Creator ?? "Someone";
+
+                if (nRequirePaintingList.RequirePaintingMaster != null)
+                    nRequirePaintingList.RequirePaintingMaster = null;
+
+                if (nRequirePaintingList.RequirePaintingListStatus == null)
+                    nRequirePaintingList.RequirePaintingListStatus = RequirePaintingListStatus.Waiting;
+
+                // Remove null
+                nRequirePaintingList.BlastWorkItems.Remove(null);
+                nRequirePaintingList.PaintWorkItems.Remove(null);
+
+                if (nRequirePaintingList.BlastWorkItems != null)
+                {
+                    // Add BlastWork item
+                    foreach (var nBlastWork in nRequirePaintingList.BlastWorkItems)
+                    {
+                        if (nBlastWork == null)
+                            continue;
+
+                        nBlastWork.CreateDate = nRequirePaintingList.CreateDate;
+                        nBlastWork.Creator = nRequirePaintingList.Creator;
+
+                        // Clear StandradTimeExt
+                        if (nBlastWork.StandradTimeExt != null)
+                            nBlastWork.StandradTimeExt = null;
+
+                        // Clear StandradTimeInt
+                        if (nBlastWork.StandradTimeInt != null)
+                            nBlastWork.StandradTimeInt = null;
+
+                        // Clear SurfaceTypeExt
+                        if (nBlastWork.SurfaceTypeExt != null)
+                            nBlastWork.SurfaceTypeExt = null;
+
+                        // Clear SurfaceTypeInt
+                        if (nBlastWork.SurfaceTypeInt != null)
+                            nBlastWork.SurfaceTypeInt = null;
+                    }
+                }
+
+                if (nRequirePaintingList.PaintWorkItems != null)
+                {
+                    foreach (var nPaintWork in nRequirePaintingList.PaintWorkItems)
+                    {
+                        if (nPaintWork == null)
+                            continue;
+
+                        nPaintWork.CreateDate = nRequirePaintingList.CreateDate;
+                        nPaintWork.Creator = nRequirePaintingList.Creator;
+
+                        // Clear StandradTimeExt
+                        if (nPaintWork.StandradTimeExt != null)
+                            nPaintWork.StandradTimeExt = null;
+
+                        // Clear StandradTimeInt
+                        if (nPaintWork.StandradTimeInt != null)
+                            nPaintWork.StandradTimeInt = null;
+
+                        // Clear SurfaceTypeExt
+                        if (nPaintWork.ExtColorItem != null)
+                            nPaintWork.ExtColorItem = null;
+
+                        // Clear SurfaceTypeInt
+                        if (nPaintWork.IntColorItem != null)
+                            nPaintWork.IntColorItem = null;
+                    }
+                }
+
+                return new JsonResult(await this.repository.AddAsync(nRequirePaintingList));
+            }
+            catch(Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+
+            return NotFound(new { Error = Message });
         }
 
         // POST: api/RequirePaintingList/PostWithInitialRequire
@@ -944,7 +1089,209 @@ namespace VipcoPainting.Controllers
 
             return NotFound(new { Error = Message });
         }
-    
+
+        // PUT: api/RequirePaintingList/PutV2/5
+        [HttpPut("PutV2/{key}")]
+        public async Task<IActionResult> PutByNumberV2(int key, [FromBody]RequirePaintingListViewModel uRequirePaintingListVM)
+        {
+            var Message = "Require painting not been found.";
+
+            if (uRequirePaintingListVM != null)
+            {
+                var uRequirePaintingList = this.mapper.Map<RequirePaintingListViewModel, RequirePaintingList>(uRequirePaintingListVM);
+                // add hour to DateTime to set Asia/Bangkok
+                uRequirePaintingList = helpers.AddHourMethod(uRequirePaintingList);
+                // set modified
+                uRequirePaintingList.ModifyDate = DateTime.Now;
+                uRequirePaintingList.Modifyer = uRequirePaintingList.Modifyer ?? "Someone";
+
+                if (uRequirePaintingList.RequirePaintingMaster != null)
+                    uRequirePaintingList.RequirePaintingMaster = null;
+
+                var updateComplate = await this.repository.UpdateAsync(uRequirePaintingList, key);
+                if (updateComplate != null)
+                {
+                    // filter
+                    Expression<Func<BlastWorkItem, bool>> condition = m => m.RequirePaintingListId == updateComplate.RequirePaintingListId;
+                    var dbBlastWorks = this.repositoryBlast.FindAll(condition);
+                    Expression<Func<PaintWorkItem, bool>> condition2 = m => m.RequirePaintingListId == updateComplate.RequirePaintingListId;
+                    var dbPaintWorks = this.repositoryPaint.FindAll(condition2);
+
+                    //Update BlastWorkItem or New BlastWorkItem
+                    foreach (var uBlastWork in dbBlastWorks)
+                    {
+                        if (uBlastWork == null)
+                            continue;
+
+                        if (uBlastWork.BlastWorkItemId > 0)
+                        {
+                            uBlastWork.IntArea = uBlastWork.IntArea.HasValue ? (double?)uRequirePaintingListVM.IntArea : null;
+                            uBlastWork.ExtArea = uBlastWork.ExtArea.HasValue ? (double?)uRequirePaintingListVM.ExtArea : null;
+
+                            await this.repositoryBlast.UpdateAsync(uBlastWork, uBlastWork.BlastWorkItemId);
+                        }
+                    }
+
+                    //Update PaintWorkItem or New PaintWorkItem
+                    foreach (var uPaintWork in dbPaintWorks)
+                    {
+                        if (uPaintWork == null)
+                            continue;
+
+                        if (uPaintWork.PaintWorkItemId > 0)
+                        {
+                            uPaintWork.IntArea = uPaintWork.IntArea.HasValue ? (double?)uRequirePaintingListVM.IntArea : null;
+                            uPaintWork.ExtArea = uPaintWork.ExtArea.HasValue ? (double?)uRequirePaintingListVM.ExtArea : null;
+
+                            await this.repositoryPaint.UpdateAsync(uPaintWork, uPaintWork.PaintWorkItemId);
+                        }
+                    }
+
+                    return new JsonResult(updateComplate, this.DefaultJsonSettings);
+                }
+            }
+
+            return NotFound(new { Error = Message });
+        }
+
+        // PUT: api/RequirePaintingList/PutV3/5
+        [HttpPut("PutV3/{key}")]
+        public async Task<IActionResult> PutByNumberV3(int key,[FromBody] RequirePaintingList uRequirePaintingList)
+        {
+            var Message = "Data not been found.";
+
+            try
+            {
+                // add hour to DateTime to set Asia/Bangkok
+                uRequirePaintingList = helpers.AddHourMethod(uRequirePaintingList);
+                // set modified
+                uRequirePaintingList.ModifyDate = DateTime.Now;
+                uRequirePaintingList.Modifyer = uRequirePaintingList.Modifyer ?? "Someone";
+
+                if (uRequirePaintingList.RequirePaintingMaster != null)
+                    uRequirePaintingList.RequirePaintingMaster = null;
+
+                // Remove null
+                uRequirePaintingList.BlastWorkItems.Remove(null);
+                uRequirePaintingList.PaintWorkItems.Remove(null);
+
+                if (uRequirePaintingList.BlastWorkItems != null)
+                {
+                    foreach (var uBlastWork in uRequirePaintingList.BlastWorkItems)
+                    {
+                        if (uBlastWork == null)
+                            continue;
+
+                        if (uBlastWork.BlastWorkItemId > 0)
+                        {
+                            uBlastWork.ModifyDate = uRequirePaintingList.ModifyDate;
+                            uBlastWork.Modifyer = uRequirePaintingList.Modifyer;
+                        }
+                        else
+                        {
+                            uBlastWork.CreateDate = uRequirePaintingList.ModifyDate;
+                            uBlastWork.Creator = uRequirePaintingList.Modifyer;
+                        }
+
+                        uBlastWork.StandradTimeExt = null;
+                        uBlastWork.StandradTimeInt = null;
+                        uBlastWork.SurfaceTypeExt = null;
+                        uBlastWork.SurfaceTypeInt = null;
+                    }
+                }
+
+                if (uRequirePaintingList.PaintWorkItems != null)
+                {
+                    foreach (var uPaintWork in uRequirePaintingList.PaintWorkItems)
+                    {
+                        if (uPaintWork == null)
+                            continue;
+
+                        if (uPaintWork.PaintWorkItemId > 0)
+                        {
+                            uPaintWork.ModifyDate = uRequirePaintingList.ModifyDate;
+                            uPaintWork.Modifyer = uRequirePaintingList.Modifyer;
+                        }
+                        else
+                        {
+                            uPaintWork.CreateDate = uRequirePaintingList.ModifyDate;
+                            uPaintWork.Creator = uRequirePaintingList.Modifyer;
+                        }
+
+                        uPaintWork.StandradTimeExt = null;
+                        uPaintWork.StandradTimeInt = null;
+                        uPaintWork.ExtColorItem = null;
+                        uPaintWork.IntColorItem = null;
+                    }
+                }
+
+                // update Master not update Detail it need to update Detail directly
+                var updateComplate = await this.repository.UpdateAsync(uRequirePaintingList, uRequirePaintingList.RequirePaintingListId);
+                if (updateComplate != null)
+                {
+                    // filter
+                    Expression<Func<BlastWorkItem, bool>> condition = m => m.RequirePaintingListId == updateComplate.RequirePaintingListId;
+                    var dbBlastWorks = this.repositoryBlast.FindAll(condition);
+                    Expression<Func<PaintWorkItem, bool>> condition2 = m => m.RequirePaintingListId == updateComplate.RequirePaintingListId;
+                    var dbPaintWorks = this.repositoryPaint.FindAll(condition2);
+
+                    //Remove BlastWork if edit remove it
+                    foreach (var dbBlastWork in dbBlastWorks)
+                    {
+                        if (!uRequirePaintingList.BlastWorkItems.Any(x => x.BlastWorkItemId == dbBlastWork.BlastWorkItemId))
+                            await this.repositoryBlast.DeleteAsync(dbBlastWork.BlastWorkItemId);
+                    }
+
+                    //Remove PaintWork if edit remove it
+                    foreach (var dbPaintWork in dbPaintWorks)
+                    {
+                        if (!uRequirePaintingList.PaintWorkItems.Any(x => x.PaintWorkItemId == dbPaintWork.PaintWorkItemId))
+                            await this.repositoryPaint.DeleteAsync(dbPaintWork.PaintWorkItemId);
+                    }
+
+                    //Update BlastWorkItem or New BlastWorkItem
+                    foreach (var uBlastWork in uRequirePaintingList.BlastWorkItems)
+                    {
+                        if (uBlastWork == null)
+                            continue;
+
+                        if (uBlastWork.BlastWorkItemId > 0)
+                            await this.repositoryBlast.UpdateAsync(uBlastWork, uBlastWork.BlastWorkItemId);
+                        else
+                        {
+                            if (uBlastWork.RequirePaintingListId is null || uBlastWork.RequirePaintingListId < 1)
+                                uBlastWork.RequirePaintingListId = uRequirePaintingList.RequirePaintingListId;
+
+                            await this.repositoryBlast.AddAsync(uBlastWork);
+                        }
+                    }
+
+                    //Update PaintWorkItem or New PaintWorkItem
+                    foreach (var uPaintWork in uRequirePaintingList.PaintWorkItems)
+                    {
+                        if (uPaintWork == null)
+                            continue;
+
+                        if (uPaintWork.PaintWorkItemId > 0)
+                            await this.repositoryPaint.UpdateAsync(uPaintWork, uPaintWork.PaintWorkItemId);
+                        else
+                        {
+                            if (uPaintWork.RequirePaintingListId is null || uPaintWork.RequirePaintingListId < 1)
+                                uPaintWork.RequirePaintingListId = uRequirePaintingList.RequirePaintingListId;
+
+                            await this.repositoryPaint.AddAsync(uPaintWork);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+
+            return NotFound(new { Error = Message });
+        }
+
         #endregion PUT
 
         #region DELETE
@@ -959,6 +1306,28 @@ namespace VipcoPainting.Controllers
         #endregion DELETE
 
         #region ATTACH
+
+        // GET: api/RequirePaintingList/GetMasterAttach/5
+        [HttpGet("GetMasterAttach/{key}")]
+        public async Task<IActionResult> GetMasterAttach(int key)
+        {
+            var hasData = await this.repository.GetAsync(key);
+            if (hasData != null)
+            {
+                var AttachMasterIds = await this.repositoryMasterHasAttach.GetAllAsQueryable()
+                                                 .Where(x => x.RequirePaintingMasterId == hasData.RequirePaintingMasterId)
+                                                 .Select(x => x.AttachFileId).ToListAsync();
+
+                var DataAttach = await this.repositoryAttach.GetAllAsQueryable()
+                                 .Where(x => AttachMasterIds.Contains(x.AttachFileId))
+                                 .AsNoTracking()
+                                 .ToListAsync();
+
+                return new JsonResult(DataAttach, this.DefaultJsonSettings);
+            }
+
+            return NotFound(new { Error = "Attatch not been found." });
+        }
 
         // GET: api/RequirePaintingList/GetAttach/5
         [HttpGet("GetAttach/{key}")]
@@ -998,7 +1367,7 @@ namespace VipcoPainting.Controllers
                     // create file name for file
                     string FileNameForRef = $"{DateTime.Now.ToString("ddMMyyhhmmssfff")}{ Path.GetExtension(FileName).ToLower()}";
                     // full path to file in temp location
-                    var filePath = Path.Combine(this.appEnvironment.WebRootPath + "\\files", FileNameForRef);
+                    var filePath = Path.Combine(this.appEnvironment.WebRootPath + "/files", FileNameForRef);
 
                     if (formFile.Length > 0)
                     {

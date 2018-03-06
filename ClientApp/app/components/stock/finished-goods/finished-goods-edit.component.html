@@ -29,7 +29,7 @@
                         <div class="col-sm-4 edit-form-content">
                             <p-calendar formControlName="FinishedGoodsDate" [showIcon]="true"
                                         id="FinishedGoodsDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
-                                        appendTo="body" >
+                                        appendTo="body">
                             </p-calendar>
                         </div>
 
@@ -43,6 +43,31 @@
                     </div>
 
                     <div class="my-form">
+                        <label for="ExpiredDate" class="my-label">Expired:</label>
+                        <div class="col-sm-4 edit-form-content">
+                            <p-calendar formControlName="ExpiredDate" [showIcon]="true"
+                                        id="ExpiredDate" dateFormat="dd/mm/yy" placeholder="  Choose a date"
+                                        appendTo="body">
+                            </p-calendar>
+                        </div>
+
+                        <label for="LotNumber" class="my-label">LotNumber:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input" placeholder="Insert lot number here."
+                                   id="LotNumber" formControlName="LotNumber">
+                            <validation-messages [control]="editValueForm.controls.LotNumber"></validation-messages>
+                        </div>
+                    </div>
+
+                    <div class="my-form">
+                        <label for="ProjectMasterString" class="my-label">Job Number:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="my-input-click" placeholder="Choose job number here."
+                                   (click)="onOpenDialogBox('Project')"
+                                   id="ProjectMasterString" formControlName="ProjectMasterString" required readonly>
+                            <validation-messages [control]="editValueForm.controls.ProjectMasterString"></validation-messages>
+                        </div>
+
                         <label for="Remark" class="my-label">Remark:</label>
                         <div class="col-sm-4">
                             <input type="text" class="my-input" placeholder="Insert remark here"

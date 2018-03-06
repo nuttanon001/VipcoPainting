@@ -3,7 +3,7 @@ import { Http } from "@angular/http";
 // rxjs
 import { Observable } from "rxjs/Rx";
 // models
-import { RequirePaintMaster, RequirePaintMasterHasList, RequirePaintSchedule } from "../../models/model.index";
+import { RequirePaintMaster, RequirePaintMasterHasList, RequirePaintSchedule, AttachFile } from "../../models/model.index";
 // base-service
 import { BaseRestService, BaseCommunicateService } from "../base-service/base.index";
 import { RequirePaintMasterHasInitial } from "../../models/require-paint/require-paint-master.model";
@@ -38,6 +38,39 @@ export class RequirePaintMasterService extends BaseRestService<RequirePaintMaste
             .map(this.extractData).catch(this.handleError);
     }
 
+
+    // ===================== Upload File ===============================\\
+    // get file
+    getAttachFile(RequirePaintMasterId: number): Observable<Array<AttachFile>> {
+        let url: string = `${this.actionUrl}GetAttach/${RequirePaintMasterId}/`;
+        return this.http.get(url)
+            .map(this.extractData).catch(this.handleError);
+    }
+
+
+    // upload file
+    postAttactFile(RequirePaintMasterId: number, files: FileList, CreateBy: string): Observable<any> {
+        let input: any = new FormData();
+
+        for (let i: number = 0; i < files.length; i++) {
+            if (files[i].size <= 5242880) {
+                input.append("files", files[i]);
+            }
+        }
+
+        // console.log("Files : ", input);
+
+        let url: string = `${this.actionUrl}PostAttach/${RequirePaintMasterId}/${CreateBy}`;
+        return this.http.post(url, input).map(this.extractData).catch(this.handleError);
+    }
+
+    // delete file
+    deleteAttactFile(AttachId: number): Observable<any> {
+        let url: string = this.actionUrl + "DeleteAttach/" + AttachId;
+        return this.http.delete(url).catch(this.handleError);
+    }
+
+    // ===================== End Upload File ===========================\\
 }
 
 @Injectable()

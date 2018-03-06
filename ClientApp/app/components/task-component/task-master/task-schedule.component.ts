@@ -156,88 +156,114 @@ export class TaskScheduleComponent implements OnInit, OnDestroy {
         if (this.taskMasterId) {
             schedule.TaskMasterId = this.taskMasterId;
         }
+        if (this.mode) {
+            if (this.mode > 1) {
+                // debug here
+                console.log("For Paint");
+                this.service.getTaskMasterSchedule(schedule)
+                    .subscribe(dbDataSchedule => {
+                        if (dbDataSchedule) {
+                            this.onSetupDataTable(dbDataSchedule);
+                        }
+                    }, error => {
+                        this.columns = new Array;
+                        this.taskMasters = new Array;
+                        this.reloadData();
+                    });
 
-        this.service.getTaskMasterSchedule(schedule)
+                return;
+            }
+        }
+
+        console.log("For All");
+        this.service.getTaskMasterScheduleV2(schedule)
             .subscribe(dbDataSchedule => {
-                this.totalRecords = dbDataSchedule.TotalRow;
-
-                this.columns = new Array;
-                this.columnsUpper = new Array;
-
-                let ProMasterWidth: string = "170px";
-                let WorkItemWidth: string = "350px";
-                let ProgressWidth: string = "100px";
-
-                // column Row1
-                this.columnsUpper.push({ header: "ProjectMaster", rowspan: 2, style: { "width": ProMasterWidth, } });
-                this.columnsUpper.push({ header: "WorkItem | MarkNo | UnitNo", rowspan: 2, style: { "width": WorkItemWidth, } });
-                this.columnsUpper.push({ header: "Progress", rowspan: 2, style: { "width": ProgressWidth, } });
-
-                for (let month of dbDataSchedule.ColumnsTop) {
-                    this.columnsUpper.push({
-                        header: month.Name,
-                        colspan: month.Value,
-                        style: { "width": (month.Value * 35).toString() + "px", }
-                    });
+                if (dbDataSchedule) {
+                    this.onSetupDataTable(dbDataSchedule);
                 }
-                // column Row 2
-                this.columnsLower = new Array;
-
-                for (let name of dbDataSchedule.ColumnsLow) {
-                    this.columnsLower.push({
-                        header: name,
-                        // style: { "width": "25px" }
-                    });
-                }
-
-                // column Main
-                this.columns = new Array;
-                this.columns.push({ header: "ProjectMaster", field: "ProjectMaster", style: { "width": ProMasterWidth, } });
-
-                // debug here
-                // console.log("Mode is:", this.mode);
-
-                if (this.mode) {
-                    if (this.mode > 1) {
-                        // debug here
-                        // console.log("Mode is 2:", this.mode);
-                        this.columns.push({
-                            header: "WorkItem | MarkNo | UnitNo", field: "WorkItem",
-                            style: { "width": WorkItemWidth, }, isLink: true
-                        });
-                    } else {
-                        // debug here
-                        // console.log("Mode is 3:", this.mode);
-                        this.columns.push({ header: "WorkItem | MarkNo | UnitNo", field: "WorkItem", style: { "width": WorkItemWidth, } });
-                    }
-                } else {
-                    // debug here
-                    // console.log("Mode is 4:", this.mode);
-                    this.columns.push({ header: "WorkItem | MarkNo | UnitNo", field: "WorkItem", style: { "width": WorkItemWidth, } });
-                }
-                this.columns.push({ header: "Progress", field: "Progress", style: { "width": ProgressWidth, } });
-
-                // debug here
-                // console.log(JSON.stringify(this.columnsLower));
-
-                let i: number = 0;
-                for (let name of dbDataSchedule.ColumnsAll) {
-                    if (name.indexOf("Col") >= -1) {
-                        this.columns.push({
-                            header: this.columnsLower[i], field: name, style: { "width": "35px" }, isCol: true,
-                        });
-                        i++;
-                    }
-                }
-
-                this.taskMasters = dbDataSchedule.DataTable.slice();
-
-                this.reloadData();
             }, error => {
                 this.columns = new Array;
                 this.taskMasters = new Array;
                 this.reloadData();
             });
+    }
+
+    // on Setup datatable
+    onSetupDataTable(dbDataSchedule: any) {
+        this.totalRecords = dbDataSchedule.TotalRow;
+
+        this.columns = new Array;
+        this.columnsUpper = new Array;
+
+        let ProMasterWidth: string = "170px";
+        let WorkItemWidth: string = "350px";
+        let ProgressWidth: string = "100px";
+
+        // column Row1
+        this.columnsUpper.push({ header: "ProjectMaster", rowspan: 2, style: { "width": ProMasterWidth, } });
+        this.columnsUpper.push({ header: "WorkItem | MarkNo | UnitNo", rowspan: 2, style: { "width": WorkItemWidth, } });
+        this.columnsUpper.push({ header: "Progress", rowspan: 2, style: { "width": ProgressWidth, } });
+
+        for (let month of dbDataSchedule.ColumnsTop) {
+            this.columnsUpper.push({
+                header: month.Name,
+                colspan: month.Value,
+                style: { "width": (month.Value * 35).toString() + "px", }
+            });
+        }
+        // column Row 2
+        this.columnsLower = new Array;
+
+        for (let name of dbDataSchedule.ColumnsLow) {
+            this.columnsLower.push({
+                header: name,
+                // style: { "width": "25px" }
+            });
+        }
+
+        // column Main
+        this.columns = new Array;
+        this.columns.push({ header: "ProjectMaster", field: "ProjectMaster", style: { "width": ProMasterWidth, } });
+
+        // debug here
+        // console.log("Mode is:", this.mode);
+
+        if (this.mode) {
+            if (this.mode > 1) {
+                // debug here
+                // console.log("Mode is 2:", this.mode);
+                this.columns.push({
+                    header: "WorkItem | MarkNo | UnitNo", field: "WorkItem",
+                    style: { "width": WorkItemWidth, }, isLink: true
+                });
+            } else {
+                // debug here
+                // console.log("Mode is 3:", this.mode);
+                this.columns.push({ header: "WorkItem | MarkNo | UnitNo", field: "WorkItem", style: { "width": WorkItemWidth, } });
+            }
+        } else {
+            // debug here
+            // console.log("Mode is 4:", this.mode);
+            this.columns.push({ header: "WorkItem | MarkNo | UnitNo", field: "WorkItem", style: { "width": WorkItemWidth, } });
+        }
+        this.columns.push({ header: "Progress", field: "Progress", style: { "width": ProgressWidth, } });
+
+        // debug here
+        // console.log(JSON.stringify(this.columnsLower));
+
+        let i: number = 0;
+        for (let name of dbDataSchedule.ColumnsAll) {
+            if (name.indexOf("Col") >= -1) {
+                this.columns.push({
+                    header: this.columnsLower[i], field: name, style: { "width": "35px" }, isCol: true,
+                });
+                i++;
+            }
+        }
+
+        this.taskMasters = dbDataSchedule.DataTable.slice();
+
+        this.reloadData();
     }
 
     // reload data

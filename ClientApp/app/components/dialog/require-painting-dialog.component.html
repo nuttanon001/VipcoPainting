@@ -2,44 +2,84 @@
     <H5 style="color:cadetblue">Blast & Paint WorkItem</H5>
     <div class="child-container">
         <div class="center-content">
-            <split direction="vertical" [gutterSize]="4" [visibleTransition]="true">
-                <split-area [size]="40" [order]="1">
+            <mat-tab-group>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <b>WorkItem Information</b>
+                    </ng-template>
+                    <split direction="vertical" [gutterSize]="4" [visibleTransition]="true">
+                        <split-area [size]="40" [order]="1">
+                            <div class="child-container">
+                                <div class="center-content">
+                                    <span class="text-success mb-1">Blast</span>
+                                    <ngx-datatable class="material"
+                                                   [rows]="blastWorkItems"
+                                                   [columns]="columnsBlastWork"
+                                                   [columnMode]="force"
+                                                   [headerHeight]="50"
+                                                   [footerHeight]="0"
+                                                   [rowHeight]="50"
+                                                   [scrollbarV]="true"
+                                                   [scrollbarH]="true"
+                                                   [style.height]="'40vh'">
+                                    </ngx-datatable>
+                                </div>
+                            </div>
+                        </split-area>
+                        <split-area [size]="60" [order]="2">
+                            <div class="child-container">
+                                <div class="center-content">
+                                    <span class="text-success mb-1">Paint</span>
+                                    <ngx-datatable class="material"
+                                                   [rows]="paintWorkItems"
+                                                   [columns]="columnsPaintWork"
+                                                   [columnMode]="force"
+                                                   [headerHeight]="50"
+                                                   [footerHeight]="0"
+                                                   [rowHeight]="50"
+                                                   [scrollbarV]="true"
+                                                   [scrollbarH]="true"
+                                                   [style.height]="'40vh'">
+                                    </ngx-datatable>
+                                </div>
+                            </div>
+                        </split-area>
+                    </split>
+                </mat-tab>
+                <!--<mat-tab>
+                    <ng-template mat-tab-label>
+                        <b>Attach File</b>
+                    </ng-template>
                     <div class="child-container">
-                        <div class="center-content">
-                            <span class="text-success mb-1">Blast</span>
-                            <ngx-datatable class="material"
-                                           [rows]="blastWorkItems"
-                                           [columns]="columnsBlastWork"
-                                           [columnMode]="force"
-                                           [headerHeight]="50"
-                                           [footerHeight]="0"
-                                           [rowHeight]="50"
-                                           [scrollbarV]="true"
-                                           [scrollbarH]="true"
-                                           [style.height]="'40vh'">
-                            </ngx-datatable>
+                        <fieldset>AttachFile</fieldset>
+                        <div *ngIf="attachFiles && attachFiles.length > 0,else elseAttact">
+                            <table class="table table-hover table-sm small">
+                                <colgroup>
+                                    <col span="1" style="width: 80%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let file of attachFiles;let num = index">
+                                        <td>
+                                            <a [href]="file.FileAddress" arget="_self" download>
+                                                <i class="fa fa-download text-primary" aria-hidden="true"></i>
+                                                {{num + 1}}. {{file.FileName}}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <ng-template #elseAttact>
+                            <p>No attach file !</p>
+                        </ng-template>
                     </div>
-                </split-area>
-                <split-area [size]="60" [order]="2">
-                    <div class="child-container">
-                        <div class="center-content">
-                            <span class="text-success mb-1">Paint</span>
-                            <ngx-datatable class="material"
-                                           [rows]="paintWorkItems"
-                                           [columns]="columnsPaintWork"
-                                           [columnMode]="force"
-                                           [headerHeight]="50"
-                                           [footerHeight]="0"
-                                           [rowHeight]="50"
-                                           [scrollbarV]="true"
-                                           [scrollbarH]="true"
-                                           [style.height]="'40vh'">
-                            </ngx-datatable>
-                        </div>
-                    </div>
-                </split-area>
-            </split>
+                </mat-tab>-->
+            </mat-tab-group>
         </div>
         <div class="right-content">
             <button type="button" mat-icon-button color="warn" (click)="onCancelClick()"

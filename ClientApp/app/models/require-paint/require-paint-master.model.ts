@@ -19,6 +19,9 @@ export interface RequirePaintMaster extends BaseModel {
     RequireString?: string;
     ReceiveString?: string;
     ProjectCodeSubString?: string;
+    // ATTACH
+    AttachFile?: FileList;
+    RemoveAttach?: Array<number>;
 }
 
 export interface RequirePaintMasterHasList {

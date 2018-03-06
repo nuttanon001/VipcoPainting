@@ -17,6 +17,12 @@ export class RequirePaintListService extends BaseRestService<RequirePaintList> {
             .map(this.extractData).catch(this.handleError);
     }
 
+    // post with RequirePaintList
+    postV2(nObject: RequirePaintList, SubAction: string = "PostV2/"): Observable<RequirePaintList> {
+        return this.http.post(this.actionUrl + SubAction, JSON.stringify(nObject), this.getRequestOption())
+            .map(this.extractData).catch(this.handleError);
+    }
+
     // post with list
     postLists2(nObject: Array<RequirePaintList>): Observable<any> {
         return this.http.post(this.actionUrl +"Lists2/", JSON.stringify(nObject), this.getRequestOption())
@@ -29,6 +35,30 @@ export class RequirePaintListService extends BaseRestService<RequirePaintList> {
         return this.http.get(url)
             .map(this.extractData).catch(this.handleError);
     }
+
+    // put with key number v2
+    putKeyNumberV2(uObject: RequirePaintList, key: number, SubAction: string = "PutV2/"): Observable<RequirePaintList> {
+        //console.log(uObject);
+        return this.http.put(this.actionUrl + SubAction + key + "/", JSON.stringify(uObject), this.getRequestOption())
+            .map(this.extractData).catch(this.handleError);
+    }
+
+    // put with key number v3
+    putKeyNumberV3(uObject: RequirePaintList, key: number, SubAction: string = "PutV3/"): Promise<RequirePaintList> {
+        //console.log(uObject);
+        return this.http.put(this.actionUrl + SubAction + key + "/", JSON.stringify(uObject), this.getRequestOption())
+            .toPromise()
+            .then(this.extractData).catch(this.handleError);
+    }
+
+
+    // GetV2
+    // get one with key number
+    getOneKeyNumberV2(key: number): Observable<RequirePaintList> {
+        return this.http.get(this.actionUrl + "GetV2/" + key + "/")
+            .map(this.extractData).catch(this.handleError);
+    }
+
 
     // ===================== Require Paint Master Schedule ===========================\\
     // get Require Paint Schedule
@@ -54,7 +84,7 @@ export class RequirePaintListService extends BaseRestService<RequirePaintList> {
 
 
     // upload file
-    postAttactFile(JobCardMasterId: number, files: FileList,CreateBy:string): Observable<any> {
+    postAttactFile(RequirePaintListId: number, files: FileList,CreateBy:string): Observable<any> {
         let input: any = new FormData();
 
         for (let i: number = 0; i < files.length; i++) {
@@ -65,7 +95,7 @@ export class RequirePaintListService extends BaseRestService<RequirePaintList> {
 
         // console.log("Files : ", input);
 
-        let url: string = `${this.actionUrl}PostAttach/${JobCardMasterId}/${CreateBy}`;
+        let url: string = `${this.actionUrl}PostAttach/${RequirePaintListId}/${CreateBy}`;
         return this.http.post(url, input).map(this.extractData).catch(this.handleError);
     }
 

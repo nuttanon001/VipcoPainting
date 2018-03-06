@@ -44,6 +44,8 @@ namespace VipcoPainting.Models
         public ICollection<PaintWorkItem> PaintWorkItems { get; set; }
         // RequirePaintListOption
         public RequirePaintingListOption RequirePaintingListOption { get; set; }
+        // PaintTaskMaster
+        public PaintTaskMaster PaintTaskMasters { get; set; }
     }
 
     public enum RequirePaintingListStatus

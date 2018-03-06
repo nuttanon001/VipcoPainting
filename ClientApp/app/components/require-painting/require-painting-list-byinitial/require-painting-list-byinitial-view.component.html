@@ -1,4 +1,4 @@
-﻿<div *ngIf="displayValue,else elseBlock">
+﻿<div *ngIf="displayValue && requirePaintMaster,else elseBlock">
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
@@ -57,16 +57,16 @@
                         Send-Date :
                     </div>
                     <div class="my-value">
-                        {{displayValue.SendWorkItem || "-"}}
+                        {{(displayValue.SendWorkItem | date:'dd/MM/yyyy') || "-"}}
                     </div>
 
                     <div class="my-label">
-                        Internal/External m² :
+                        Internal/External :
                     </div>
                     <div class="my-value">
-                        {{displayValue.IntArea || "Internal"}}
+                        {{displayValue.IntArea + ' m²' || "Internal"}}
                         &nbsp;/&nbsp;
-                        {{displayValue.ExtArea || "External"}}
+                        {{displayValue.ExtArea + ' m²' || "External"}}
                     </div>
                 </div>
 
@@ -77,19 +77,24 @@
                     <div class="my-value">
                         {{displayValue.Quantity || "-"}}
                         &nbsp;/&nbsp;
-                        {{displayValue.Weight || "-"}}
+                        {{displayValue.Weight + ' kg.' || "-"}}
                     </div>
 
                     <div class="my-label">
-                        Dimension LxWxH (mm):
+                        Dimension LxWxH:
                     </div>
-                    <div class="my-value">
+                    <div class="my-value" *ngIf="displayValue.SizeL,else elseDimension">
                         {{displayValue.SizeL || "-"}}
                         X
-                        {{displayValue.SizeL || "-"}}
+                        {{displayValue.SizeW || "-"}}
                         X
-                        {{displayValue.SizeL || "-"}}
+                        {{displayValue.SizeH || "-"}}
                     </div>
+                    <ng-template #elseDimension>
+                        <div class="my-value">
+                            -
+                        </div>
+                    </ng-template>
                 </div>
 
                 <div class="row my-1">
@@ -112,30 +117,29 @@
                     <div class="my-label">
                         FieldWeld :
                     </div>
-                    <div class="my-value">
+                    <div class="my-value-col2">
                         {{displayValue.FieldWeld || "-"}}
                     </div>
 
                     <div class="my-label">
                         Insulation :
                     </div>
-                    <div class="my-value">
+                    <div class="my-value-col2">
                         {{displayValue.Insulation || "-"}}
                     </div>
-                </div>
 
-                <div class="row my-1">
                     <div class="my-label">
                         ITP :
                     </div>
-                    <div class="my-value">
+                    <div class="my-value-col2">
                         {{displayValue.ITP || "-"}}
                     </div>
                 </div>
 
-
+                <hr class="w-75" />
+                <!--<attach-file-view [attachFiles]="attachFiles"></attach-file-view>-->
                 <fieldset>AttachFile</fieldset>
-                <div *ngIf="attachFiles.length > 0,else elseAttact">
+                <div *ngIf="attachFiles && attachFiles.length > 0,else elseAttact">
                     <table class="table table-hover table-sm small">
                         <colgroup>
                             <col span="1" style="width: 80%;">
@@ -147,7 +151,6 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let file of attachFiles;let num = index">
-                                <!--<td (click)="onOpenNewLink(file.FileAddress)" style="cursor:pointer;">-->
                                 <td>
                                     <a [href]="file.FileAddress" arget="_self" download>
                                         <i class="fa fa-download text-primary" aria-hidden="true"></i>
@@ -161,7 +164,6 @@
                 <ng-template #elseAttact>
                     <p>No attach file !</p>
                 </ng-template>
-
             </div>
         </mat-tab>
     </mat-tab-group>

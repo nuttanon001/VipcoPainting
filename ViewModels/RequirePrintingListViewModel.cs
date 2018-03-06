@@ -10,5 +10,7 @@ namespace VipcoPainting.ViewModels
     public class RequirePaintingListViewModel:RequirePaintingList
     {
         public bool IsReceive { get; set; }
+        public double IntArea { get; set; }
+        public double ExtArea { get; set; }
     }
 }

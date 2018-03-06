@@ -205,6 +205,7 @@ namespace VipcoPainting.Controllers
             {
                 var QueryData = this.repository.GetAllAsQueryable()
                                                .Include(x => x.RequirePaintingList.RequirePaintingMaster.ProjectCodeSub)
+                                               .Include(x => x.RequirePaintingList.RequirePaintingListOption)
                                                .Include(x => x.PaintTaskDetails)
                                                .Where(x => x.RequirePaintingList.PlanStart != null && 
                                                            x.RequirePaintingList.PlanEnd != null)
@@ -237,7 +238,7 @@ namespace VipcoPainting.Controllers
                     // Option Create
                     if (!string.IsNullOrEmpty(Scehdule.Creator))
                         QueryData = QueryData.Where(x =>
-                            x.RequirePaintingList.RequirePaintingMaster.RequireEmp == Scehdule.Creator);
+                            x.RequirePaintingList.Creator == Scehdule.Creator);
 
                     // Option ProjectMasterId
                     if (Scehdule.ProjectMasterId.HasValue)
@@ -288,28 +289,11 @@ namespace VipcoPainting.Controllers
                         GetData.Max(x => x.RequirePaintingList.PlanEnd) ?? null,
                     };
 
-                    //var Plan2Start = GetData.Select(x => x.PaintTaskDetails.Min(z => z.PlanSDate)).FirstOrDefault();
-                    //var ActualStart = GetData.Select(x => x.PaintTaskDetails.Min(z => z.ActualSDate)).FirstOrDefault();
-
-                    //var Plan2End = GetData.Select(x => x.PaintTaskDetails.Max(z => z.PlanEDate)).FirstOrDefault();
-                    //var ActualEnd = GetData.Select(x => x.PaintTaskDetails.Max(z => z.ActualEDate)).FirstOrDefault();
-
                     if (GetData.Any(x => x.PaintTaskDetails.Any(z => z.ActualEDate == null)))
                         ListDate.Add(DateTime.Today);
 
                     DateTime? MinDate = ListDate.Min();
                     DateTime? MaxDate = ListDate.Max();
-
-                    // Min
-                    //if (ActualStart != null)
-                    //    MinDate = Plan2Start.Date < ActualStart.Value.Date ? Plan2Start : ActualStart.Value;
-                    //else
-                    //    MinDate = Plan2Start;
-                    //// Max
-                    //if (ActualEnd != null)
-                    //    MaxDate = Plan2End > ActualEnd.Value ? Plan2End : ActualEnd.Value;
-                    //else
-                    //    MaxDate = Plan2End;
 
                     if (MinDate == null && MaxDate == null)
                         return NotFound(new { Error = "Data not found" });
@@ -352,6 +336,20 @@ namespace VipcoPainting.Controllers
                                                (Data.RequirePaintingList == null ? "" : $" | UnitNo({(Data.RequirePaintingList.UnitNo ?? 0).ToString("00")})"));
                         rowData.Add("Progress", Progress.ToString("0.0") + "%");
                         rowData.Add("PaintTaskMasterId", Data?.PaintTaskMasterId ?? 1);
+                        // Add new
+                        if (Data.RequirePaintingList.SendWorkItem.HasValue)
+                        {
+                            if (ColumnGroupBtm.Any(x => x.Key == Data.RequirePaintingList.SendWorkItem.Value.Date))
+                                rowData.Add("Send",ColumnGroupBtm.FirstOrDefault(x => x.Key == Data.RequirePaintingList.SendWorkItem.Value.Date).Value);
+                        }
+                        
+                        if (Data?.RequirePaintingList?.RequirePaintingListOption != null)
+                        {
+                            var DateReceive = Data.RequirePaintingList.RequirePaintingListOption.ReceiveWorkItem;
+                            if (ColumnGroupBtm.Any(x => x.Key == DateReceive.Date))
+                                rowData.Add("Receive", ColumnGroupBtm.FirstOrDefault(x => x.Key == DateReceive.Date).Value);
+                        }
+                        // End new
 
                         // Data is 1:Plan1,2:Plan2,3:Plan1AndPlan2,
                         // 4:Actual,5:Plan1AndActual,6:Plan2AndActual,7:Plan1,Plan2AndActual
@@ -397,7 +395,6 @@ namespace VipcoPainting.Controllers
                             else if (EndDate == null)
                                 EndDate = LastDate;
                             
-
                             foreach (DateTime day in EachDay(DetailActualStart.Value, EndDate.Value))
                             {
                                 if (ColumnGroupBtm.Any(x => x.Key == day.Date))
@@ -418,6 +415,256 @@ namespace VipcoPainting.Controllers
                                 }
                             }
                         }
+                        DataTable.Add(rowData);
+                    }
+
+                    if (DataTable.Any())
+                        ColumnGroupBtm.OrderBy(x => x.Key.Date).Select(x => x.Value)
+                            .ToList().ForEach(item => ColumnsAll.Add(item));
+
+                    return new JsonResult(new
+                    {
+                        TotalRow = TotalRow,
+                        ColumnsTop = ColumnGroupTop.Select(x => new
+                        {
+                            Name = x.Key,
+                            Value = x.Value
+                        }),
+                        ColumnsLow = ColumnGroupBtm.OrderBy(x => x.Key.Date).Select(x => x.Key.Day),
+                        ColumnsAll = ColumnsAll,
+                        DataTable = DataTable
+                    }, this.DefaultJsonSettings);
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+
+            return NotFound(new { Error = Message });
+        }
+
+        [HttpPost("TaskMasterScheduleV2")]
+        public async Task<IActionResult> TaskMasterScheduleV2([FromBody] OptionTaskMasterSchedule Schedule)
+        {
+            string Message = "";
+
+            try
+            {
+                var QueryData = this.repositoryReqPaintingList.GetAllAsQueryable()
+                                               .Include(x => x.RequirePaintingMaster.ProjectCodeSub)
+                                               .Include(x => x.RequirePaintingListOption)
+                                               .Include(x => x.PaintTaskMasters)
+                                                    .ThenInclude(x => x.PaintTaskDetails)
+                                               .Where(x => x.PlanStart != null &&
+                                                           x.PlanEnd != null && 
+                                                           x.RequirePaintingListStatus != RequirePaintingListStatus.Cancel)
+                                               .AsQueryable();
+                int TotalRow;
+
+                if (Schedule != null)
+                {
+                    if (Schedule.Mode.HasValue)
+                    {
+                        if (Schedule.Mode == 1)
+                            QueryData = QueryData.OrderByDescending(x => x.SendWorkItem).ThenByDescending(x => x.PlanStart);
+                        else
+                            QueryData = QueryData.OrderBy(x => x.PlanStart);
+                    }
+
+                    if (Schedule.TaskMasterId.HasValue)
+                        QueryData = QueryData.Where(x => x.PaintTaskMasters.PaintTaskMasterId == Schedule.TaskMasterId);
+
+                    if (!string.IsNullOrEmpty(Schedule.Filter))
+                    {
+                        var filters = string.IsNullOrEmpty(Schedule.Filter) ? new string[] { "" }
+                                   : Schedule.Filter.ToLower().Split(null);
+                        foreach (var keyword in filters)
+                        {
+                            QueryData = QueryData.Where(x => x.Description.ToLower().Contains(keyword) ||
+                                                             x.MarkNo.ToLower().Contains(keyword) ||
+                                                             x.RequirePaintingMaster.RequireNo.ToLower().Contains(keyword));
+                        }
+                    }
+
+                    // Option Create
+                    if (!string.IsNullOrEmpty(Schedule.Creator))
+                        QueryData = QueryData.Where(x => x.Creator == Schedule.Creator);
+                        
+
+                    // Option ProjectMasterId
+                    if (Schedule.ProjectMasterId.HasValue)
+                        QueryData = QueryData.Where(x =>
+                            x.RequirePaintingMaster.ProjectCodeSub.ProjectCodeMasterId == Schedule.ProjectMasterId);
+
+                    // Option ProjectSubId
+                    if (Schedule.ProjectSubId.HasValue)
+                        QueryData = QueryData.Where(x =>
+                            x.RequirePaintingMaster.ProjectCodeSubId == Schedule.ProjectSubId);
+
+                    TotalRow = await QueryData.CountAsync();
+
+                    // Option Skip and Task
+                    // if (Scehdule.Skip.HasValue && Scehdule.Take.HasValue)
+                    QueryData = QueryData.Skip(Schedule.Skip ?? 0).Take(Schedule.Take ?? 5);
+                }
+                else
+                    TotalRow = await QueryData.CountAsync();
+
+                var GetData = await QueryData.ToListAsync();
+                if (GetData.Any())
+                {
+                    IDictionary<string, int> ColumnGroupTop = new Dictionary<string, int>();
+                    IDictionary<DateTime, string> ColumnGroupBtm = new Dictionary<DateTime, string>();
+                    List<string> ColumnsAll = new List<string>();
+                    // PlanDate
+                    List<DateTime?> ListDate = new List<DateTime?>()
+                    {
+                        //START Date
+                        GetData.Select(x => x?.PaintTaskMasters?.PaintTaskDetails.Min(z => z.ActualSDate)).OrderBy(x => x).FirstOrDefault() ?? null,
+                        GetData.Select(x => x?.PaintTaskMasters?.PaintTaskDetails.Min(z => z.PlanSDate)).OrderBy(x => x).FirstOrDefault() ?? null,
+                        GetData.Min(x => x.PlanStart) ?? null,
+                        GetData.Min(x => x.SendWorkItem) ?? null,
+                        //END Date
+                        GetData.Select(x => x?.PaintTaskMasters?.PaintTaskDetails.Max(z => z.ActualEDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
+                        GetData.Select(x => x?.PaintTaskMasters?.PaintTaskDetails.Max(z => z.ActualSDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
+                        GetData.Select(x => x?.PaintTaskMasters?.PaintTaskDetails.Max(z => z.PlanSDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
+                        GetData.Select(x => x?.PaintTaskMasters?.PaintTaskDetails.Max(z => z.PlanEDate)).OrderByDescending(x => x).FirstOrDefault() ?? null,
+                        GetData.Max(x => x.PlanEnd) ?? null,
+                        GetData.Max(x => x.RequirePaintingListOption?.ReceiveWorkItem) ?? null,
+                    };
+
+                    // Check Laster
+                    // if (GetData.Any(x => x.PaintTaskMasters != null ? x.PaintTaskMasters.PaintTaskDetails.Any(z => z.ActualEDate == null) : true))
+                    //     ListDate.Add(DateTime.Today);
+
+                    DateTime? MinDate = ListDate.Min();
+                    DateTime? MaxDate = ListDate.Max();
+
+                    if (MinDate == null && MaxDate == null)
+                        return NotFound(new { Error = "Data not found" });
+
+                    int countCol = 1;
+                    // add Date to max
+                    MaxDate = MaxDate.Value.AddDays(2);
+                    MinDate = MinDate.Value.AddDays(-2);
+                    foreach (DateTime day in EachDay(MinDate.Value, MaxDate.Value))
+                    {
+                        // Get Month
+                        if (ColumnGroupTop.Any(x => x.Key == day.ToString("MMMM")))
+                            ColumnGroupTop[day.ToString("MMMM")] += 1;
+                        else
+                            ColumnGroupTop.Add(day.ToString("MMMM"), 1);
+
+                        ColumnGroupBtm.Add(day.Date, $"Col{countCol.ToString("00")}");
+                        countCol++;
+                    }
+
+                    var DataTable = new List<IDictionary<String, Object>>();
+                    // OrderBy(x => x.Machine.TypeMachineId).ThenBy(x => x.Machine.MachineCode)
+                    foreach (var Data in GetData.OrderBy(x => x.PlanStart.Value).ThenBy(x => x.PlanEnd.Value))
+                    {
+                        IDictionary<String, Object> rowData = new ExpandoObject();
+                        var Progress = Data.PaintTaskMasters != null ? Data?.PaintTaskMasters?.MainProgress ?? 0 : 0 ;
+                        var ProjectMaster = "NoData";
+                        if (Data?.RequirePaintingMaster?.ProjectCodeSub != null)
+                        {
+                            ProjectMaster = (await this.repositoryProMaster.
+                                        GetAsync(Data.RequirePaintingMaster.ProjectCodeSub.ProjectCodeMasterId ?? 0))?.ProjectCode ?? "";
+
+                            ProjectMaster += $"/{Data.RequirePaintingMaster.ProjectCodeSub.Code}";
+                        }
+
+                        // add column time
+                        rowData.Add("ProjectMaster", ProjectMaster);
+                        rowData.Add("WorkItem", (Data == null ? "" : Data.Description) +
+                                               (Data == null ? "" : $" | {Data.MarkNo}") +
+                                               (Data == null ? "" : $" | UnitNo({(Data.UnitNo ?? 0).ToString("00")})"));
+                        rowData.Add("Progress", Progress.ToString("0.0") + "%");
+                        rowData.Add("PaintTaskMasterId", Data.PaintTaskMasters != null ? Data?.PaintTaskMasters.PaintTaskMasterId ?? 0 : 0);
+                        // Add new
+                        if (Data.SendWorkItem.HasValue)
+                        {
+                            if (ColumnGroupBtm.Any(x => x.Key == Data.SendWorkItem.Value.Date))
+                                rowData.Add("Send", ColumnGroupBtm.FirstOrDefault(x => x.Key == Data.SendWorkItem.Value.Date).Value);
+                        }
+
+                        if (Data?.RequirePaintingListOption != null)
+                        {
+                            var DateReceive = Data.RequirePaintingListOption.ReceiveWorkItem;
+                            if (ColumnGroupBtm.Any(x => x.Key == DateReceive.Date))
+                                rowData.Add("Receive", ColumnGroupBtm.FirstOrDefault(x => x.Key == DateReceive.Date).Value);
+                        }
+                        // End new
+
+                        // Data is 1:Plan1,2:Plan2,3:Plan1AndPlan2,
+                        // 4:Actual,5:Plan1AndActual,6:Plan2AndActual,7:Plan1,Plan2AndActual
+                        // For Plan1
+                        if (Data.PlanStart.Value != null && Data.PlanEnd.Value != null)
+                        {
+                            foreach (DateTime day in EachDay(Data.PlanStart.Value, Data.PlanEnd.Value))
+                            {
+                                if (ColumnGroupBtm.Any(x => x.Key == day.Date))
+                                    rowData.Add(ColumnGroupBtm.FirstOrDefault(x => x.Key == day.Date).Value, 1);
+                            }
+                        }
+
+                        // For Plan2
+                        if (Data.PaintTaskMasters != null)
+                        {
+                            var DetailPlanStart = Data.PaintTaskMasters.PaintTaskDetails.Min(x => x.PlanSDate);
+                            var DetailPlanEnd = Data.PaintTaskMasters.PaintTaskDetails.Max(x => x.PlanEDate);
+                            if (DetailPlanStart != null && DetailPlanEnd != null)
+                            {
+                                foreach (DateTime day in EachDay(DetailPlanStart, DetailPlanEnd))
+                                {
+                                    if (ColumnGroupBtm.Any(x => x.Key == day.Date))
+                                    {
+                                        var Col = ColumnGroupBtm.FirstOrDefault(x => x.Key == day.Date);
+
+                                        // if Have Plan1 change value to 3
+                                        if (rowData.Keys.Any(x => x == Col.Value))
+                                            rowData[Col.Value] = 3;
+                                        else // else Don't have plan1 change value is 2 for plan2
+                                            rowData.Add(Col.Value, 2);
+                                    }
+                                }
+                            }
+
+                            //For Actual
+                            var DetailActualStart = Data.PaintTaskMasters.PaintTaskDetails.Min(x => x.ActualSDate);
+                            if (DetailActualStart != null)
+                            {
+                                var EndDate = Data.PaintTaskMasters.PaintTaskDetails.Max(x => x.ActualEDate);
+                                var LastDate = (MaxDate > DateTime.Today ? DateTime.Today : MaxDate);
+
+                                if (Data.PaintTaskMasters.PaintTaskDetails.Any(x => x.ActualEDate == null))
+                                    EndDate = LastDate;
+                                else if (EndDate == null)
+                                    EndDate = LastDate;
+
+                                foreach (DateTime day in EachDay(DetailActualStart.Value, EndDate.Value))
+                                {
+                                    if (ColumnGroupBtm.Any(x => x.Key == day.Date))
+                                    {
+                                        var Col = ColumnGroupBtm.FirstOrDefault(x => x.Key == day.Date);
+                                        // if Have Plan change value to 3
+                                        if (rowData.Keys.Any(x => x == Col.Value))
+                                        {
+                                            if ((int)rowData[Col.Value] == 1)
+                                                rowData[Col.Value] = 5;
+                                            else if ((int)rowData[Col.Value] == 2)
+                                                rowData[Col.Value] = 6;
+                                            else if ((int)rowData[Col.Value] == 3)
+                                                rowData[Col.Value] = 7;
+                                        }
+                                        else // else Don't have plan1 and plan2 change value is 4
+                                            rowData.Add(Col.Value, 4);
+                                    }
+                                }
+                            }
+                        }
+                        
                         DataTable.Add(rowData);
                     }
 
@@ -951,5 +1198,77 @@ namespace VipcoPainting.Controllers
         }
 
         #endregion DELETE
+
+        #region CHART
+
+        // POST: api/PostChartDataBlastWorkLoad/
+        [HttpPost("PostChartDataBlastWorkLoad")]
+        public async Task<IActionResult> PostOverTimeChartData([FromBody]OptionChartViewModel Option)
+        {
+            var Message = "Not found OverTimeMaster data.";
+            try
+            {
+                if (Option != null)
+                {
+                    var QueryData = this.repositoryDetail.GetAllAsQueryable()
+                                                   .Where(x => x.PaintTaskMaster.PaintTaskStatus != PaintTaskStatus.Cancel &&
+                                                               x.PaintTaskDetailStatus != PaintTaskDetailStatus.Cancel)
+                                                   .Include(x => x.BlastRoom)
+                                                   .AsQueryable();
+
+                    if (Option.BlastRoomId.HasValue)
+                        QueryData = QueryData.Where(x => x.BlastRoomId == Option.BlastRoomId);
+
+                    if (Option.ProjectMasterId.HasValue)
+                        QueryData = QueryData.Where(x => x.PaintTaskMaster.RequirePaintingList.
+                                                           RequirePaintingMaster.ProjectCodeSub.
+                                                           ProjectCodeMasterId == Option.ProjectMasterId);
+
+                    if (Option.StartDate.HasValue && Option.EndDate.HasValue)
+                        QueryData = QueryData.Where(x => x.PlanSDate.Date >= Option.StartDate.Value.Date &&
+                                                         x.PlanEDate.Date <= Option.EndDate.Value.Date);
+                    else
+                    {
+                        var endDate = DateTime.Today;
+                        var startDate = endDate.AddMonths(-5);
+                    }
+                    // Get data from database
+                    var HasData = await QueryData.ToListAsync();
+                    // New Parameter
+                    List<string> Labels = new List<string>();
+                    IDictionary<string, List<double>> DataSet = new Dictionary<string, List<double>>();
+                    List<double> ChartDatas = new List<double>();
+                    
+                    // Get All Months
+                    var minDate = HasData.Min(x => x.PlanSDate);
+                    var maxDate = HasData.Max(x => x.ActualEDate) ?? HasData.Max(x => x.PlanEDate);
+
+                    Labels.AddRange(Enumerable.Range(0, (int)(maxDate - minDate).TotalDays/30)
+                                             .Select(numMonth => minDate.AddMonths(numMonth))
+                                             .TakeWhile(runDate => runDate <= maxDate)
+                                             .Select(runDate => runDate.ToString("MMMM/yy")));
+                    // Labels.Union
+                    foreach (var BlastRoom in HasData.OrderBy(x => x.PlanSDate)
+                                                    .ThenBy(x => x.PlanEDate)
+                                                    .GroupBy(x => x.BlastRoom))
+                    {
+
+                    }
+
+                    return new JsonResult(new
+                    {
+                        Labels = Labels,
+                        Datas = ChartDatas
+                    }, this.DefaultJsonSettings);
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = $"Has error {ex.ToString()}";
+            }
+            return NotFound(new { Error = Message });
+        }
+
+        #endregion
     }
 }

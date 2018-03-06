@@ -19,3 +19,8 @@ export { InitialRequirePaintingViewComponent } from "./initial-require-painting/
 export { InitialRequirePaintingScheduleComponent } from "./initial-require-painting/initial-require-painting-schedule.component";
 export { InitialRequirePaintingListComponent } from "./initial-require-painting/initial-require-workitem.component";
 export { InitialRequireWorkitemMasterComponent } from "./initial-require-painting/initial-require-workitem-master.component";
+// require-painting-list-byinitial
+export { RequirePaintingListByinitialCenterComponent } from "./require-painting-list-byinitial/require-painting-list-byinitial-center.component"
+export { RequirePaintingListByinitialEditComponent } from "./require-painting-list-byinitial/require-painting-list-byinitial-edit.component"
+export { RequirePaintingListByinitialMasterComponent } from "./require-painting-list-byinitial/require-painting-list-byinitial-master.component"
+export { RequirePaintingListByinitialViewComponent } from "./require-painting-list-byinitial/require-painting-list-byinitial-view.component"

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -20,15 +23,20 @@ namespace VipcoPainting.Controllers
     public class RequirePaintingMasterController : Controller
     {
         #region PrivateMenbers
-
+        // Painting
         private IRepositoryPainting<RequirePaintingMaster> repository;
         private IRepositoryPainting<ProjectCodeSub> repositoryProSub;
+        private IRepositoryPainting<RequirePaintingMasterHasAttach> repositoryHasAttach;
+        // Machine
         private IRepositoryMachine<ProjectCodeMaster> repositoryProMas;
         private IRepositoryMachine<Employee> repositoryEmp;
+        private IRepositoryMachine<AttachFile> repositoryAttach;
+
         private IMapper mapper;
         private JsonSerializerSettings DefaultJsonSettings;
         private ConverterTableToVM ConvertTable;
         private HelpersClass<RequirePaintingMaster> helpers;
+        private IHostingEnvironment appEnvironment;
 
         private async Task<string> GeneratedCode(int ProjectSubId)
         {
@@ -78,15 +86,21 @@ namespace VipcoPainting.Controllers
         public RequirePaintingMasterController(
             IRepositoryPainting<RequirePaintingMaster> repo,
             IRepositoryPainting<ProjectCodeSub> repoProSub,
+            IRepositoryPainting<RequirePaintingMasterHasAttach> repoMasterHasAtt,
+            IRepositoryMachine<AttachFile> repoAtt,
             IRepositoryMachine<ProjectCodeMaster> repoProMas,
             IRepositoryMachine<Employee> repoEmp,
-            IMapper map)
+            IMapper map,
+            IHostingEnvironment iHost)
         {
             this.repository = repo;
             this.repositoryProSub = repoProSub;
             this.repositoryProMas = repoProMas;
+            this.repositoryHasAttach = repoMasterHasAtt;
+            this.repositoryAttach = repoAtt;
             this.repositoryEmp = repoEmp;
             this.mapper = map;
+            this.appEnvironment = iHost;
             this.helpers = new HelpersClass<RequirePaintingMaster>();
             // Json
             this.DefaultJsonSettings = new Helpers.JsonSerializer().DefaultJsonSettings;
@@ -667,5 +681,109 @@ namespace VipcoPainting.Controllers
         }
 
         #endregion DELETE
+
+        #region ATTACH
+
+        // GET: api/RequirePaintingList/GetAttach/5
+        [HttpGet("GetAttach/{key}")]
+        public async Task<IActionResult> GetAttach(int key)
+        {
+            var AttachIds = await this.repositoryHasAttach.GetAllAsQueryable()
+                                  .Where(x => x.RequirePaintingMasterId == key)
+                                  .Select(x => x.AttachFileId).ToListAsync();
+            if (AttachIds != null)
+            {
+                var DataAttach = await this.repositoryAttach.GetAllAsQueryable()
+                                       .Where(x => AttachIds.Contains(x.AttachFileId))
+                                       .AsNoTracking()
+                                       .ToListAsync();
+
+                return new JsonResult(DataAttach, this.DefaultJsonSettings);
+            }
+
+            return NotFound(new { Error = "Attatch not been found." });
+        }
+
+        // POST: api/RequirePaintingList/PostAttach/5/Someone
+        [HttpPost("PostAttach/{key}/{CreateBy}")]
+        public async Task<IActionResult> PostAttac(int key, string CreateBy, IEnumerable<IFormFile> files)
+        {
+            string Message = "";
+            try
+            {
+                long size = files.Sum(f => f.Length);
+
+                // full path to file in temp location
+                var filePath1 = Path.GetTempFileName();
+
+                foreach (var formFile in files)
+                {
+                    string FileName = Path.GetFileName(formFile.FileName).ToLower();
+                    // create file name for file
+                    string FileNameForRef = $"{DateTime.Now.ToString("ddMMyyhhmmssfff")}{ Path.GetExtension(FileName).ToLower()}";
+                    // full path to file in temp location
+                    var filePath = Path.Combine(this.appEnvironment.WebRootPath + "/files", FileNameForRef);
+
+                    if (formFile.Length > 0)
+                    {
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                            await formFile.CopyToAsync(stream);
+                    }
+
+                    var returnData = await this.repositoryAttach.AddAsync(new AttachFile()
+                    {
+                        FileAddress = $"/paint/files/{FileNameForRef}",
+                        FileName = FileName,
+                        CreateDate = DateTime.Now,
+                        Creator = CreateBy ?? "Someone"
+                    });
+
+                    await this.repositoryHasAttach.AddAsync(new RequirePaintingMasterHasAttach()
+                    {
+                        AttachFileId = returnData.AttachFileId,
+                        CreateDate = DateTime.Now,
+                        Creator = CreateBy ?? "Someone",
+                        RequirePaintingMasterId = key
+                    });
+                }
+
+                return Ok(new { count = 1, size, filePath1 });
+
+            }
+            catch (Exception ex)
+            {
+                Message = ex.ToString();
+            }
+
+            return NotFound(new { Error = "Not found " + Message });
+        }
+
+        // DELETE: api/RequirePaintingList/DeleteAttach/5
+        [HttpDelete("DeleteAttach/{AttachFileId}")]
+        public async Task<IActionResult> DeleteAttach(int AttachFileId)
+        {
+            if (AttachFileId > 0)
+            {
+                var AttachFile = await this.repositoryAttach.GetAsync(AttachFileId);
+                if (AttachFile != null)
+                {
+                    var filePath = Path.Combine(this.appEnvironment.WebRootPath + AttachFile.FileAddress);
+                    FileInfo delFile = new FileInfo(filePath);
+
+                    if (delFile.Exists)
+                        delFile.Delete();
+                    // Condition
+                    Expression<Func<RequirePaintingMasterHasAttach, bool>> condition = c => c.AttachFileId == AttachFile.AttachFileId;
+                    var RequirePaintingList = this.repositoryHasAttach.FindAsync(condition).Result;
+                    if (RequirePaintingList != null)
+                        this.repositoryHasAttach.Delete(RequirePaintingList.RequirePaintingMasterHasAttachId);
+                    // remove attach
+                    return new JsonResult(await this.repositoryAttach.DeleteAsync(AttachFile.AttachFileId), this.DefaultJsonSettings);
+                }
+            }
+            return NotFound(new { Error = "Not found attach file." });
+        }
+
+        #endregion
     }
 }

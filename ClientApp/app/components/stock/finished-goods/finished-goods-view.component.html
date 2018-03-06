@@ -19,7 +19,7 @@
                     <div class="my-value">
                         {{displayValue?.ReceiveByString || "-"}}
                     </div>
-                  
+
 
                 </div>
 
@@ -40,6 +40,29 @@
                 </div>
 
                 <div class="row my-1">
+                    <div class="my-label">
+                        Expired :
+                    </div>
+                    <div class="my-value">
+                        {{(displayValue?.ExpiredDate|date:'dd/MM/yyyy') || "-"}}
+                    </div>
+
+                    <div class="my-label">
+                        LotNumber :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.LotNumber || "-"}}
+                    </div>
+                </div>
+
+                <div class="row my-1">
+                    <div class="my-label">
+                        JobNumber :
+                    </div>
+                    <div class="my-value">
+                        {{displayValue?.ProjectMasterString || "-"}}
+                    </div>
+
                     <div class="my-label">
                         Remark :
                     </div>

@@ -164,6 +164,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
                 ProjectCodeMasterId: master.ProjectCodeMasterId,
                 ProjectMasterString: master.ProjectCode,
                 ProjectCodeSubId: 0,
+                ProjectSubStatus: 1,
                 Name:"-"
             };
         }

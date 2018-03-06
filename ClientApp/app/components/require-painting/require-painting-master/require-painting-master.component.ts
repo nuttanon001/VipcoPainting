@@ -51,7 +51,7 @@ export class RequirePaintingMasterComponent
     datePipe: DateOnlyPipe = new DateOnlyPipe("it");
     onlyUser: boolean;
     requirePaintLists: Array<RequirePaintList> | undefined;
-
+    hiddenTool: boolean;
     columns: Array<TableColumn> = [
         { prop: "RequireNo", name: "Code", flexGrow: 1 },
         { prop: "JobCode", name: "Job", flexGrow: 1 },
@@ -61,6 +61,7 @@ export class RequirePaintingMasterComponent
     // on init override
     ngOnInit(): void {
 
+        this.hiddenTool = false;
         this.ShowEdit = false;
         this.canSave = false;
 
@@ -147,30 +148,32 @@ export class RequirePaintingMasterComponent
         }
         return value;
     }
-
+    
     // on insert data
     onInsertToDataBase(value: RequirePaintMaster): void {
         if (this.serverAuth.getAuth) {
             value.Creator = this.serverAuth.getAuth.UserName || "";
         }
+        let attachs: FileList | undefined = value.AttachFile;
         // change timezone
         value = this.changeTimezone(value);
         // insert data
         this.service.post(value).subscribe(
-            (complete: any) => {
+            (complete: RequirePaintMaster) => {
+                if (complete && attachs) {
+                    this.onAttactFileToDataBase(complete.RequirePaintingMasterId, attachs, complete.Creator || "");
+                }
+
                 this.displayValue = complete;
                 if (this.requirePaintLists && complete) {
                     this.requirePaintLists.forEach(item => {
                         // change timezone
                         item = this.changeTimezone2(item);
-
                         item.RequirePaintingMasterId = complete.RequirePaintingMasterId;
                         item.Creator = complete.Creator;
                     });
-
                     //debug here
-                    console.log(JSON.stringify(this.requirePaintLists));
-
+                    // console.log(JSON.stringify(this.requirePaintLists));
                     this.servicePaintList.postLists2(this.requirePaintLists)
                         .subscribe((complate: any) => {
                             this.requirePaintLists = undefined;
@@ -199,11 +202,21 @@ export class RequirePaintingMasterComponent
         if (this.serverAuth.getAuth) {
             value.Modifyer = this.serverAuth.getAuth.UserName || "";
         }
+        let attachs: FileList | undefined = value.AttachFile;
+
+        // remove attach
+        if (value.RemoveAttach) {
+
+            this.onRemoveFileFromDataBase(value.RemoveAttach);
+        }
         // change timezone
         value = this.changeTimezone(value);
         // update data
         this.service.putKeyNumber(value, value.RequirePaintingMasterId).subscribe(
-            (complete: any) => {
+            (complete: RequirePaintMaster) => {
+                if (complete && attachs) {
+                    this.onAttactFileToDataBase(complete.RequirePaintingMasterId, attachs,complete.Modifyer || "Someone");
+                }
                 this.displayValue = complete;
                 if (this.requirePaintLists && complete) {
                     this.requirePaintLists.forEach(item => {
@@ -285,7 +298,7 @@ export class RequirePaintingMasterComponent
                     });
 
                     //debug here
-                    console.log(JSON.stringify(this.requirePaintLists));
+                    // console.log(JSON.stringify(this.requirePaintLists));
 
                     this.servicePaintList.postLists2(this.requirePaintLists)
                         .subscribe((complate: any) => {
@@ -354,5 +367,20 @@ export class RequirePaintingMasterComponent
             }
         }
         super.onDetailEdit(editValue);
+    }
+
+    // Attach
+    // on attact file
+    onAttactFileToDataBase(RequirePaintListId: number, Attacts: FileList, CreateBy: string): void {
+        this.service.postAttactFile(RequirePaintListId, Attacts, CreateBy)
+            .subscribe(complate => console.log("Upload Complate"), error => console.error(error));
+    }
+
+    // on remove file
+    onRemoveFileFromDataBase(Attachs: Array<number>): void {
+        Attachs.forEach((value: number) => {
+            this.service.deleteAttactFile(value)
+                .subscribe(complate => console.log("Delete Complate"), error => console.error(error));
+        });
     }
 }

@@ -111,7 +111,7 @@
                             <validation-messages [control]="editValueForm.controls.MarkNo"></validation-messages>
                         </div>
                     </div>
-                    <hr class="w-75 my-0" />
+
                     <div class="my-form">
                         <label class="my-label">Option-1:</label>
                         <div class="col-sm-2">
@@ -125,14 +125,11 @@
                         </div>
                     </div>
                 </form>
-                <div class="mb-2">
-                    <hr />
-                    <h5>List of File {{editValue.AttachFile?.length || 0}}</h5>
-                    <p style="color:red;">** 5MB Maximum for Attachment File Size **</p>
-                    <div *ngFor="let file of editValue.AttachFile;let num = index">
-                        <a class="item" style="padding:0;margin:1px;">
-                            {{num + 1}}. {{file.name}}
-                        </a>
+                <div class="my-form">
+                    <label for="AttactFile" class="my-label">AttactFile:</label>
+                    <div class="col-4">
+                        <attact-file id="AttactFile" (results)="onUpdateAttachResults($event)">
+                        </attact-file>
                     </div>
                 </div>
 

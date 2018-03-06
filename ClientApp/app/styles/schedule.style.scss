@@ -113,6 +113,9 @@ $col-height: 20px;
     background-color: forestgreen;
     color: forestgreen;
     height: $col-height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .plan2-col {
@@ -129,11 +132,14 @@ $col-height: 20px;
 }
 
 .empty-col {
-    background-color: transparent;
-    color: transparent;
+    /*background-color: transparent;*/
+    /*color: transparent;*/
     height: $col-height;
     border-top: solid 1px transparent;
     border-bottom: solid 1px transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 :host /deep/ .chart {

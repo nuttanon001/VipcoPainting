@@ -32,6 +32,7 @@ namespace VipcoPainting.Models
             modelBuilder.Entity<RequirePaintingListOption>().ToTable("RequirePaintingListOption");
             modelBuilder.Entity<RequirePaintingMaster>().ToTable("RequirePaintingMaster");
             modelBuilder.Entity<RequisitionMaster>().ToTable("RequisitionMaster");
+            modelBuilder.Entity<RequirePaintingMasterHasAttach>().ToTable("RequirePaintingMasterHasAttach");
             modelBuilder.Entity<StandradTime>().ToTable("StandradTime");
             modelBuilder.Entity<SubPaymentDetail>().ToTable("SubPaymentDetail");
             modelBuilder.Entity<SubPaymentMaster>().ToTable("SubPaymentMaster");
@@ -56,6 +57,7 @@ namespace VipcoPainting.Models
         public DbSet<RequirePaintingListHasAttach> RequirePaintingListHasAttachs { get; set; }
         public DbSet<RequirePaintingListOption> RequirePaintingListOptions { get; set; }
         public DbSet<RequirePaintingMaster> RequirePaintingMasters { get; set; }
+        public DbSet<RequirePaintingMasterHasAttach> RequirePaintingMasterHasAttachs { get; set; }
         public DbSet<RequisitionMaster> RequisitionMasters { get; set; }
         public DbSet<StandradTime> StandradTimes { get; set; }
         public DbSet<SubPaymentDetail> SubPaymentDetails { get; set; }

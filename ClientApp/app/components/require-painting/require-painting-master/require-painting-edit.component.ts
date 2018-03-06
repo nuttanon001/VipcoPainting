@@ -1,12 +1,12 @@
 ﻿// angular
-import { Component, ViewContainerRef } from "@angular/core";
+import { Component, ViewContainerRef,Output,EventEmitter } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import {
     trigger, state, style,
     animate, transition
 } from "@angular/animations";
 // models
-import { RequirePaintMaster, RequirePaintList, RequirePaintMasterHasList } from "../../../models/model.index";
+import { RequirePaintMaster, RequirePaintList, RequirePaintMasterHasList, AttachFile } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // services
@@ -58,6 +58,7 @@ export class RequirePaintingEditComponent
         );
     }
     // Parameter
+    attachFiles: Array<AttachFile> = new Array;
     levelPaints: Array<string>;
     requirePaintLists: Array<RequirePaintList>;
     newRequirePaintList: RequirePaintList | undefined;
@@ -65,7 +66,8 @@ export class RequirePaintingEditComponent
     selectedIndex: number;
     maxDate:Date = new Date;
     readOnly: boolean;
-
+    //Output
+    @Output() HiddenTool: EventEmitter<boolean> = new EventEmitter<boolean>();
     // on get data by key
     onGetDataByKey(value?: RequirePaintMaster): void {
         if (value) {
@@ -132,6 +134,7 @@ export class RequirePaintingEditComponent
         }
 
         this.buildForm();
+        this.getAttach();
     }
 
     // build form
@@ -163,7 +166,9 @@ export class RequirePaintingEditComponent
             // ViewModel
             RequireString: [this.editValue.RequireString],
             ReceiveString: [this.editValue.ReceiveString],
-            ProjectCodeSubString: [this.editValue.ProjectCodeSubString]
+            ProjectCodeSubString: [this.editValue.ProjectCodeSubString],
+            AttachFile: [this.editValue.AttachFile],
+            RemoveAttach: [this.editValue.RemoveAttach]
         });
         this.editValueForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));
     }
@@ -253,6 +258,7 @@ export class RequirePaintingEditComponent
                 this.indexListItem = -1;
             }
             this.newRequirePaintList = listItem;
+            this.HiddenTool.emit(true);
             // set save buttom diable
             this.onValueChanged();
         }
@@ -274,6 +280,7 @@ export class RequirePaintingEditComponent
             this.onValueChanged();
         }
         this.newRequirePaintList = undefined;
+        this.HiddenTool.emit(false);
         this.selectedIndex = 2;
         this.onValueChanged();
     }
@@ -300,7 +307,7 @@ export class RequirePaintingEditComponent
     getRowClass(row?: any): any {
         if (row) {
             if (row["RequirePaintingListStatus"]) {
-                console.log("Data is: RequirePaintingListStatus", row.RequirePaintingListStatus)
+                // console.log("Data is: RequirePaintingListStatus", row.RequirePaintingListStatus)
                 if (row.RequirePaintingListStatus === 1) {
                     return { "is-require": true };
                 } else if (row.RequirePaintingListStatus === 2) {
@@ -315,4 +322,62 @@ export class RequirePaintingEditComponent
             } 
         }
     }
+
+    ////////////
+    // Module //
+    ////////////
+
+    // get attact file
+    getAttach(): void {
+        if (this.editValue && this.editValue.RequirePaintingMasterId > 0) {
+            this.service.getAttachFile(this.editValue.RequirePaintingMasterId)
+                .subscribe(dbAttach => {
+                    this.attachFiles = dbAttach.slice();
+                }, error => console.error(error));
+        }
+    }
+
+    // on Attach Update List
+    onUpdateAttachResults(results: FileList): void {
+        // debug here
+        // console.log("File: ", results);
+        this.editValue.AttachFile = results;
+        // debug here
+        // console.log("Att File: ", this.RequirePaintList.AttachFile);
+
+        this.editValueForm.patchValue({
+            AttachFile: this.editValue.AttachFile
+        });
+    }
+
+    // on Attach delete file
+    onDeleteAttachFile(attach: AttachFile): void {
+        if (attach) {
+            if (!this.editValue.RemoveAttach) {
+                this.editValue.RemoveAttach = new Array;
+            }
+
+            // remove
+            this.editValue.RemoveAttach.push(attach.AttachFileId);
+            // debug here
+            // console.log("Remove :",this.editValue.RemoveAttach);
+
+            this.editValueForm.patchValue({
+                RemoveAttach: this.editValue.RemoveAttach
+            });
+            let template: Array<AttachFile> =
+                this.attachFiles.filter((e: AttachFile) => e.AttachFileId !== attach.AttachFileId);
+
+            this.attachFiles = new Array();
+            setTimeout(() => this.attachFiles = template.slice(), 50);
+        }
+    }
+
+    // open file attach
+    onOpenNewLink(link: string): void {
+        if (link) {
+            window.open(link, "_blank");
+        }
+    }
+  
 }

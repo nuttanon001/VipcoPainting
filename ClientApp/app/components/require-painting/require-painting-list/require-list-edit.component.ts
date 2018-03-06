@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, Validators, FormGroup, AbstractControl } from
 // models
 import {
     RequirePaintMaster, RequirePaintList,
-    PaintWorkItem, BlastWorkItem,IDictionary
+    PaintWorkItem, BlastWorkItem,IDictionary, AttachFile
 } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
@@ -29,6 +29,7 @@ export class RequireListEditComponent implements OnInit {
     ) { }
 
     // Parameter
+    attachFiles: Array<AttachFile> = new Array;
     paintWorks: Array<PaintWorkItem>;
     listBoxs: Array<boolean>;
     maxDate: Date = new Date;
@@ -108,11 +109,14 @@ export class RequireListEditComponent implements OnInit {
                 }
             }
         }
+        this.getAttach();
     }
 
     // build form
     buildForm(): void {
-        // console.log("buildForm");
+        // debug here
+        // console.log("buildForm", this.RequirePaintList);
+
         this.RequirePaintListForm = this.fb.group({
             RequirePaintingListId: [this.RequirePaintList.RequirePaintingListId],
             RequirePaintingListStatus: [this.RequirePaintList.RequirePaintingListStatus],
@@ -179,7 +183,9 @@ export class RequireListEditComponent implements OnInit {
             // FK
             RequirePaintingMasterId: [this.RequirePaintList.RequirePaintingMasterId],
             BlastWorkItems: [this.RequirePaintList.BlastWorkItems],
-            PaintWorkItems: [this.RequirePaintList.PaintWorkItems]
+            PaintWorkItems: [this.RequirePaintList.PaintWorkItems],
+            AttachFile: [this.RequirePaintList.AttachFile],
+            RemoveAttach: [this.RequirePaintList.RemoveAttach]
         });
 
         // change validity control
@@ -307,6 +313,63 @@ export class RequireListEditComponent implements OnInit {
     // update CakenderUi
     updateCalendarUI(calendar: Calendar) {
         calendar.updateUI();
+    }
+
+    ////////////
+    // Module //
+    ////////////
+
+    // get attact file
+    getAttach(): void {
+        if (this.RequirePaintList && this.RequirePaintList.RequirePaintingListId > 0) {
+            this.service.getAttachFile(this.RequirePaintList.RequirePaintingListId)
+                .subscribe(dbAttach => {
+                    this.attachFiles = dbAttach.slice();
+                }, error => console.error(error));
+        }
+    }
+
+    // on Attach Update List
+    onUpdateAttachResults(results: FileList): void {
+        // debug here
+        // console.log("File: ", results);
+        this.RequirePaintList.AttachFile = results;
+        // debug here
+        // console.log("Att File: ", this.RequirePaintList.AttachFile);
+
+        this.RequirePaintListForm.patchValue({
+            AttachFile: this.RequirePaintList.AttachFile
+        });
+    }
+
+    // on Attach delete file
+    onDeleteAttachFile(attach: AttachFile): void {
+        if (attach) {
+            if (!this.RequirePaintList.RemoveAttach) {
+                this.RequirePaintList.RemoveAttach = new Array;
+            }
+
+            // remove
+            this.RequirePaintList.RemoveAttach.push(attach.AttachFileId);
+            // debug here
+            // console.log("Remove :",this.editValue.RemoveAttach);
+
+            this.RequirePaintListForm.patchValue({
+                RemoveAttach: this.RequirePaintList.RemoveAttach
+            });
+            let template: Array<AttachFile> =
+                this.attachFiles.filter((e: AttachFile) => e.AttachFileId !== attach.AttachFileId);
+
+            this.attachFiles = new Array();
+            setTimeout(() => this.attachFiles = template.slice(), 50);
+        }
+    }
+
+    // open file attach
+    onOpenNewLink(link: string): void {
+        if (link) {
+            window.open(link, "_blank");
+        }
     }
 }
 

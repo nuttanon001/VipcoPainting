@@ -327,6 +327,18 @@ export class DataTableComponent implements OnInit,OnDestroy {
                 } else {
                     return { "is-all": true };
                 }
+            } else if (row["RequirePaintingListStatus"]) {
+                if (row.RequirePaintingListStatus === 1) {
+                    return { "is-require": true };
+                } else if (row.RequirePaintingListStatus === 2) {
+                    return { "is-wait": true };
+                } else if (row.RequirePaintingListStatus === 3) {
+                    return { "is-complate": true };
+                } else if (row.RequirePaintingListStatus === 4) {
+                    return { "is-cancel": true };
+                } else {
+                    return { "is-all": true };
+                }
             }
         }
     }

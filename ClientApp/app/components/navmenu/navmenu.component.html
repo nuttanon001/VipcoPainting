@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand navbar-dark bg-bar">
     <!--<a class="navbar-brand" href="#">Always expand</a>-->
-    <a class="navbar-brand" [routerLink]="['/home']">
+    <a class="navbar-brand" href="http://192.168.2.31/">
         <img src="/paint/images/logoVIPCO.png" width="36" height="36" class="d-inline-block align-top">
-        Vipco Painting System
+        Vipco Painting System (To apps page)
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Mynavbars"
             aria-controls="Mynavbars" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,6 +29,11 @@
                     <button mat-menu-item [routerLink]="['/initial-painting/workitem-master']" routerLinkActive="active">
                         <i class="fa fa-clone" aria-hidden="true"></i>
                         <span>Request Painting By initial</span>
+                    </button>
+
+                    <button mat-menu-item [routerLink]="['/require-list-painting-initial']" routerLinkActive="active">
+                        <i class="fa fa-signal fa-rotate-90" aria-hidden="true"></i>
+                        <span>List Painting By initial</span>
                     </button>
                     <hr />
                     <button mat-menu-item [routerLink]="['/initial-painting']" routerLinkActive="active" [disabled]="!GetLevel2">

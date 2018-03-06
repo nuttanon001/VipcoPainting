@@ -84,6 +84,9 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
         this.route.paramMap.subscribe((param: ParamMap) => {
             let key: number = Number(param.get("condition") || 0);
 
+            // debug here
+            // console.log("Mode is", key);
+
             if (key) {
                 this.mode = key;
 
@@ -93,12 +96,16 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
 
                 if (this.serviceAuth.getAuth) {
                     if (this.mode === 1) {
-                        schedule.Creator = this.serviceAuth.getAuth.EmpCode;
+                        schedule.Creator = this.serviceAuth.getAuth.UserName;
                         schedule.CreatorName = this.serviceAuth.getAuth.NameThai;
                     }
                 }
 
                 this.buildForm(schedule);
+
+                if (this.reportForm) {
+                    this.onValueChanged();
+                }
             }
         }, error => console.error(error));
 
@@ -162,86 +169,96 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
             schedule.TaskMasterId = this.taskMasterId;
         }
 
-        this.service.getTaskMasterSchedule(schedule)
+        // debug here
+        // console.log("Get Data");
+
+        if (this.mode) {
+            if (this.mode > 1) {
+                // debug here
+                // console.log("For Paint");
+
+                this.service.getTaskMasterSchedule(schedule)
+                    .subscribe(dbDataSchedule => {
+                        this.onSetupDataTable(dbDataSchedule);
+                    }, error => {
+                        this.columns = new Array;
+                        this.taskMasters = new Array;
+                        this.reloadData();
+                    });
+                return;
+            }
+        }
+        // debug here
+        // console.log("For All");
+
+        this.service.getTaskMasterScheduleV2(schedule)
             .subscribe(dbDataSchedule => {
-                this.totalRecords = dbDataSchedule.TotalRow;
-
-                this.columns = new Array;
-                this.columnsUpper = new Array;
-
-                let ProMasterWidth: string = "170px";
-                let WorkItemWidth: string = "350px";
-                let ProgressWidth: string = "100px";
-
-                // column Row1
-                this.columnsUpper.push({ header: "JobNo", rowspan: 2, style: { "width": ProMasterWidth, } });
-                this.columnsUpper.push({ header: "WorkItem | MarkNo | UnitNo", rowspan: 2, style: { "width": WorkItemWidth, } });
-                this.columnsUpper.push({ header: "Progress", rowspan: 2, style: { "width": ProgressWidth, } });
-
-                for (let month of dbDataSchedule.ColumnsTop) {
-                    this.columnsUpper.push({
-                        header: month.Name,
-                        colspan: month.Value,
-                        style: { "width": (month.Value * 35).toString() + "px", }
-                    });
-                }
-                // column Row 2
-                this.columnsLower = new Array;
-
-                for (let name of dbDataSchedule.ColumnsLow) {
-                    this.columnsLower.push({
-                        header: name,
-                        // style: { "width": "25px" }
-                    });
-                }
-
-                // column Main
-                this.columns = new Array;
-                this.columns.push({ header: "JobNo", field: "ProjectMaster", style: { "width": ProMasterWidth, } });
-
-                // debug here
-                // console.log("Mode is:", this.mode);
-
-                //if (this.mode) {
-                //    if (this.mode > 1) {
-                //        this.columns.push({
-                //            header: "WorkItem | MarkNo | UnitNo", field: "WorkItem",
-                //            style: { "width": WorkItemWidth, }, isLink: true
-                //        });
-                //    } else {
-                //        this.columns.push({ header: "WorkItem | MarkNo | UnitNo", field: "WorkItem", style: { "width": WorkItemWidth, } });
-                //    }
-                //} else {
-                //    this.columns.push({ header: "WorkItem | MarkNo | UnitNo", field: "WorkItem", style: { "width": WorkItemWidth, } });
-                //}
-                this.columns.push({
-                    header: "WorkItem | MarkNo | UnitNo", field: "WorkItem",
-                    style: { "width": WorkItemWidth, }, isLink: true
-                });
-
-                this.columns.push({ header: "Progress", field: "Progress", style: { "width": ProgressWidth, } });
-
-                // debug here
-                // console.log(JSON.stringify(this.columnsLower));
-
-                let i: number = 0;
-                for (let name of dbDataSchedule.ColumnsAll) {
-                    if (name.indexOf("Col") >= -1) {
-                        this.columns.push({
-                            header: this.columnsLower[i], field: name, style: { "width": "35px" }, isCol: true,
-                        });
-                        i++;
-                    }
-                }
-
-                this.taskMasters = dbDataSchedule.DataTable.slice();
-
-                this.reloadData();
+                this.onSetupDataTable(dbDataSchedule);
             }, error => {
                 this.columns = new Array;
                 this.taskMasters = new Array;
                 this.reloadData();
             });
+        
+    }
+
+    // on setup datatable
+    onSetupDataTable(dbDataSchedule: any): void {
+        this.totalRecords = dbDataSchedule.TotalRow;
+
+        this.columns = new Array;
+        this.columnsUpper = new Array;
+
+        let ProMasterWidth: string = "170px";
+        let WorkItemWidth: string = "350px";
+        let ProgressWidth: string = "100px";
+
+        // column Row1
+        this.columnsUpper.push({ header: "JobNo", rowspan: 2, style: { "width": ProMasterWidth, } });
+        this.columnsUpper.push({ header: "WorkItem | MarkNo | UnitNo", rowspan: 2, style: { "width": WorkItemWidth, } });
+        this.columnsUpper.push({ header: "Progress", rowspan: 2, style: { "width": ProgressWidth, } });
+
+        for (let month of dbDataSchedule.ColumnsTop) {
+            this.columnsUpper.push({
+                header: month.Name,
+                colspan: month.Value,
+                style: { "width": (month.Value * 35).toString() + "px", }
+            });
+        }
+        // column Row2
+        this.columnsLower = new Array;
+
+        for (let name of dbDataSchedule.ColumnsLow) {
+            this.columnsLower.push({
+                header: name,
+                // style: { "width": "25px" }
+            });
+        }
+
+        // column Main
+        this.columns = new Array;
+        this.columns.push({ header: "JobNo", field: "ProjectMaster", style: { "width": ProMasterWidth, } });
+
+        this.columns.push({
+            header: "WorkItem | MarkNo | UnitNo", field: "WorkItem",
+            style: { "width": WorkItemWidth, }, isLink: true
+        });
+
+        this.columns.push({ header: "Progress", field: "Progress", style: { "width": ProgressWidth, } });
+
+        let i: number = 0;
+        for (let name of dbDataSchedule.ColumnsAll) {
+            if (name.indexOf("Col") >= -1) {
+                this.columns.push({
+                    header: this.columnsLower[i], field: name, style: { "width": "35px" }, isCol: true,
+                });
+                i++;
+            }
+        }
+
+        this.taskMasters = dbDataSchedule.DataTable.slice();
+
+        this.reloadData();
     }
 
     // reload data
@@ -300,7 +317,7 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
             if (type === "Employee") {
                 this.serviceDialogs.dialogSelectEmployee(this.viewContainerRef)
                     .subscribe(emp => {
-                        console.log(emp);
+                        // console.log(emp);
                         if (emp) {
                             this.reportForm.patchValue({
                                 Creator: emp.EmpCode,
@@ -326,18 +343,28 @@ export class PaintTaskScheduleComponent implements OnInit, OnDestroy {
     onSelectTaskMasterId(TaskMasterId?: number): void {
         if (TaskMasterId && this.mode) {
             if (this.mode > 1) {
-                this.service.getOneKeyNumber(TaskMasterId)
-                    .subscribe(dbData => {
-                        this.taskMasterEdit = dbData;
-                        setTimeout(() => this.serviceCom.toChildEdit(dbData), 1000);
-                    });
+                if (TaskMasterId) {
+                    this.service.getOneKeyNumber(TaskMasterId)
+                        .subscribe(dbData => {
+                            this.taskMasterEdit = dbData;
+                            setTimeout(() => this.serviceCom.toChildEdit(dbData), 1000);
+                        });
+                }              
             } else {
-                let option: OptionTaskMasterSchedule = {
-                    TaskMasterId : TaskMasterId
-                }
-                this.serviceDialogs.dialogTaskPaintMasterScheduleView(this.viewContainerRef, option);
+                if (TaskMasterId) {
+                    let option: OptionTaskMasterSchedule = {
+                        TaskMasterId: TaskMasterId
+                    }
+                    this.serviceDialogs.dialogTaskPaintMasterScheduleView(this.viewContainerRef, option);
+                } else {
+                    this.serviceDialogs.error("Warning Message", "This workitem not plan yet.",
+                        this.viewContainerRef);
+                }   
             }
-        }
+        } else {
+            this.serviceDialogs.error("Warning Message", "This workitem not plan yet.",
+                this.viewContainerRef);
+        }   
     }
 
     // on cancel edit

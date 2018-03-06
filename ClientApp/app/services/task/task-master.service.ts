@@ -17,6 +17,13 @@ export class TaskMasterService extends BaseRestService<TaskMaster> {
         return this.http.post(url, JSON.stringify(option), this.getRequestOption())
             .map(this.extractData).catch(this.handleError);
     }
+
+    // get TaskMachine WaitAndProcess V2
+    getTaskMasterScheduleV2(option: OptionTaskMasterSchedule): Observable<any> {
+        let url: string = `${this.actionUrl}TaskMasterScheduleV2/`;
+        return this.http.post(url, JSON.stringify(option), this.getRequestOption())
+            .map(this.extractData).catch(this.handleError);
+    }
 }
 
 @Injectable()

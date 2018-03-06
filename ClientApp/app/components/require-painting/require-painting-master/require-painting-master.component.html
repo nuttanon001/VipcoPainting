@@ -23,7 +23,7 @@
                                 <require-painting-view [displayValue]="displayValue"></require-painting-view>
                             </div>
                             <ng-template #detailEdit>
-                                <require-painting-edit></require-painting-edit>
+                                <require-painting-edit (HiddenTool)="hiddenTool = $event"></require-painting-edit>
                             </ng-template>
                         </div>
                         <ng-template #elseBlock>
@@ -38,9 +38,9 @@
                     </div>
                 </div>
                 <!--Right-->
-                <div class="right-content">
+                <div class="right-content" *ngIf="!hiddenTool">
                     <button type="button" mat-icon-button color="accent" (click)="onDetailEdit()"
-                            [disabled]="ShowEdit" >
+                            [disabled]="ShowEdit">
                         <i class="fa fa-2x fa-plus" aria-hidden="true"></i>
                     </button>
                     <button type="button" mat-icon-button color="accent" (click)="onDetailEdit(displayValue)"

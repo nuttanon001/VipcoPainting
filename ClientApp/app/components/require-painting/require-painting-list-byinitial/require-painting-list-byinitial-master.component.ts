@@ -99,25 +99,26 @@ export class RequirePaintingListByinitialMasterComponent
 
     // on insert data
     onInsertToDataBase(value: RequirePaintList): void {
-        if (this.serverAuth.getAuth) {
-            value.Creator = this.serverAuth.getAuth.UserName || "";
-        }
-        // change timezone
-        value = this.changeTimezone(value);
-        // insert data
-        this.service.post(value).subscribe(
-            (complete: any) => {
-                this.displayValue = complete;
-                this.onSaveComplete();
-            },
-            (error: any) => {
-                console.error(error);
-                this.editValue.Creator = undefined;
-                this.canSave = true;
-                this.dialogsService.error("Failed !",
-                    "Save failed with the following error: Invalid Identifier code !!!", this.viewContainerRef);
-            }
-        );
+        this.onCancelEdit();
+        //if (this.serverAuth.getAuth) {
+        //    value.Creator = this.serverAuth.getAuth.UserName || "";
+        //}
+        //// change timezone
+        //value = this.changeTimezone(value);
+        //// insert data
+        //this.service.post(value).subscribe(
+        //    (complete: any) => {
+        //        this.displayValue = complete;
+        //        this.onSaveComplete();
+        //    },
+        //    (error: any) => {
+        //        console.error(error);
+        //        this.editValue.Creator = undefined;
+        //        this.canSave = true;
+        //        this.dialogsService.error("Failed !",
+        //            "Save failed with the following error: Invalid Identifier code !!!", this.viewContainerRef);
+        //    }
+        //);
     }
 
     // on update data
@@ -125,11 +126,21 @@ export class RequirePaintingListByinitialMasterComponent
         if (this.serverAuth.getAuth) {
             value.Modifyer = this.serverAuth.getAuth.UserName || "";
         }
+        let attachs: FileList | undefined = value.AttachFile;
+
+        // remove attach
+        if (value.RemoveAttach) {
+            this.onRemoveFileFromDataBase(value.RemoveAttach);
+        }
+
         // change timezone
         value = this.changeTimezone(value);
         // update data
-        this.service.putKeyNumber(value, value.RequirePaintingListId).subscribe(
-            (complete: any) => {
+        this.service.putKeyNumberV2(value, value.RequirePaintingListId).subscribe(
+            (complete: RequirePaintList) => {
+                if (complete && attachs) {
+                    this.onAttactFileToDataBase(complete.RequirePaintingListId, attachs,complete.Modifyer || "someone");
+                }
                 this.displayValue = complete;
                 this.onSaveComplete();
             },
@@ -148,7 +159,7 @@ export class RequirePaintingListByinitialMasterComponent
             return;
         }
         if (value) {
-            this.service.getOneKeyNumber(value.RequirePaintingListId)
+            this.service.getOneKeyNumberV2(value.RequirePaintingListId)
                 .subscribe(dbData => {
                     this.displayValue = dbData;
                 }, error => this.displayValue = undefined);
@@ -169,7 +180,7 @@ export class RequirePaintingListByinitialMasterComponent
     // on detail edit OverRide
     onDetailEdit(editValue?: RequirePaintList): void {
         if (editValue) {
-            if (editValue.RequirePaintingListStatus !== 1 && editValue.RequirePaintingListStatus !== 2) {
+            if (editValue.RequirePaintingListStatus !== 1) {
                 this.dialogsService.error("Access Denied", "Status war not waited. you can't edit it.", this.viewContainerRef);
                 return;
             }
@@ -184,5 +195,19 @@ export class RequirePaintingListByinitialMasterComponent
             }
         }
         super.onDetailEdit(editValue);
+    }
+
+    // on attact file
+    onAttactFileToDataBase(RequirePaintListId: number, Attacts: FileList,CreateBy:string): void {
+        this.service.postAttactFile(RequirePaintListId, Attacts, CreateBy)
+            .subscribe(complate => console.log("Upload Complate"), error => console.error(error));
+    }
+
+    // on remove file
+    onRemoveFileFromDataBase(Attachs: Array<number>): void {
+        Attachs.forEach((value: number) => {
+            this.service.deleteAttactFile(value)
+                .subscribe(complate => console.log("Delete Complate"), error => console.error(error));
+        });
     }
 }

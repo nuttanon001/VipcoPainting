@@ -2,7 +2,7 @@
 import { Component, ViewContainerRef, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormControl, Validators, AbstractControl } from "@angular/forms";
 // models
-import { PaintTaskMaster, RequirePaintList, RequirePaintMaster, PaintTaskDetail } from "../../../models/model.index";
+import { PaintTaskMaster, RequirePaintList, RequirePaintMaster, PaintTaskDetail, AttachFile } from "../../../models/model.index";
 // components
 import { BaseEditComponent } from "../../base-component/base-edit.component";
 // 3rd party
@@ -46,6 +46,7 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
     maxDate: Date = new Date;
     @Output() showReportPaint = new EventEmitter<number>();
     @Output() showReportBlast = new EventEmitter<number>();
+    attachFiles: Array<AttachFile> = new Array;
     // on get data by key
     onGetDataByKey(value?: PaintTaskMaster): void {
         if (value) {
@@ -53,6 +54,7 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
                 this.serviceRequirePaintList.getOneKeyNumber(value.RequirePaintingListId)
                     .subscribe(dbRequirePaintList => {
                         this.requirePaintList = dbRequirePaintList;
+                        this.getAttach();
                         // Get RequirePaintingMaster
                         if (this.requirePaintList.RequirePaintingMasterId) {
                             this.serviceRequirePaintMaster.getOneKeyNumber(this.requirePaintList.RequirePaintingMasterId)
@@ -200,6 +202,23 @@ export class PaintTaskEditComponent extends BaseEditComponent<PaintTaskMaster, P
             } else {
                 this.showReportBlast.emit(PaintTaskDetailId);
             }
+        }
+    }
+
+    // get attact file
+    getAttach(): void {
+        if (this.requirePaintList && this.requirePaintList.RequirePaintingListId > 0) {
+            this.serviceRequirePaintList.getAttachFile(this.requirePaintList.RequirePaintingListId)
+                .subscribe(dbAttach => {
+                    this.attachFiles = dbAttach.slice();
+                }, error => console.error(error), () => {
+                    if (this.attachFiles.length < 1 && this.requirePaintList.RequirePaintingMasterId) {
+                        this.serviceRequirePaintMaster.getAttachFile(this.requirePaintList.RequirePaintingMasterId)
+                            .subscribe(dbAttach => {
+                                this.attachFiles = dbAttach.slice();
+                            });
+                    }
+                });
         }
     }
 }

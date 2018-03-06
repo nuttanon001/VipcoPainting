@@ -2,8 +2,9 @@
 import { Component, OnInit, OnDestroy, Inject, ViewChild } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 // models
-import { BlastWorkItem, PaintWorkItem } from "../../models/model.index";
+import { BlastWorkItem, PaintWorkItem, AttachFile } from "../../models/model.index";
 // service
+import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
 import { BlastWorkitemService } from "../../services/require-paint/blast-workitem.service";
 import { PaintWorkitemService } from "../../services/require-paint/paint-workitem.service";
 // rxjs
@@ -20,6 +21,7 @@ import { TableColumn } from "@swimlane/ngx-datatable";
     providers: [
         BlastWorkitemService,
         PaintWorkitemService,
+        RequirePaintListService,
     ]
 })
 // require-painting-dialog component*/
@@ -28,6 +30,7 @@ export class RequirePaintingDialogComponent implements OnInit, OnDestroy {
     constructor(
         private serviceBlast: BlastWorkitemService,
         private servicePaint: PaintWorkitemService,
+        private serviceList: RequirePaintListService,
         public dialogRef: MatDialogRef<RequirePaintingDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public requirePaintListId: number
     ) { }
@@ -41,7 +44,7 @@ export class RequirePaintingDialogComponent implements OnInit, OnDestroy {
         { prop: "ExtSurfaceTypeString", name: "Ext Surface", width: 120 },
         { prop: "ExtStandradTimeString", name: "External Std", width: 200 },
     ];
-
+    attachFiles: Array<AttachFile>;
     columnsPaintWork: Array<TableColumn> = [
         { prop: "PaintLevelString", name: "Level", width: 120 },
         { prop: "IntAreaString", name: "Int Area", width: 150 },
@@ -74,19 +77,38 @@ export class RequirePaintingDialogComponent implements OnInit, OnDestroy {
 
     // on get data with lazy load
     loadData(requirePaintListId: number): void {
-        this.serviceBlast.getByMasterId(requirePaintListId)
-            .subscribe(dbBlast => {
-                this.blastWorkItems = dbBlast.slice();
-            });
+        if (requirePaintListId) {
+            this.serviceBlast.getByMasterId(requirePaintListId)
+                .subscribe(dbBlast => {
+                    this.blastWorkItems = dbBlast.slice();
+                });
 
-        this.servicePaint.getByMasterId(requirePaintListId)
-            .subscribe(dbPaint => {
-                this.paintWorkItems = dbPaint.slice();
-            });
+            this.servicePaint.getByMasterId(requirePaintListId)
+                .subscribe(dbPaint => {
+                    this.paintWorkItems = dbPaint.slice();
+                });
+
+            //this.serviceList.getAttachFile(requirePaintListId)
+            //    .subscribe(dbAttach => this.attachFiles = dbAttach.slice());
+        }
     }
 
     // no Click
     onCancelClick(): void {
         this.dialogRef.close();
+    }
+
+    // open attact file
+    onOpenNewLink(link: string): void {
+        if (link) {
+            window.open("paint/" + link, "_blank");
+            //this.serviceMaster.getDownloadFilePaper(link)
+            //    .subscribe(data => {
+            //        let link: any = document.createElement("a");
+            //        link.href = window.URL.createObjectURL(data);
+            //        // link.download = "file_";
+            //        link.click();
+            //    });
+        }
     }
 }

@@ -137,6 +137,7 @@ export class ProjectEditComponent
         if (!projectSub) {
             projectSub = {
                 ProjectCodeSubId: 0,
+                ProjectSubStatus: 1,
                 Name:"-"
             };
             this.index = -1;

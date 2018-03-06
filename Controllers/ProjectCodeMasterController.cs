@@ -149,6 +149,7 @@ namespace VipcoPainting.Controllers
                             nDetail.CreateDate = nProjectCodeMaster.CreateDate;
                             nDetail.Creator = nProjectCodeMaster.Creator;
                             nDetail.ProjectCodeMasterId = insertComplate.ProjectCodeMasterId;
+                            nDetail.ProjectSubStatus = ProjectSubStatus.Use;
 
                             await this.repositorySub.AddAsync(nDetail);
                         }
@@ -196,7 +197,10 @@ namespace VipcoPainting.Controllers
                             try
                             {
                                 if (!uProjectCodeMasterVm.ProjectSubs.Any(x => x.ProjectCodeSubId == dbDetail.ProjectCodeSubId))
-                                    await this.repositorySub.DeleteAsync(dbDetail.ProjectCodeSubId);
+                                {
+                                    dbDetail.ProjectSubStatus = ProjectSubStatus.NotUse;
+                                    await this.repositorySub.UpdateAsync(dbDetail,dbDetail.ProjectCodeSubId);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -207,10 +211,14 @@ namespace VipcoPainting.Controllers
                         //Update ProjectCodeDetails
                         foreach (var uProjectSub in uProjectCodeMasterVm.ProjectSubs)
                         {
+                            // Set Value
+                            uProjectSub.ProjectSubStatus = uProjectSub.ProjectSubStatus ?? ProjectSubStatus.Use;
+
                             if (uProjectSub.ProjectCodeSubId > 0)
                             {
                                 uProjectSub.ModifyDate = uProjectCodeMaster.ModifyDate;
                                 uProjectSub.Modifyer = uProjectCodeMaster.Modifyer;
+
                                 await this.repositorySub.UpdateAsync(uProjectSub, uProjectSub.ProjectCodeSubId);
                             }
                             else

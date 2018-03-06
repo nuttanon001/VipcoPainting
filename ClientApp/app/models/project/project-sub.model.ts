@@ -2,6 +2,7 @@
     ProjectCodeSubId: number;
     Code?: string;
     Name?: string;
+    ProjectSubStatus?: number;
     Creator?: string;
     CreateDate?: Date;
     Modifyer?: string;

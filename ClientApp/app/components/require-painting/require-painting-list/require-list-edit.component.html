@@ -123,6 +123,42 @@
                         </div>
                     </div>
                 </form>
+
+                <!--<div class="my-form">
+                    <label for="AttactFile" class="my-label">AttactFile:</label>
+                    <div class="col-4">
+                        <attact-file id="AttactFile" (results)="onUpdateAttachResults($event)">
+                        </attact-file>
+                    </div>
+                </div>
+
+                <div *ngIf="attachFiles.length > 0">
+                    <table class="table table-hover table-sm small">
+                        <colgroup>
+                            <col span="1" style="width: 80%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let file of attachFiles; let num2 = index">
+                                <td (click)="onOpenNewLink(file.FileAddress)" style="cursor:pointer;">
+                                    {{num2 + 1}}. {{file.FileName}}
+                                </td>
+                                <td>
+                                    <div>
+                                        <a class="btn btn-sm btn-danger" matTooltip="Remove Attach File" (click)="onDeleteAttachFile(file)">
+                                            <em class="fa fa-remove"></em>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>-->
             </div>
         </mat-tab>
         <mat-tab>

@@ -23,11 +23,13 @@ export class RequirePaintingListByinitialViewComponent extends BaseViewComponent
         super();
     }
     // Parameter
-    attachFiles: Array<AttachFile> = new Array;
-    requirePaintMaster: RequirePaintMaster;
+    attachFiles: Array<AttachFile>;
+    requirePaintMaster: RequirePaintMaster | undefined;
 
     // load more data
     onLoadMoreData(value: RequirePaintList) {
+        this.attachFiles = new Array;
+        this.requirePaintMaster = undefined;
 
         if (value) {
             if (value.RequirePaintingListId) {
@@ -39,20 +41,6 @@ export class RequirePaintingListByinitialViewComponent extends BaseViewComponent
                 this.serviceRequireMaster.getOneKeyNumber(value.RequirePaintingMasterId)
                     .subscribe(dbRequireMaster => this.requirePaintMaster = dbRequireMaster);
             }
-        }
-    }
-
-    // open attact file
-    onOpenNewLink(link: string): void {
-        if (link) {
-            window.open("paint/" + link, "_blank");
-            //this.serviceMaster.getDownloadFilePaper(link)
-            //    .subscribe(data => {
-            //        let link: any = document.createElement("a");
-            //        link.href = window.URL.createObjectURL(data);
-            //        // link.download = "file_";
-            //        link.click();
-            //    });
         }
     }
 }

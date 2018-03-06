@@ -300,7 +300,7 @@ export class InitialRequirePaintingEditComponent
             let tempPaint: Array<PaintWorkItem> = new Array;
             let tempBlast: Array<BlastWorkItem> = new Array;
             // get only paint selected
-            console.log(JSON.stringify(this.paintCheckBox));
+            // console.log(JSON.stringify(this.paintCheckBox));
 
             this.paintCheckBox.forEach((item, index) => {
                 if (item === true && index !== 0) {

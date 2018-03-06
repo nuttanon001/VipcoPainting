@@ -14,7 +14,9 @@ import {
     InitialRequirePaintingCenterComponent, InitialRequirePaintingEditComponent,
     InitialRequirePaintingMasterComponent, InitialRequirePaintingViewComponent,
     InitialRequirePaintingListComponent, InitialRequirePaintingScheduleComponent,
-    InitialRequireWorkitemMasterComponent
+    InitialRequireWorkitemMasterComponent, RequirePaintingListByinitialCenterComponent,
+    RequirePaintingListByinitialEditComponent, RequirePaintingListByinitialMasterComponent,
+    RequirePaintingListByinitialViewComponent
 } from "../../components/require-painting/require.index";
 // modules
 import { RequirePaintingRoutingModule } from "./require-painting-routing.module";
@@ -22,7 +24,7 @@ import {
     CustomMaterialModule, ValidationModule,
 } from "../module.index";
 // services
-import { RequirePaintListService } from "../../services/require-paint/require-paint-list.service";
+import { RequirePaintListService, RequirePaintListServiceCommunicate } from "../../services/require-paint/require-paint-list.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate, RequirePaintMasterHasInitialServiceCommunicate } from "../../services/require-paint/require-paint-master.service";
 import { BlastWorkitemService } from "../../services/require-paint/blast-workitem.service";
 import { PaintWorkitemService } from "../../services/require-paint/paint-workitem.service";
@@ -46,7 +48,11 @@ import { InitialRequirePaintService, InitialRequirePaintServiceCommunicate } fro
         InitialRequirePaintingViewComponent,
         InitialRequirePaintingListComponent,
         InitialRequirePaintingScheduleComponent,
-        InitialRequireWorkitemMasterComponent
+        InitialRequireWorkitemMasterComponent,
+        RequirePaintingListByinitialCenterComponent,
+        RequirePaintingListByinitialEditComponent,
+        RequirePaintingListByinitialMasterComponent,
+        RequirePaintingListByinitialViewComponent
     ],
     imports: [
         // angular
@@ -60,6 +66,7 @@ import { InitialRequirePaintService, InitialRequirePaintServiceCommunicate } fro
     ],
     providers: [
         RequirePaintListService,
+        RequirePaintListServiceCommunicate,
         RequirePaintMasterService,
         RequirePaintMasterServiceCommunicate,
         BlastWorkitemService,

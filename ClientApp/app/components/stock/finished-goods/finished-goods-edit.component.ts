@@ -77,6 +77,11 @@ export class FinishedGoodsEditComponent extends BaseEditComponent<FinishedGoodsM
                     Validators.required,
                 ]
             ],
+            ExpiredDate: [this.editValue.ExpiredDate,
+                [
+                    Validators.required,
+                ]
+            ],
             ReceiveBy: [this.editValue.ReceiveBy,
                 [
                     Validators.required,
@@ -88,12 +93,14 @@ export class FinishedGoodsEditComponent extends BaseEditComponent<FinishedGoodsM
                     Validators.min(0),
                 ]
             ],
+            LotNumber: [this.editValue.LotNumber],
             Remark: [this.editValue.Remark],
             Creator: [this.editValue.Creator],
             CreateDate: [this.editValue.CreateDate],
             Modifyer: [this.editValue.Modifyer],
             ModifyDate: [this.editValue.ModifyDate],
             //FK
+            ProjectCodeMasterId: [this.editValue.ProjectCodeMasterId],
             ColorItemId: [this.editValue.ColorItemId,
                 [
                     Validators.required
@@ -107,6 +114,11 @@ export class FinishedGoodsEditComponent extends BaseEditComponent<FinishedGoodsM
                 ]
             ],
             ColorNameString: [this.editValue.ColorNameString,
+                [
+                    Validators.required
+                ]
+            ],
+            ProjectMasterString: [this.editValue.ProjectMasterString,
                 [
                     Validators.required
                 ]
@@ -134,6 +146,14 @@ export class FinishedGoodsEditComponent extends BaseEditComponent<FinishedGoodsM
                         this.editValueForm.patchValue({
                             ReceiveBy: emp ? emp.EmpCode : undefined,
                             ReceiveByString: emp ? emp.NameThai : undefined
+                        });
+                    });
+            } else if (mode.indexOf("Project") !== -1) {
+                this.serviceDialog.dialogSelectProject(this.viewContainerRef, 1)
+                    .subscribe(projectSub => {
+                        this.editValueForm.patchValue({
+                            ProjectCodeMasterId: projectSub.ProjectCodeMasterId,
+                            ProjectMasterString: `${projectSub.ProjectMasterString}`,
                         });
                     });
             }

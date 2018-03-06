@@ -96,7 +96,7 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
             // Define PaintWorkItem
             if (this.ListPaintBlastWorks.PaintWorkItems) {
                 this.layerPaints = new Array;
-                console.log("Layer", JSON.stringify(this.ListPaintBlastWorks.PaintWorkItems));
+                // console.log("Layer", JSON.stringify(this.ListPaintBlastWorks.PaintWorkItems));
 
                 if (this.ListPaintBlastWorks.PaintWorkItems.length > 0) {
                     let tempPaint: Array<PaintWorkItem> = new Array;

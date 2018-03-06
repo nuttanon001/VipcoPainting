@@ -150,6 +150,8 @@ export class DialogsService {
         // config
         config.viewContainerRef = viewContainerRef;
 
+        /// mode === 1 Selected Only Project Master Code
+        
         let projectMode: ProjectModeDialog = {
             CanAddProjectSub: mode > 1,
             ShowProjectSub: mode !== 1

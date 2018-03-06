@@ -49,14 +49,19 @@ export class RequirePaintingListByinitialEditComponent
     // on get data by key
     onGetDataByKey(value?: RequirePaintList): void {
         if (value) {
-            this.service.getOneKeyNumber(value.RequirePaintingListId)
+            this.service.getOneKeyNumberV2(value.RequirePaintingListId)
                 .subscribe(dbData => {
                     this.editValue = dbData;
+                    // set Date
+                    if (this.editValue.SendWorkItem) {
+                        this.editValue.SendWorkItem = this.editValue.SendWorkItem != null ?
+                            new Date(this.editValue.SendWorkItem) : new Date();
+                    }
+
                     if (this.editValue.RequirePaintingMasterId) {
                         this.serviceRequireMaster.getOneKeyNumber(this.editValue.RequirePaintingMasterId)
                             .subscribe(dbRequireMaster => this.requirePaintMaster = dbRequireMaster);
                     }
-                    // set Date
                 }, error => console.error(error), () => this.defineData());
         } 
     }
@@ -64,6 +69,7 @@ export class RequirePaintingListByinitialEditComponent
     // define data for edit form
     defineData(): void {
         this.buildForm();
+        this.getAttach();
     }
 
     // build form
@@ -116,6 +122,8 @@ export class RequirePaintingListByinitialEditComponent
             IsReceive: [this.editValue.IsReceive],
             IntArea: [this.editValue.IntArea],
             ExtArea: [this.editValue.ExtArea],
+            AttachFile: [this.editValue.AttachFile],
+            RemoveAttach: [this.editValue.RemoveAttach]
         });
 
         this.editValueForm.valueChanges.subscribe((data: any) => this.onValueChanged(data));

@@ -105,7 +105,7 @@ namespace VipcoPainting.Controllers
                                         .Where(x => x.ProjectCodeMasterId == MasterId).ToListAsync();
             }
 
-            return new JsonResult(QueryData, this.DefaultJsonSettings);
+            return new JsonResult(QueryData.Where(x => x.ProjectSubStatus == ProjectSubStatus.Use), this.DefaultJsonSettings);
         }
 
         // GET: api/ProjectCodeSub/GetAutoComplate/
@@ -233,7 +233,8 @@ namespace VipcoPainting.Controllers
                     nProjectCodeSub.Creator = nProjectCodeSub.Creator ?? "Someone";
                     // Trim
                     nProjectCodeSub.Code = nProjectCodeSub.Code.Trim();
-
+                    if (!nProjectCodeSub.ProjectSubStatus.HasValue || nProjectCodeSub.ProjectSubStatus == null)
+                        nProjectCodeSub.ProjectSubStatus = ProjectSubStatus.Use;
                     //if (nProjectCodeSub.ProjectCodeMaster != null)
                     //    nProjectCodeSub.ProjectCodeMaster = null;
 
@@ -270,6 +271,9 @@ namespace VipcoPainting.Controllers
 
                     uProjectCodeSub.ModifyDate = DateTime.Now;
                     uProjectCodeSub.Modifyer = uProjectCodeSub.Modifyer ?? "Someone";
+
+                    if (!uProjectCodeSub.ProjectSubStatus.HasValue || uProjectCodeSub.ProjectSubStatus == null)
+                        uProjectCodeSub.ProjectSubStatus = ProjectSubStatus.Use;
 
                     //if (uProjectCodeSub.ProjectCodeMaster != null)
                     //    uProjectCodeSub.ProjectCodeMaster = null;

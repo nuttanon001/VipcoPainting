@@ -90,6 +90,16 @@ namespace VipcoPainting.Helpers
 
             #endregion RequirePaintingMaster
 
+            #region RequirePaintingList
+
+            CreateMap<RequirePaintingList, RequirePaintingListViewModel>()
+                .ForMember(x => x.BlastWorkItems, o => o.Ignore())
+                .ForMember(x => x.PaintWorkItems, o => o.Ignore());
+
+            CreateMap<RequirePaintingListViewModel, RequirePaintingList>();
+
+            #endregion
+
             #region BlastWorkItem
 
             CreateMap<BlastWorkItem, BlastWorkItemViewModel>()

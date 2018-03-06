@@ -178,12 +178,19 @@ namespace VipcoPainting.Migrations
                     b.Property<string>("Creator")
                         .HasMaxLength(50);
 
+                    b.Property<DateTime?>("ExpiredDate");
+
                     b.Property<DateTime>("FinishedGoodsDate");
+
+                    b.Property<string>("LotNumber")
+                        .HasMaxLength(200);
 
                     b.Property<DateTime?>("ModifyDate");
 
                     b.Property<string>("Modifyer")
                         .HasMaxLength(50);
+
+                    b.Property<int?>("ProjectCodeMasterId");
 
                     b.Property<double?>("Quantity");
 
@@ -359,7 +366,9 @@ namespace VipcoPainting.Migrations
 
                     b.HasKey("PaintTaskMasterId");
 
-                    b.HasIndex("RequirePaintingListId");
+                    b.HasIndex("RequirePaintingListId")
+                        .IsUnique()
+                        .HasFilter("[RequirePaintingListId] IS NOT NULL");
 
                     b.ToTable("PaintTaskMaster");
                 });
@@ -562,6 +571,8 @@ namespace VipcoPainting.Migrations
 
                     b.Property<int?>("ProjectSubParentId");
 
+                    b.Property<int?>("ProjectSubStatus");
+
                     b.HasKey("ProjectCodeSubId");
 
                     b.HasIndex("ProjectSubParentId");
@@ -726,6 +737,32 @@ namespace VipcoPainting.Migrations
                     b.HasIndex("ProjectCodeSubId");
 
                     b.ToTable("RequirePaintingMaster");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.RequirePaintingMasterHasAttach", b =>
+                {
+                    b.Property<int>("RequirePaintingMasterHasAttachId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AttachFileId");
+
+                    b.Property<DateTime?>("CreateDate");
+
+                    b.Property<string>("Creator")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("ModifyDate");
+
+                    b.Property<string>("Modifyer")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("RequirePaintingMasterId");
+
+                    b.HasKey("RequirePaintingMasterHasAttachId");
+
+                    b.HasIndex("RequirePaintingMasterId");
+
+                    b.ToTable("RequirePaintingMasterHasAttach");
                 });
 
             modelBuilder.Entity("VipcoPainting.Models.RequisitionMaster", b =>
@@ -1029,8 +1066,8 @@ namespace VipcoPainting.Migrations
             modelBuilder.Entity("VipcoPainting.Models.PaintTaskMaster", b =>
                 {
                     b.HasOne("VipcoPainting.Models.RequirePaintingList", "RequirePaintingList")
-                        .WithMany()
-                        .HasForeignKey("RequirePaintingListId");
+                        .WithOne("PaintTaskMasters")
+                        .HasForeignKey("VipcoPainting.Models.PaintTaskMaster", "RequirePaintingListId");
                 });
 
             modelBuilder.Entity("VipcoPainting.Models.PaintWorkItem", b =>
@@ -1101,6 +1138,13 @@ namespace VipcoPainting.Migrations
                     b.HasOne("VipcoPainting.Models.ProjectCodeSub", "ProjectCodeSub")
                         .WithMany("RequirePaintingMasters")
                         .HasForeignKey("ProjectCodeSubId");
+                });
+
+            modelBuilder.Entity("VipcoPainting.Models.RequirePaintingMasterHasAttach", b =>
+                {
+                    b.HasOne("VipcoPainting.Models.RequirePaintingMaster", "RequirePaintingMaster")
+                        .WithMany()
+                        .HasForeignKey("RequirePaintingMasterId");
                 });
 
             modelBuilder.Entity("VipcoPainting.Models.RequisitionMaster", b =>

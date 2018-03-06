@@ -74,6 +74,12 @@
     @extend .small;
 }
 
+.my-value-col2 {
+    @extend .value-box;
+    @extend .col-sm-2;
+    @extend .small;
+}
+
 /*:host /deep/ .ngx-datatable.material .datatable-header .datatable-header-cell {
     text-align: left;
     padding: .9rem 1.2rem;
