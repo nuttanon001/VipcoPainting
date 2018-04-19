@@ -16,11 +16,11 @@ namespace VipcoPainting.Models
         [Required]
         [StringLength(250)]
         public string Description { get; set; }
-        [StringLength(150)]
+        [StringLength(250)]
         public string PartNo { get; set; }
-        [StringLength(150)]
+        [StringLength(250)]
         public string MarkNo { get; set; }
-        [StringLength(150)]
+        [StringLength(250)]
         public string DrawingNo { get; set; }
         public int? UnitNo { get; set; }
         public double? Quantity { get; set; }

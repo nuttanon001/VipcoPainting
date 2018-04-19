@@ -96,7 +96,7 @@
                 <ng-template mat-tab-label>
                     <b>Initial Work Item</b>
                 </ng-template>
-                <div class="edit-container">
+                <div class="edit-container" *ngIf="paintBlastWorkItems">
                     <list-paint-blast-workitem [(ListPaintBlastWorks)]="paintBlastWorkItems"
                                                (isValid)="updatePaintBlastWorkitem($event)"
                                                (paintCheckBox)="paintCheckBox=$event"

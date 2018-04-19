@@ -180,6 +180,7 @@ export class InitialRequirePaintingEditComponent
         if (this.initialRequirePaint.PaintWorkItems) {
             this.paintBlastWorkItems.PaintWorkItems.push(...this.initialRequirePaint.PaintWorkItems);
         } 
+
         this.buildFormInitial();
     }
 
@@ -286,8 +287,8 @@ export class InitialRequirePaintingEditComponent
         };
 
         // debug here
-        // console.log("isValid :", isValid,"isPaintBlastValid :", this.isPaintBlastValid)
-
+        //console.log("isValid :", isValid,"isPaintBlastValid :", this.isPaintBlastValid)
+        //console.log("editComplate:", JSON.stringify(editComplate));
         this.communicateService.toParent([editComplate, isValid && this.isPaintBlastValid]);
     }
 
@@ -331,6 +332,7 @@ export class InitialRequirePaintingEditComponent
 
     // Update initial-require-painting
     updatePaintBlastWorkitem(isValid?: boolean): void {
+        // console.log("updatePaint_isValid", isValid);
         if (isValid) {
             this.isPaintBlastValid = isValid;
             this.onValueChanged();

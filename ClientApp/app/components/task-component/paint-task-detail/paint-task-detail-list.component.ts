@@ -56,6 +56,8 @@ export class PaintTaskDetailListComponent implements OnInit, OnDestroy {
         this.getPaintTeamCombobox();
         this.getPaymentDetailCombobox();
         if (this.paintTaskMaster) {
+            // console.log("paintTaskMaster", JSON.stringify(this.paintTaskMaster));
+
             if (this.paintTaskMaster.PaintTaskMasterId) {
                 this.service.getByMasterId(this.paintTaskMaster.PaintTaskMasterId)
                     .subscribe(dbPaintTaskDetails => {

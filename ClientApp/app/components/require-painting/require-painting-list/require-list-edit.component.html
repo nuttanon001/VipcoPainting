@@ -175,7 +175,7 @@
                     </div>
                 </div>
                 <div *ngIf="blastWork">
-                    <blast-workitem-edit [(blastWorkItem)]="blastWorkItem"></blast-workitem-edit>
+                    <blast-workitem-edit [(blastWorkItem)]="blastWorkItem" [noRequest]="true"></blast-workitem-edit>
                 </div>
                 <!--<require-painting-sub-edit></require-painting-sub-edit>-->
             </div>
@@ -214,16 +214,16 @@
                 </div>-->
                 <div class="bottom-container-60vh">
                     <div *ngIf="listBoxs[0]">
-                        <paint-workitem-edit #pc1 [(paintWorkItem)]="paintWorks[0]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
+                        <paint-workitem-edit #pc1 [(paintWorkItem)]="paintWorks[0]" (hasChange)="onHasChange($event)"  [noRequest]="true"></paint-workitem-edit>
                     </div>
                     <div *ngIf="listBoxs[1]">
-                        <paint-workitem-edit #mc1 [(paintWorkItem)]="paintWorks[1]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
+                        <paint-workitem-edit #mc1 [(paintWorkItem)]="paintWorks[1]" (hasChange)="onHasChange($event)"  [noRequest]="true"></paint-workitem-edit>
                     </div>
                     <div *ngIf="listBoxs[2]">
-                        <paint-workitem-edit #ic1 [(paintWorkItem)]="paintWorks[2]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
+                        <paint-workitem-edit #ic1 [(paintWorkItem)]="paintWorks[2]" (hasChange)="onHasChange($event)"  [noRequest]="true"></paint-workitem-edit>
                     </div>
                     <div *ngIf="listBoxs[3]">
-                        <paint-workitem-edit #tc1 [(paintWorkItem)]="paintWorks[3]" (hasChange)="onHasChange($event)"></paint-workitem-edit>
+                        <paint-workitem-edit #tc1 [(paintWorkItem)]="paintWorks[3]" (hasChange)="onHasChange($event)"  [noRequest]="true"></paint-workitem-edit>
                     </div>
                 </div>
             </div>

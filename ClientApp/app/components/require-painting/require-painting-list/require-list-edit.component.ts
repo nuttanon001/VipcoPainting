@@ -13,6 +13,8 @@ import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 import { Calendar } from "primeng/components/calendar/calendar";
+import { retry } from "rxjs/operator/retry";
+import { transformMenu } from "@angular/material";
 
 @Component({
     selector: "require-list-edit",
@@ -30,19 +32,19 @@ export class RequireListEditComponent implements OnInit {
 
     // Parameter
     attachFiles: Array<AttachFile> = new Array;
-    paintWorks: Array<PaintWorkItem>;
-    listBoxs: Array<boolean>;
+    paintWorks: Array<PaintWorkItem> | undefined;
+    listBoxs: Array<boolean> | undefined;
     maxDate: Date = new Date;
     // Blast
-    blastWork: boolean;
-    blastWorkItem: BlastWorkItem;
+    blastWork: boolean | undefined;
+    blastWorkItem: BlastWorkItem | undefined;
     // Form
-    RequirePaintListForm: FormGroup;
+    RequirePaintListForm: FormGroup | undefined;
     // levelPaints
-    levelPaints: Array<string>;
+    levelPaints: Array<string> | undefined;
 
     @Output("ComplateOrCancel") ComplateOrCancel = new EventEmitter<RequirePaintList>();
-    @Input("RequirePaintList") RequirePaintList: RequirePaintList;
+    @Input("RequirePaintList") RequirePaintList: RequirePaintList | undefined;
     // isCheckForm
     get isCheckForm(): boolean {
         if (this.blastWork) {
@@ -54,7 +56,7 @@ export class RequireListEditComponent implements OnInit {
         }
         return false;
     }
-    isPaintValid: boolean;
+    isPaintValid: boolean | undefined;
 
     // on Init
     ngOnInit(): void {
@@ -90,7 +92,7 @@ export class RequireListEditComponent implements OnInit {
             if (this.RequirePaintList.PaintWorkItems) {
                 if (this.RequirePaintList.PaintWorkItems.length > 0) {
                     this.RequirePaintList.PaintWorkItems.forEach(item => {
-                        if (item.PaintLevel) {
+                        if (item.PaintLevel && this.listBoxs && this.paintWorks && this.levelPaints) {
                             item.IsValid = true;
                             this.listBoxs[item.PaintLevel - 1] = true;
                             this.paintWorks[item.PaintLevel - 1] = item;
@@ -116,6 +118,7 @@ export class RequireListEditComponent implements OnInit {
     buildForm(): void {
         // debug here
         // console.log("buildForm", this.RequirePaintList);
+        if (!this.RequirePaintList) { return; }
 
         this.RequirePaintListForm = this.fb.group({
             RequirePaintingListId: [this.RequirePaintList.RequirePaintingListId],
@@ -192,6 +195,8 @@ export class RequireListEditComponent implements OnInit {
         const QuantityControl: AbstractControl | null = this.RequirePaintListForm.get("Quantity");
         if (QuantityControl) {
             QuantityControl.valueChanges.subscribe((Qty: number) => {
+                if (!this.RequirePaintListForm) { return; }
+
                 const SizeLControl: AbstractControl | null = this.RequirePaintListForm.get("SizeL");
                 const SizeWControl: AbstractControl | null = this.RequirePaintListForm.get("SizeW");
                 const SizeHControl: AbstractControl | null = this.RequirePaintListForm.get("SizeH");
@@ -225,25 +230,28 @@ export class RequireListEditComponent implements OnInit {
 
     // on New/Update
     onNewOrUpdateClick(): void {
-        if (this.RequirePaintListForm) {
+        if (this.RequirePaintListForm && this.listBoxs && this.RequirePaintList && this.blastWorkItem) {
             this.RequirePaintList = this.RequirePaintListForm.value;
 
             let tempPaint: Array<PaintWorkItem> = new Array;
             // get only paint selected
             this.listBoxs.forEach((item, index) => {
-                if (item === true) {
-                    tempPaint.push(this.paintWorks[index]);
+                if (this.paintWorks) {
+                    if (item === true) {
+                        tempPaint.push(this.paintWorks[index]);
+                    }
                 }
             });
+            if (this.RequirePaintList) {
+                // set BlastWorks
+                this.RequirePaintList.BlastWorkItems = new Array;
+                this.RequirePaintList.BlastWorkItems.push(this.blastWorkItem);
+                // set PaintWorks
+                this.RequirePaintList.PaintWorkItems = new Array;
+                this.RequirePaintList.PaintWorkItems = tempPaint.slice();
 
-            // set BlastWorks
-            this.RequirePaintList.BlastWorkItems = new Array;
-            this.RequirePaintList.BlastWorkItems.push(this.blastWorkItem);
-            // set PaintWorks
-            this.RequirePaintList.PaintWorkItems = new Array;
-            this.RequirePaintList.PaintWorkItems = tempPaint.slice();
-
-            this.ComplateOrCancel.emit(this.RequirePaintList);
+                this.ComplateOrCancel.emit(this.RequirePaintList);
+            }
         }
     }
 
@@ -253,9 +261,11 @@ export class RequireListEditComponent implements OnInit {
     }
 
     // on Add level of paint
-    onShowOrDidNotLevelOfPaint(checkBox:boolean,index:number,paintWorkItem:PaintWorkItem) {
-        this.paintWorks[index] = this.paintWorks[index] ? (checkBox ? this.paintWorks[index] : paintWorkItem) : paintWorkItem;
-        this.listBoxs[index] = checkBox;
+    onShowOrDidNotLevelOfPaint(checkBox: boolean, index: number, paintWorkItem: PaintWorkItem) {
+        if (this.paintWorks && this.listBoxs) {
+            this.paintWorks[index] = this.paintWorks[index] ? (checkBox ? this.paintWorks[index] : paintWorkItem) : paintWorkItem;
+            this.listBoxs[index] = checkBox;
+        }
     }
 
     // on Change
@@ -301,11 +311,19 @@ export class RequireListEditComponent implements OnInit {
     //onHasChange
     onHasChange(hasChange: boolean) {
         if (this.paintWorks) {
-            if (this.paintWorks.findIndex(item => item.IsValid === false) > -1) {
-                this.isPaintValid = false;
-            } else {
-                this.isPaintValid = true;
-            }
+            this.isPaintValid = true;
+            this.paintWorks.forEach(item => {
+                if (item) {
+                    if (!item.IsValid) {
+                        this.isPaintValid = false;
+                    }
+                }
+            });
+
+            //if (this.paintWorks.findIndex(item => item.IsValid === false) > -1) {
+            //} else {
+            //    this.isPaintValid = true;
+            //}
         }
     }
 
@@ -331,20 +349,22 @@ export class RequireListEditComponent implements OnInit {
 
     // on Attach Update List
     onUpdateAttachResults(results: FileList): void {
-        // debug here
-        // console.log("File: ", results);
-        this.RequirePaintList.AttachFile = results;
-        // debug here
-        // console.log("Att File: ", this.RequirePaintList.AttachFile);
+        if (this.RequirePaintList && this.RequirePaintListForm) {
+            // debug here
+            // console.log("File: ", results);
+            this.RequirePaintList.AttachFile = results;
+            // debug here
+            // console.log("Att File: ", this.RequirePaintList.AttachFile);
 
-        this.RequirePaintListForm.patchValue({
-            AttachFile: this.RequirePaintList.AttachFile
-        });
+            this.RequirePaintListForm.patchValue({
+                AttachFile: this.RequirePaintList.AttachFile
+            });
+        }
     }
 
     // on Attach delete file
     onDeleteAttachFile(attach: AttachFile): void {
-        if (attach) {
+        if (attach && this.RequirePaintList && this.RequirePaintListForm) {
             if (!this.RequirePaintList.RemoveAttach) {
                 this.RequirePaintList.RemoveAttach = new Array;
             }

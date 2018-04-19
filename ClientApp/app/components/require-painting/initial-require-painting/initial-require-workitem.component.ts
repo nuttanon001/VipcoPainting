@@ -1,5 +1,5 @@
 ﻿// angular
-import { Component, ViewContainerRef, OnInit, OnChanges, Input, Output, EventEmitter } from "@angular/core";
+import { Component, ViewContainerRef, OnInit, OnChanges, Input, Output, EventEmitter, PACKAGE_ROOT_URL } from "@angular/core";
 import { FormBuilder, FormControl, Validators, FormGroup, AbstractControl } from "@angular/forms";
 // models
 import {
@@ -17,6 +17,7 @@ import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 import { RequirePaintMasterService } from "../../../services/require-paint/require-paint-master.service";
 import { InitialRequirePaintService } from "../../../services/require-paint/initial-require-paint.service";
+import { retry } from "rxjs/operator/retry";
 
 @Component({
     selector: "initial-require-workitem",
@@ -38,7 +39,7 @@ export class InitialRequirePaintingListComponent implements OnInit {
     ) { }
 
     // Parameter
-    _initialRequirePaintId: number;
+    _initialRequirePaintId: number | undefined;
     @Input()
     set initialRequirePaintId(_value: number) {
         if (_value !== this._initialRequirePaintId) {
@@ -51,16 +52,16 @@ export class InitialRequirePaintingListComponent implements OnInit {
         }
     }
     get initialRequirePaintId(): number {
-        return this._initialRequirePaintId;
+        return this._initialRequirePaintId || 0;
     }
     @Output() ComplateOrFailed = new EventEmitter<boolean>();
     // Value
-    initialRequirePaint: InitialRequirePaint;
-    requirePaintMaster: RequirePaintMaster;
-    attachFiles: FileList;
+    initialRequirePaint: InitialRequirePaint | undefined;
+    requirePaintMaster: RequirePaintMaster | undefined;
+    attachFiles: FileList | undefined;
     // Form
-    initialWorkItemForm: FormGroup;
-    initialWorkItemValue: InitialRequireWorkItem;
+    initialWorkItemForm: FormGroup | undefined;
+    initialWorkItemValue: InitialRequireWorkItem | undefined;
     get disabledSave(): boolean {
         if (this.initialWorkItemForm) {
             if (this.initialWorkItemForm.valid) {
@@ -96,26 +97,33 @@ export class InitialRequirePaintingListComponent implements OnInit {
 
     // build form
     buildForm(): void {
+        if (!this.initialWorkItemValue) { return; }
+
         this.initialWorkItemForm = this.fb.group({
             ExtArea: [this.initialWorkItemValue.ExtArea],
             IntArea: [this.initialWorkItemValue.IntArea],
             Description: [this.initialWorkItemValue.Description,
-            [
-                Validators.required,
-                Validators.maxLength(250)
-            ]
+                [
+                    Validators.required,
+                    Validators.maxLength(250)
+                ]
             ],
-            PartNo: [this.initialWorkItemValue.PartNo],
+            PartNo: [this.initialWorkItemValue.PartNo,
+                [
+                    Validators.maxLength(250)
+                ]
+            ],
             MarkNo: [this.initialWorkItemValue.MarkNo,
-            [
-                Validators.required
-            ]
+                [
+                    Validators.required,
+                    Validators.maxLength(250)
+                ]
             ],
             Quantity: [this.initialWorkItemValue.Quantity,
-            [
-                Validators.required,
-                Validators.min(0)
-            ]
+                [
+                    Validators.required,
+                    Validators.min(0)
+                ]
             ],
             FieldWeld: [this.initialWorkItemValue.FieldWeld],
             Insulation: [this.initialWorkItemValue.Insulation],
@@ -125,9 +133,9 @@ export class InitialRequirePaintingListComponent implements OnInit {
             SizeH: [this.initialWorkItemValue.SizeH],
             Weight: [this.initialWorkItemValue.Weight],
             SendWorkItem: [this.initialWorkItemValue.SendWorkItem,
-            [
-                Validators.required
-            ]
+                [
+                    Validators.required
+                ]
             ]
         });
         // on form value change
@@ -137,6 +145,9 @@ export class InitialRequirePaintingListComponent implements OnInit {
         const QuantityControl: AbstractControl | null = this.initialWorkItemForm.get("Quantity");
         if (QuantityControl) {
             QuantityControl.valueChanges.subscribe((Qty: number) => {
+
+                if (!this.initialWorkItemForm) { return; }
+
                 const SizeLControl: AbstractControl | null = this.initialWorkItemForm.get("SizeL");
                 const SizeWControl: AbstractControl | null = this.initialWorkItemForm.get("SizeW");
                 const SizeHControl: AbstractControl | null = this.initialWorkItemForm.get("SizeH");
@@ -171,20 +182,22 @@ export class InitialRequirePaintingListComponent implements OnInit {
         const IntControl: AbstractControl | null = this.initialWorkItemForm.get("IntArea");
         const ExtControl: AbstractControl | null = this.initialWorkItemForm.get("ExtArea");
 
-        if (this.initialRequirePaint.NeedExternal) {
-            if (ExtControl) {
-                ExtControl.setValidators([
-                    Validators.required,
-                    Validators.min(1)
-                ]);
+        if (this.initialRequirePaint) {
+            if (this.initialRequirePaint.NeedExternal) {
+                if (ExtControl) {
+                    ExtControl.setValidators([
+                        Validators.required,
+                        Validators.min(1)
+                    ]);
+                }
             }
-        }
-        if (this.initialRequirePaint.NeedInternal) {
-            if (IntControl) {
-                IntControl.setValidators([
-                    Validators.required,
-                    Validators.min(1)
-                ]);
+            if (this.initialRequirePaint.NeedInternal) {
+                if (IntControl) {
+                    IntControl.setValidators([
+                        Validators.required,
+                        Validators.min(1)
+                    ]);
+                }
             }
         }
 
@@ -258,6 +271,8 @@ export class InitialRequirePaintingListComponent implements OnInit {
 
     // on submite data
     onInsertToDataBase(initialRequire: InitialRequireWorkItem): void {
+        if (!this.initialRequirePaint) { return; }
+
         // Set initialRequire
         let newRequirePaintingList: RequirePaintList = {
             RequirePaintingListId: 0,
@@ -295,23 +310,25 @@ export class InitialRequirePaintingListComponent implements OnInit {
         if (this.initialRequirePaint) {
             if (this.initialRequirePaint.BlastWorkItems) {
                 this.initialRequirePaint.BlastWorkItems.forEach((blastWork, index) => {
-                    if (newRequirePaintingList.BlastWorkItems) {
-                        let newBlastWork: BlastWorkItem = {
-                            BlastWorkItemId: 0,
-                            IntArea: this.initialRequirePaint.NeedInternal ? initialRequire.IntArea : undefined,
-                            ExtArea: this.initialRequirePaint.NeedExternal ? initialRequire.ExtArea : undefined,
-                            // StandradTimeInt
-                            StandradTimeIntId: blastWork.StandradTimeIntId,
-                            // StandradTimeExt
-                            StandradTimeExtId: blastWork.StandradTimeExtId,
-                            // SurfaceTypeInt
-                            SurfaceTypeIntId: blastWork.SurfaceTypeIntId,
-                            // SurfaceTypeExt
-                            SurfaceTypeExtId: blastWork.SurfaceTypeExtId,
-                            // InitialRequire Don't add InitialRequireId
-                            // InitialRequireId: blastWork.InitialRequireId
-                        };
-                        newRequirePaintingList.BlastWorkItems.push(newBlastWork);
+                    if (this.initialRequirePaint) {
+                        if (newRequirePaintingList.BlastWorkItems) {
+                            let newBlastWork: BlastWorkItem = {
+                                BlastWorkItemId: 0,
+                                IntArea: blastWork.StandradTimeIntId && this.initialRequirePaint.NeedInternal ? initialRequire.IntArea : undefined,
+                                ExtArea: blastWork.StandradTimeExtId && this.initialRequirePaint.NeedExternal ? initialRequire.ExtArea : undefined,
+                                // StandradTimeInt
+                                StandradTimeIntId: blastWork.StandradTimeIntId,
+                                // StandradTimeExt
+                                StandradTimeExtId: blastWork.StandradTimeExtId,
+                                // SurfaceTypeInt
+                                SurfaceTypeIntId: blastWork.SurfaceTypeIntId,
+                                // SurfaceTypeExt
+                                SurfaceTypeExtId: blastWork.SurfaceTypeExtId,
+                                // InitialRequire Don't add InitialRequireId
+                                // InitialRequireId: blastWork.InitialRequireId
+                            };
+                            newRequirePaintingList.BlastWorkItems.push(newBlastWork);
+                        }
                     }
                 });
             }
@@ -326,34 +343,34 @@ export class InitialRequirePaintingListComponent implements OnInit {
                     // console.log("paintWork", JSON.stringify(paintWork));
 
                     // can't update FromBody with same data from webapi try new object and send back update
-                    if (newRequirePaintingList.PaintWorkItems) {
-                        let newPaintWork: PaintWorkItem = {
-                            PaintWorkItemId: 0,
-                            PaintLevel: paintWork.PaintLevel,
+                    if (this.initialRequirePaint) {
+                        if (newRequirePaintingList.PaintWorkItems) {
+                            let newPaintWork: PaintWorkItem = {
+                                PaintWorkItemId: 0,
+                                PaintLevel: paintWork.PaintLevel,
 
-                            IntArea: this.initialRequirePaint.NeedInternal ? initialRequire.IntArea : undefined,
-                            ExtArea: this.initialRequirePaint.NeedExternal ? initialRequire.ExtArea : undefined,
+                                IntArea: paintWork.IntDFTMin && paintWork.IntDFTMax && this.initialRequirePaint.NeedInternal ? initialRequire.IntArea : undefined,
+                                ExtArea: paintWork.ExtDFTMin && paintWork.ExtDFTMax && this.initialRequirePaint.NeedExternal ? initialRequire.ExtArea : undefined,
 
-                            IntDFTMin: paintWork.IntDFTMin,
-                            IntDFTMax: paintWork.IntDFTMax,
-                            ExtDFTMin: paintWork.ExtDFTMin,
-                            ExtDFTMax: paintWork.ExtDFTMax,
-                            // ColorItemInt
-                            IntColorItemId: paintWork.IntColorItemId,
-                            // ColorItemExt
-                            ExtColorItemId: paintWork.ExtColorItemId,
-                            // StandradTimeInt
-                            StandradTimeIntId: paintWork.StandradTimeIntId,
-                            // StandradTimeExt
-                            StandradTimeExtId: paintWork.StandradTimeExtId,
-                            // InitialRequire Don't add InitialRequireId
-                            // InitialRequireId: paintWork.InitialRequireId
-                        };
-                        // debug here
-                        // console.log("newPaintWork", JSON.stringify(newPaintWork));
-
-
-                        newRequirePaintingList.PaintWorkItems.push(newPaintWork);
+                                IntDFTMin: paintWork.IntDFTMin,
+                                IntDFTMax: paintWork.IntDFTMax,
+                                ExtDFTMin: paintWork.ExtDFTMin,
+                                ExtDFTMax: paintWork.ExtDFTMax,
+                                // ColorItemInt
+                                IntColorItemId: paintWork.IntColorItemId,
+                                // ColorItemExt
+                                ExtColorItemId: paintWork.ExtColorItemId,
+                                // StandradTimeInt
+                                StandradTimeIntId: paintWork.StandradTimeIntId,
+                                // StandradTimeExt
+                                StandradTimeExtId: paintWork.StandradTimeExtId,
+                                // InitialRequire Don't add InitialRequireId
+                                // InitialRequireId: paintWork.InitialRequireId
+                            };
+                            // debug here
+                            // console.log("newPaintWork", JSON.stringify(newPaintWork));
+                            newRequirePaintingList.PaintWorkItems.push(newPaintWork);
+                        }
                     }
                 });
             }

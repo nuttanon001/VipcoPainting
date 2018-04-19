@@ -6,7 +6,7 @@ import { Component } from "@angular/core";
 })
 export class HomeComponent {
     onOpenNewLink(): void {
-        let link: string = "/files/painting_doc.pdf";
+        let link: string = "files/painting_doc.pdf";
         if (link) {
             window.open(link, "_blank");
         }

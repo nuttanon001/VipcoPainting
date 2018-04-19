@@ -126,7 +126,7 @@ namespace VipcoPainting.Controllers
 
                 if (item.IntCalcColorUsage == null)
                 {
-                    if (item.IntArea != null)
+                    if (item.IntArea != null && item.IntDFTMin != null && item.IntDFTMax != null && item.IntColorItem != null && BlastWorkItem != null)
                     {
                         double[] thicks = { item.IntDFTMin ?? 0, item.IntDFTMax ?? 0 };
                         item.IntCalcColorUsage = this.CalcPaintPlan(item.IntArea ?? 0, thicks.Average(), (item.IntColorItem.VolumeSolids ?? 0), (BlastWorkItem?.StandradTimeInt?.PercentLoss ?? 0) / 100);
@@ -136,7 +136,7 @@ namespace VipcoPainting.Controllers
              
                 if (item.ExtCalcColorUsage == null)
                 {
-                    if (item.ExtArea != null)
+                    if (item.ExtArea != null && item.ExtDFTMin != null && item.ExtDFTMax != null && item.ExtColorItem != null && BlastWorkItem != null)
                     {
                         double[] thicks = { item.ExtDFTMin ?? 0, item.ExtDFTMax ?? 0 };
                         item.ExtCalcColorUsage = this.CalcPaintPlan(item.ExtArea ?? 0, thicks.Average(), (item.ExtColorItem.VolumeSolids ?? 0) , (BlastWorkItem?.StandradTimeExt?.PercentLoss ?? 0) / 100);

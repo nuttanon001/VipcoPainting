@@ -15,6 +15,8 @@ import { DialogsService } from "../../../services/dialog/dialogs.service";
 import { RequirePaintMasterService, RequirePaintMasterServiceCommunicate } from "../../../services/require-paint/require-paint-master.service";
 import { RequirePaintListService } from "../../../services/require-paint/require-paint-list.service";
 import { Calendar } from "primeng/components/calendar/calendar";
+import { concat } from "rxjs/observable/concat";
+import { reduce } from "rxjs/operator/reduce";
 
 @Component({
     selector: "list-paint-blast-workitem",
@@ -139,7 +141,8 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
     checkBoxChange(isChange?: boolean, levelPaint?: string): void {
         if (isChange !== undefined && levelPaint) {
             let paintWorkItem: PaintWorkItem = {
-                PaintWorkItemId: 0
+                PaintWorkItemId: 0,
+                IsValid: false
             };
 
             if (levelPaint.indexOf("PrimerCoat") !== -1) {
@@ -179,17 +182,36 @@ export class ListPaintBlastWorkitemComponent implements OnInit, OnChanges {
     // on Has-Change
     onHasChange(hasChange: boolean) {
         if (this.ListPaintBlastWorks) {
-
-            if (this.ListPaintBlastWorks.PaintWorkItems.findIndex(item => item.IsValid === false) > -1) {
-                this.isValid.emit(false);
-            } else if (this.ListPaintBlastWorks.BlastWorkItems.findIndex(item => item.IsValid === false) > -1) {
-                this.isValid.emit(false);
-            } else {
-                this.isValid.emit(true);
+            if (this.ListPaintBlastWorks.PaintWorkItems) {
+                this.ListPaintBlastWorks.PaintWorkItems.forEach((item) => {
+                    if (item) {
+                        if (!item.IsValid) {
+                            this.isValid.emit(false);
+                            this.paintCheckBox.emit(this.checkBoxs);
+                            return;
+                        }
+                    }
+                });
             }
 
+            if (this.ListPaintBlastWorks.BlastWorkItems) {
+                this.ListPaintBlastWorks.BlastWorkItems.forEach((item) => {
+                    if (item) {
+                        if (!item.IsValid) {
+                            this.isValid.emit(false);
+                            this.paintCheckBox.emit(this.checkBoxs);
+                            return;
+                        }
+                            
+                    }
+                });
+            }
+
+            // debug here
+            // console.log("onHasChange_IsValid", hasChange);
+            this.isValid.emit(true);
+           
             // console.log("checkBox",JSON.stringify(this.checkBoxs));
-            this.paintCheckBox.emit(this.checkBoxs);
         }
     }
 }
